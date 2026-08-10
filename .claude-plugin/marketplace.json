@@ -1,0 +1,17 @@
+{
+  "name": "adapta-cliente",
+  "owner": {
+    "name": "Adapta Labs"
+  },
+  "metadata": {
+    "description": "Marketplace do plugin do cliente Adapta Native, com SkillMind e perfil portátil para o ETHOS sem hooks.",
+    "version": "0.3.0"
+  },
+  "plugins": [
+    {
+      "name": "adapta-cliente",
+      "source": "./adapta-cliente",
+      "description": "Orquestra uma task por vez com análise, autorização, implementação profunda, teste humano, debug e aprendizado interno silencioso."
+    }
+  ]
+}

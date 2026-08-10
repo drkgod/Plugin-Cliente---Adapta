@@ -1,0 +1,39 @@
+{
+  "name": "adapta-cliente",
+  "version": "0.3.0",
+  "description": "Orquestrador do champion Adapta Native para analisar, executar, testar, debugar e concluir uma task por vez com memória persistente e sem dependência de hooks.",
+  "author": {
+    "name": "Adapta Labs"
+  },
+  "license": "UNLICENSED",
+  "keywords": [
+    "adapta-native",
+    "cliente",
+    "champion",
+    "tasks",
+    "status",
+    "ethos",
+    "orquestracao",
+    "aprendizado-continuo"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Adapta Cliente",
+    "shortDescription": "Uma task por vez, com gates e memória.",
+    "longDescription": "SkillMind do cliente para runtimes como ETHOS: interpreta pedidos, seleciona uma task, separa análise de implementação, exige teste humano, diagnostica causa raiz, valida evidências e registra aprendizado contínuo sem depender de hooks ou subagentes.",
+    "developerName": "Adapta Labs",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use skill-mind-cliente para começar ou retomar exatamente uma task.",
+      "Use skill-mind-cliente para destravar a task ativa sem abrir outra.",
+      "Use skill-mind-cliente para concluir somente depois do teste humano aprovado."
+    ],
+    "brandColor": "#2563EB",
+    "screenshots": []
+  }
+}
