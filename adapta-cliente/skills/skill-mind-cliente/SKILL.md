@@ -14,7 +14,9 @@ subagente.
 1. Preserve o pedido original e identifique a intenção real: status, iniciar/retomar, autorizar
    implementação, relatar falha, aprovar teste, concluir ou recuperar aprendizado.
 2. Resolva a raiz caminhando para cima até encontrar `04_fase-atual/fase.md`. Confirme também
-   `STATUS.md`, `changelog.md` e `04_fase-atual/specs/`. Ausência de item obrigatório é bloqueio;
+   `STATUS.md`, `changelog.md`, `handoff-manifest.json`, `04_fase-atual/specs/` e `07-sistemas/`.
+   No manifesto v2, confirme `consumer.surface: ethos`, `consumer.plugin: adapta-cliente` e versão
+   mínima compatível. Manifesto v1 continua legível como legado. Ausência de item obrigatório é bloqueio;
    não invente estrutura nem procure o plano privado do consultor.
 3. Leia `.adapta-cliente/estado-atual.md` se existir. Se não existir, crie-o somente quando for
    abrir a primeira task, usando o modelo da seção “Estado persistente”.
@@ -100,9 +102,12 @@ Manter `.adapta-cliente/estado-atual.md` com exatamente estes campos:
 ```markdown
 # Estado atual — Adapta Cliente
 
+- schema_version: adapta-cliente-state/v2
 - task_id: <ID ou nenhuma>
-- champion: <nome ou desconhecido>
+- executor: <nome ou desconhecido; nunca usado como bloqueio>
+- owner_informativo: <valor da tabela ou desconhecido>
 - spec: <caminho ou nenhuma>
+- analise: <.adapta-cliente/analises/<task-id>.md ou nenhuma>
 - etapa: <sem_task|aguardando_autorizacao|implementando|aguardando_teste_humano|em_correcao|bloqueada|concluida>
 - autorizacao_implementacao: <ausente|confirmada + data/hora e trecho da mensagem>
 - teste_humano: <pendente|aprovado|falhou|nao_aplicavel + data/hora e trecho da mensagem>

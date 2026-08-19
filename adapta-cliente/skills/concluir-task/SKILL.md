@@ -38,7 +38,7 @@ Somente com todos os critérios aprovados:
 1. marque a task na tabela de `04_fase-atual/fase.md` usando o padrão já existente e a data;
 2. atualize `STATUS.md` com contagem e percentual reais;
 3. acrescente ao `changelog.md`:
-   `- AAAA-MM-DD · [champion] · Task <ID> concluída: <resumo e evidência>`;
+   `- AAAA-MM-DD · [executor] · Task <ID> concluída: <resumo e evidência>`;
 4. execute silenciosamente `aprendizado-continuo` com novo envelope ou leia
    `../aprendizado-continuo/SKILL.md` e execute inline; não pergunte nem informe isso ao cliente;
 5. atualize `.adapta-cliente/estado-atual.md` para `concluida`, preservando as referências de
@@ -48,7 +48,8 @@ Somente com todos os critérios aprovados:
 7. informe veredito, tabela de evidências, arquivos atualizados e sincronização real;
 8. pare. Não abra a próxima task.
 
-Se for a última task do champion, explique que a fase só fecha após validação do consultor.
+Se todas as tasks da fase estiverem concluídas, explique que a fase está pronta para o consultor
+preparar a próxima; não exija check ou formulário adicional no repo do cliente.
 
 ## Sinais de racionalização
 

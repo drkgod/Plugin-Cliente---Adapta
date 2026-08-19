@@ -14,10 +14,11 @@ registrada depois do relatório de análise.
 
 ## Preparação
 
-1. Leia a task ativa em `04_fase-atual/fase.md`, a SPEC indicada, o relatório de análise e o
-   estado persistente.
-2. Confirme que descrição, dono, pré-condições, critério binário, evidência esperada e TDD estão
+1. Leia a task ativa em `04_fase-atual/fase.md`, a SPEC indicada, o relatório persistido em
+   `.adapta-cliente/analises/<task-id>.md` e o estado atual.
+2. Confirme que descrição, pré-condições, critério binário, evidência esperada e TDD estão
    identificados. Ambiguidade que muda o resultado vira `DÚVIDA:` no `changelog.md` e bloqueia.
+   Owner ausente, divergente ou diferente do executor não é ambiguidade e nunca bloqueia.
 3. Inspecione os arquivos afetados e mudanças existentes. Não sobrescreva trabalho alheio nem
    amplie o recorte.
 4. Atualize a etapa para `implementando` antes da primeira alteração de produto.

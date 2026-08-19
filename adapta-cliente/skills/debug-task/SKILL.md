@@ -41,7 +41,7 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: debug-task`. Sem envelope, ca
 Atualize `changelog.md`:
 
 ```markdown
-- AAAA-MM-DD · [champion] · DEBUG task <ID>: <sintoma> → causa raiz <resumo> → <corrigido|bloqueado|dúvida>.
+- AAAA-MM-DD · [executor] · DEBUG task <ID>: <sintoma> → causa raiz <resumo> → <corrigido|bloqueado|dúvida>.
 ```
 
 ## Voltar ao portão humano

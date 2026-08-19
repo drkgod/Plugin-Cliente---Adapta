@@ -1,0 +1,28 @@
+{
+  "name": "adapta-cliente-codex",
+  "version": "0.1.0",
+  "description": "Execução de uma task por vez do cliente Adapta diretamente no Codex, sem MEMORY, SkillMind, hooks ou dependências do Ethos.",
+  "author": {
+    "name": "Adapta Labs",
+    "url": "https://github.com/drkgod"
+  },
+  "repository": "https://github.com/drkgod/Plugin-Cliente---Adapta",
+  "license": "UNLICENSED",
+  "keywords": ["adapta-native", "cliente", "codex", "tasks", "tdd"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Adapta Cliente Codex",
+    "shortDescription": "Uma task por vez, nativa no Codex.",
+    "longDescription": "Skills diretas para analisar, executar, testar, debugar e concluir uma task do handoff Adapta no Codex. Persiste estado e análise no repo, sem MEMORY, SkillMind, envelopes, hooks ou runtime do Ethos.",
+    "developerName": "Adapta Labs",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "defaultPrompt": [
+      "Analise a próxima task elegível sem implementar.",
+      "Execute a task já analisada e autorizada.",
+      "Mostre o status da fase atual."
+    ],
+    "brandColor": "#2563EB",
+    "screenshots": []
+  }
+}

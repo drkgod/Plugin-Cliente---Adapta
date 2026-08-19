@@ -18,7 +18,7 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: status`. Sem envelope, carreg
 3. Responda com:
    - fase atual e objetivo;
    - tasks feitas/total e percentual;
-   - task ativa, champion e estado do gate;
+   - task ativa, executor, owner informativo e estado do gate;
    - uma única próxima ação permitida pela máquina de estados;
    - pendências com donos e travas ativas;
    - próxima reunião e evidência a demonstrar, se registradas;
@@ -29,4 +29,5 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: status`. Sem envelope, carreg
 
 - Reporte só o que os arquivos sustentam; diferencie ausente, desconhecido e bloqueado.
 - Não prometa fase futura, não selecione nova task e não transforme pedido de status em execução.
-- Trava sem dono é o primeiro risco a apontar e deve virar dúvida para o consultor.
+- Trava sem responsável de resolução deve ser sinalizada, mas owner ausente ou diferente do
+  executor nunca bloqueia uma task que tenha SPEC, pré-condições e prova suficientes.

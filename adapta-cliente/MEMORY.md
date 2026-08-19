@@ -19,6 +19,8 @@ execute a verificação em série usando `agents/verificador-de-entrega.md` como
 ## Regra de ritmo e profundidade
 
 - Trabalhar em exatamente uma task por vez.
+- Owner/dono é metadado informativo. Uma task elegível pode ser executada por qualquer pessoa
+  autorizada pelo cliente; ausência ou divergência de owner nunca bloqueia o fluxo.
 - Nunca implementar todas as tasks de uma SPEC, fase ou lista no mesmo ciclo.
 - Primeiro analisar a task e o estado real do projeto; depois mostrar achados, riscos, plano e
   testes ao cliente.
@@ -62,6 +64,9 @@ a próxima task.
 - Notas do cliente: `06_notas/`
 - Aprendizados: `06_notas/aprendizado-continuo/`
 - Controle do orquestrador: `.adapta-cliente/estado-atual.md`
+- Relatórios de análise: `.adapta-cliente/analises/<task-id>.md`
+- Manifesto de compatibilidade: `handoff-manifest.json`
+- Raiz executável dos sistemas: `07-sistemas/`
 
 Não procurar nem exigir `03-Projeto`, `01-Escopo.md`, `02-Escopo-Definitivo.md`, análises internas
 ou fases futuras. Esses arquivos pertencem ao workspace privado do consultor e não fazem parte do

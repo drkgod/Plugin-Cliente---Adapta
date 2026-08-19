@@ -88,13 +88,23 @@ test("layout canônico externo não exige arquivos privados do consultor", () =>
     "06_notas/",
     ".adapta-cliente/estado-atual.md"
   ]) assert.ok(memory.includes(expected), expected)
+  assert.match(memory, /07-sistemas\//)
+  assert.match(memory, /analises\/<task-id>/)
   assert.match(memory, /Não procurar nem exigir `03-Projeto`/)
+})
+
+test("owner é informativo e a análise é persistida", () => {
+  const next = read("skills/proxima-task/SKILL.md")
+  const execute = read("skills/executar-task/SKILL.md")
+  assert.match(next, /nunca filtre,\s*bloqueie/i)
+  assert.match(next, /\.adapta-cliente\/analises\/<task-id>\.md/)
+  assert.match(execute, /Owner ausente, divergente ou diferente do executor não é ambiguidade/)
 })
 
 test("manifests estão na versão Ethos e JSON é válido", () => {
   for (const relative of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]) {
     const manifest = JSON.parse(read(relative))
     assert.equal(manifest.name, "adapta-cliente")
-    assert.equal(manifest.version, "0.3.0")
+    assert.equal(manifest.version, "0.4.0")
   }
 })
