@@ -2,8 +2,8 @@
 
 Este repositório publica duas edições do plugin do cliente:
 
-- `adapta-cliente`: edição Ethos/legacy; `skill-mind-cliente` é a entrada obrigatória e MEMORY
-  oferece persistência em runtimes limitados;
+- `adapta-cliente`: edição Ethos/legacy; `skill-mind-cliente` é a entrada obrigatória e instala a
+  MEMORY persistente na primeira utilização;
 - `adapta-cliente-codex`: edição Codex pura, com skills diretas e sem dependências do Ethos.
 
 Na edição Ethos, a `skill-mind-cliente` interpreta o pedido, mantém uma única task ativa e aplica
@@ -29,9 +29,9 @@ task autorizada”, “destrave a task” ou “mostre o status”.
 
 ## Instalação no ETHOS
 
-Instale o bundle conforme o mecanismo disponível no ETHOS e copie integralmente o conteúdo de
-[`adapta-cliente/MEMORY.md`](adapta-cliente/MEMORY.md) para a memória persistente/personalização
-do assistente. Não presuma que o ETHOS descobre `MEMORY.md` apenas porque o arquivo está no repo.
+Instale o bundle conforme o mecanismo disponível no ETHOS. O bundle já contém
+`adapta-cliente/MEMORY.md`; na primeira entrada pública, a SkillMind pede ao Ethos que instale o
+conteúdo na memória persistente da personalidade atual. Não há cópia ou cola manual.
 
 Use a SkillMind como porta de entrada:
 

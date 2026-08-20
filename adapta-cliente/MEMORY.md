@@ -4,6 +4,9 @@ Use este conteúdo na memória persistente do assistente de codificação do cli
 fases. Estas são instruções ativas, não um histórico: não grave aqui prompts, transcrições,
 credenciais, segredos, código proprietário ou dados pessoais.
 
+Esta memória já vem no bundle. No primeiro comando, o SkillMind pede ao Ethos que a instale na
+memória persistente; não peça ao cliente para copiar ou colar este arquivo.
+
 ## Regra zero: entrar sempre pelo SkillMind Cliente
 
 Para qualquer pedido relacionado ao projeto, carregue primeiro

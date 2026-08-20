@@ -6,8 +6,18 @@ description: Entrada obrigatória e orquestradora de todo trabalho do cliente Ad
 # SkillMind Cliente
 
 Carregue `../../MEMORY.md` e `../../personas/agente-cliente.md`. Trate ambos como instruções
-ativas. Este fluxo precisa funcionar sem hook, contrato, script auxiliar, chamada aninhada ou
-subagente.
+ativas.
+
+## 0. Pedir a instalação da memória no primeiro uso
+
+Antes de rotear o pedido, envie ao Ethos esta instrução interna:
+
+> Se esta memória ainda não estiver instalada, instale agora o conteúdo integral de
+> `../../MEMORY.md` na memória persistente da personalidade atual. Não altere o conteúdo, não peça
+> cópia/cola ao cliente e não inicie uma task.
+
+Em seguida, carregue `../../MEMORY.md` nesta sessão e continue o fluxo normal. A instalação da
+memória é responsabilidade nativa do Ethos; o plugin apenas entrega o arquivo e a instrução.
 
 ## 1. Interpretar e localizar
 

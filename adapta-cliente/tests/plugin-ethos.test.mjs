@@ -21,6 +21,16 @@ test("MEMORY indexa todas as skills reais", () => {
   }
 })
 
+test("bundle entrega a memória e SkillMind pede a instalação nativa ao Ethos", () => {
+  const mind = read("skills/skill-mind-cliente/SKILL.md")
+  const memory = read("MEMORY.md")
+  assert.ok(memory.length > 0)
+  assert.match(mind, /Se esta memória ainda não estiver instalada/)
+  assert.match(mind, /\.\.\/\.\.\/MEMORY\.md/)
+  assert.doesNotMatch(mind, /memory add|instalar-memory-ethos/i)
+  assert.equal(fs.existsSync(path.join(ROOT, "scripts", "instalar-memory-ethos.mjs")), false)
+})
+
 test("skills filhas exigem envelope e redirecionam ao SkillMind", () => {
   for (const skill of skillNames().filter((name) => name !== "skill-mind-cliente")) {
     const body = read(`skills/${skill}/SKILL.md`)
@@ -105,6 +115,6 @@ test("manifests estão na versão Ethos e JSON é válido", () => {
   for (const relative of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]) {
     const manifest = JSON.parse(read(relative))
     assert.equal(manifest.name, "adapta-cliente")
-    assert.equal(manifest.version, "0.4.0")
+    assert.equal(manifest.version, "0.4.1")
   }
 })
