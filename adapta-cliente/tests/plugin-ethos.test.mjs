@@ -103,6 +103,26 @@ test("layout canônico externo não exige arquivos privados do consultor", () =>
   assert.match(memory, /Não procurar nem exigir `03-Projeto`/)
 })
 
+test("fase-format:2 é suportado sem alterar a estrutura de pastas", () => {
+  const memory = read("MEMORY.md")
+  const next = read("skills/proxima-task/SKILL.md")
+  const conclude = read("skills/concluir-task/SKILL.md")
+  const status = read("skills/status/SKILL.md")
+  assert.match(memory, /fase-format:2/)
+  assert.match(memory, /04_fase-atual\/fase\.md/)
+  assert.match(next, /- \[\/\]/)
+  assert.match(next, /<!-- id:\.\.\. -->/)
+  assert.match(conclude, /checkbox para `\[x\]`/)
+  assert.match(status, /todos os checkboxes/)
+})
+
+test("manifesto é compatibilidade opcional e não uma trava sem produtor", () => {
+  const mind = read("skills/skill-mind-cliente/SKILL.md")
+  assert.match(mind, /Se\s+`handoff-manifest\.json` existir/)
+  assert.match(mind, /ausência do manifesto, sozinha, não bloqueia/)
+  assert.doesNotMatch(mind, /Confirme também\s+`STATUS\.md`, `changelog\.md`, `handoff-manifest\.json`/)
+})
+
 test("owner é informativo e a análise é persistida", () => {
   const next = read("skills/proxima-task/SKILL.md")
   const execute = read("skills/executar-task/SKILL.md")
@@ -115,6 +135,6 @@ test("manifests estão na versão Ethos e JSON é válido", () => {
   for (const relative of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]) {
     const manifest = JSON.parse(read(relative))
     assert.equal(manifest.name, "adapta-cliente")
-    assert.equal(manifest.version, "0.4.1")
+    assert.equal(manifest.version, "0.5.0")
   }
 })

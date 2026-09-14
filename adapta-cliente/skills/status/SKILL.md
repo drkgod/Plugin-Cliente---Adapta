@@ -14,7 +14,9 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: status`. Sem envelope, carreg
 
 1. Leia `STATUS.md`, `04_fase-atual/fase.md`, `.adapta-cliente/estado-atual.md` quando existir,
    as últimas entradas do `changelog.md` e o índice de `05_entregas/`.
-2. Calcule o progresso pela tabela real; não copie percentual inconsistente sem sinalizar.
+2. Calcule o progresso pelas tasks reais. Em `fase-format:2`, conte todos os checkboxes (`[x]`
+   concluída, `[/]` em andamento e `[ ]` a fazer), inclusive subtasks; caso contrário, use a tabela
+   legada. Não copie percentual inconsistente sem sinalizar.
 3. Responda com:
    - fase atual e objetivo;
    - tasks feitas/total e percentual;

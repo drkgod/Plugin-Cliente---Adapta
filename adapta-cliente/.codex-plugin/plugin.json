@@ -1,6 +1,6 @@
 {
   "name": "adapta-cliente",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Orquestrador do champion Adapta Native para analisar, executar, testar, debugar e concluir uma task por vez com memória persistente solicitada ao Ethos no primeiro uso.",
   "author": {
     "name": "Adapta Labs"

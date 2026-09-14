@@ -1,7 +1,7 @@
 {
   "name": "adapta-cliente",
   "description": "Assistente de execução do cliente Adapta Native: SkillMind instrui o Ethos a instalar a memória persistente no primeiro uso, com uma task por vez, gates humanos, debug e aprendizado contínuo.",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "author": {
     "name": "Adapta Labs"
   }

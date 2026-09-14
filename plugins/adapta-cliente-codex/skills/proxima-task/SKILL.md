@@ -1,6 +1,6 @@
 ---
 name: proxima-task
-description: Seleciona e analisa exatamente uma task elegível do handoff Adapta no Codex, persiste o relatório e para antes de implementar. Use quando o cliente pedir para começar, trabalhar ou ver a próxima task.
+description: Seleciona e analisa exatamente uma task elegível do repositório operacional Adapta no Codex, persiste o relatório e para antes de implementar. Use quando o cliente pedir para começar, trabalhar ou ver a próxima task.
 ---
 
 # Analisar próxima task
@@ -8,13 +8,15 @@ description: Seleciona e analisa exatamente uma task elegível do handoff Adapta
 Carregue `../../personas/agente-cliente.md` e `../../references/estado-v2.md`. Esta skill é direta
 e nativa no Codex.
 
-1. Resolva a raiz pelo conjunto `handoff-manifest.json`, `04_fase-atual/fase.md`,
-   `04_fase-atual/specs/`, `STATUS.md`, `changelog.md` e `07-sistemas/`.
-2. Exija manifesto v2 com `consumer.surface: codex` e `consumer.plugin:
-   adapta-cliente-codex`; manifesto v1 pode ser lido como legado com aviso.
+1. Resolva a raiz pelo conjunto `04_fase-atual/fase.md`, `04_fase-atual/specs/`, `STATUS.md`,
+   `changelog.md` e `07-sistemas/`.
+2. Se `handoff-manifest.json` existir, valide no manifesto v2 `consumer.surface: codex` e
+   `consumer.plugin: adapta-cliente-codex`; manifesto v1 pode ser lido como legado com aviso. A
+   ausência do manifesto, sozinha, não bloqueia.
 3. Se `.adapta-cliente/estado-atual.md` tiver task aberta, gate ou bloqueio, retome-a.
-4. Se o usuário indicar uma task pendente e elegível, escolha-a; senão escolha a primeira cujas
-   pré-condições estejam atendidas. Nunca filtre ou bloqueie por owner/dono.
+4. Em `fase-format:2`, retome `- [/]` ou selecione `- [ ]` em ordem de leitura, respeitando
+   hierarquia, dependências, descrição e `<!-- id:... -->`; sem o marcador, leia a tabela legada.
+   Se o usuário indicar uma task pendente e elegível, prefira-a. Nunca filtre ou bloqueie por owner/dono.
 5. Leia a SPEC inteira, TDD, critério, arquivos afetados, estado atual, testes e diff. Caminho
    privado do consultor ou raiz executável ambígua vira `DÚVIDA:` e bloqueia.
 6. Produza objetivo, estado atual, arquivos, plano, matriz critério→prova, riscos, verificações

@@ -35,7 +35,9 @@ explique exatamente o que falta e pare. Não marque parcialmente.
 
 Somente com todos os critérios aprovados:
 
-1. marque a task na tabela de `04_fase-atual/fase.md` usando o padrão já existente e a data;
+1. marque a task em `04_fase-atual/fase.md` usando o padrão existente; em `fase-format:2`, altere
+   somente seu checkbox para `[x]` e preserve título, indentação, metadados, descrição e
+   `<!-- id:... -->`; na tabela legada, atualize a linha e a data como já definido pelo arquivo;
 2. atualize `STATUS.md` com contagem e percentual reais;
 3. acrescente ao `changelog.md`:
    `- AAAA-MM-DD · [executor] · Task <ID> concluída: <resumo e evidência>`;

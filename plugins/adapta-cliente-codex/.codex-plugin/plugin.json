@@ -1,6 +1,6 @@
 {
   "name": "adapta-cliente-codex",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Execução de uma task por vez do cliente Adapta diretamente no Codex, sem MEMORY, SkillMind, hooks ou dependências do Ethos.",
   "author": {
     "name": "Adapta Labs",
@@ -13,7 +13,7 @@
   "interface": {
     "displayName": "Adapta Cliente Codex",
     "shortDescription": "Uma task por vez, nativa no Codex.",
-    "longDescription": "Skills diretas para analisar, executar, testar, debugar e concluir uma task do handoff Adapta no Codex. Persiste estado e análise no repo, sem MEMORY, SkillMind, envelopes, hooks ou runtime do Ethos.",
+    "longDescription": "Skills diretas para analisar, executar, testar, debugar e concluir uma task do repositório operacional Adapta no Codex. Persiste estado e análise no repo, sem MEMORY, SkillMind, envelopes, hooks ou runtime do Ethos.",
     "developerName": "Adapta Labs",
     "category": "Productivity",
     "capabilities": ["Interactive", "Read", "Write"],

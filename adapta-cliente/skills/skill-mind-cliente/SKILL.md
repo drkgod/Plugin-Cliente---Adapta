@@ -24,10 +24,12 @@ memória é responsabilidade nativa do Ethos; o plugin apenas entrega o arquivo 
 1. Preserve o pedido original e identifique a intenção real: status, iniciar/retomar, autorizar
    implementação, relatar falha, aprovar teste, concluir ou recuperar aprendizado.
 2. Resolva a raiz caminhando para cima até encontrar `04_fase-atual/fase.md`. Confirme também
-   `STATUS.md`, `changelog.md`, `handoff-manifest.json`, `04_fase-atual/specs/` e `07-sistemas/`.
-   No manifesto v2, confirme `consumer.surface: ethos`, `consumer.plugin: adapta-cliente` e versão
-   mínima compatível. Manifesto v1 continua legível como legado. Ausência de item obrigatório é bloqueio;
-   não invente estrutura nem procure o plano privado do consultor.
+   `STATUS.md`, `changelog.md`, `04_fase-atual/specs/` e `07-sistemas/`. Se
+   `handoff-manifest.json` existir, valide no manifesto v2 `consumer.surface: ethos`,
+   `consumer.plugin: adapta-cliente` e a versão mínima compatível; manifesto v1 continua legível
+   como legado. A ausência do manifesto, sozinha, não bloqueia. Caminho canônico, task, SPEC ou
+   raiz executável ausente ou ambígua bloqueia; não invente estrutura nem procure o plano privado
+   do consultor.
 3. Leia `.adapta-cliente/estado-atual.md` se existir. Se não existir, crie-o somente quando for
    abrir a primeira task, usando o modelo da seção “Estado persistente”.
 4. Se houver task ativa, gate pendente ou bloqueio, trate isso antes de selecionar outra task.

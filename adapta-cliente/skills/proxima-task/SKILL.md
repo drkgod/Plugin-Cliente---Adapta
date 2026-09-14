@@ -16,10 +16,13 @@ Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; ela n
 
 1. Leia `.adapta-cliente/estado-atual.md`, se existir. Task ativa, gate ou bloqueio deve ser
    retomado; não abra outra.
-2. Leia `04_fase-atual/fase.md`. Se o usuário indicar uma task pendente e elegível, selecione-a;
-   caso contrário, escolha a primeira elegível. Owner/dono é metadado de coordenação: nunca filtre,
-   bloqueie ou peça confirmação de identidade por causa dele. Um funcionário pode executar uma
-   task atribuída a outro papel sem alterar a SPEC.
+2. Leia `04_fase-atual/fase.md`. Se houver `<!-- fase-format:2 -->`, considere elegíveis os itens
+   `- [ ]` e retome `- [/]`; preserve hierarquia, descrição, metadados e `<!-- id:... -->`. Sem o
+   marcador, leia a tabela legada. Se o usuário indicar uma task pendente e elegível, selecione-a;
+   caso contrário, escolha a primeira elegível em ordem de leitura cujas dependências estejam
+   atendidas. Owner/dono é metadado de coordenação: nunca filtre, bloqueie ou peça confirmação de
+   identidade por causa dele. Um funcionário pode executar uma task atribuída a outro papel sem
+   alterar a SPEC.
 3. Confirme pré-condições e dependências. Não pule uma task bloqueada silenciosamente; mostre a
    trava, o dono da resolução e registre-a em `STATUS.md`/`changelog.md` quando aplicável.
 4. Localize a SPEC em `04_fase-atual/specs/`. Ausência, ambiguidade ou conflito material bloqueia

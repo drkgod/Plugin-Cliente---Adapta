@@ -33,10 +33,12 @@ Instale o bundle conforme o mecanismo disponível no ETHOS. O bundle já contém
 `adapta-cliente/MEMORY.md`; na primeira entrada pública, a SkillMind pede ao Ethos que instale o
 conteúdo na memória persistente da personalidade atual. Não há cópia ou cola manual.
 
-Use a SkillMind como porta de entrada:
+Instalação, memória e onboarding não precisam virar três conversas. Depois de disponibilizar o
+bundle, use uma única entrada:
 
 ```text
-Use skill-mind-cliente para começar ou retomar o trabalho.
+Use skill-mind-cliente para configurar ou retomar este projeto. Confirme o acesso ao GitHub, à
+plataforma de construção e à estrutura operacional antes de abrir uma task.
 ```
 
 O `/adapta-cliente:trabalhar` oferece a mesma entrada em runtimes com slash commands.
@@ -54,9 +56,16 @@ Owner/dono permanece como informação de coordenação, mas nunca bloqueia uma 
 relatório de análise é persistido em `.adapta-cliente/analises/`, permitindo retomar em outra
 sessão.
 
-Os plugins operam apenas sobre o handoff externo do cliente: `04_fase-atual/fase.md`,
+Os plugins operam apenas sobre o repositório operacional do cliente: `04_fase-atual/fase.md`,
 `04_fase-atual/specs/`, `05_entregas/`, `06_notas/`, `07-sistemas/`, `STATUS.md` e `changelog.md`.
 Eles não exigem nem devem receber o workspace privado `03-Projeto` do consultor.
+
+`04_fase-atual/fase.md` aceita o formato atual do portal (`<!-- fase-format:2 -->`) e o formato
+tabular legado. No formato atual, cada checkbox é uma task, descrições ficam nas linhas `>`, a
+indentação representa subtasks e o comentário `<!-- id:... -->` deve ser preservado.
+
+O guia com o fluxo principal e os cinco prompts públicos está em
+[`FLUXO-PRINCIPAL.md`](FLUXO-PRINCIPAL.md).
 
 ## Validação
 

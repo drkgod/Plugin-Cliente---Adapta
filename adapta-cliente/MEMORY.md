@@ -61,19 +61,34 @@ a próxima task.
 
 - Estado executivo: `STATUS.md`
 - Histórico: `changelog.md`
-- Tabela operacional da fase: `04_fase-atual/fase.md`
+- Tasks da fase: `04_fase-atual/fase.md` (`fase-format:2` ou tabela legada)
 - SPECs liberadas: `04_fase-atual/specs/`
 - Fases entregues: `05_entregas/`
 - Notas do cliente: `06_notas/`
 - Aprendizados: `06_notas/aprendizado-continuo/`
 - Controle do orquestrador: `.adapta-cliente/estado-atual.md`
 - Relatórios de análise: `.adapta-cliente/analises/<task-id>.md`
-- Manifesto de compatibilidade: `handoff-manifest.json`
+- Manifesto de compatibilidade, quando existir: `handoff-manifest.json`
 - Raiz executável dos sistemas: `07-sistemas/`
 
 Não procurar nem exigir `03-Projeto`, `01-Escopo.md`, `02-Escopo-Definitivo.md`, análises internas
 ou fases futuras. Esses arquivos pertencem ao workspace privado do consultor e não fazem parte do
-handoff operacional do cliente.
+repositório operacional do cliente.
+
+### Contrato de `fase-format:2`
+
+Quando `04_fase-atual/fase.md` contiver `<!-- fase-format:2 -->`:
+
+- `- [ ]`, `- [/]` e `- [x]` significam a fazer, em andamento e concluída;
+- cada checkbox, inclusive indentado, é uma task independente dentro de sua hierarquia;
+- a descrição vem nas linhas `>` imediatamente abaixo da task;
+- `@responsável`, `!dd/mm/aaaa`, `#tipo` e `[interno]` são metadados finais, não parte do título;
+- `<!-- id:... -->` é a identidade estável do card e nunca deve ser removido ou regenerado;
+- ao mudar o estado, altere somente o checkbox e os registros operacionais exigidos.
+
+Se o marcador não existir, leia a tabela legada sem tentar convertê-la durante a execução de uma
+task. A ausência de `handoff-manifest.json` não bloqueia o trabalho quando os caminhos canônicos,
+a task, a SPEC e a raiz executável estiverem inequívocos.
 
 ## Índice de skills
 
