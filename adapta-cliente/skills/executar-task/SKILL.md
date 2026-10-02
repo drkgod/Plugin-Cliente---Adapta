@@ -1,6 +1,6 @@
 ---
 name: executar-task
-description: Implementa com profundidade exatamente uma task já analisada e explicitamente autorizada pelo cliente, seguindo sua SPEC, critérios e TDD; executa verificações automatizáveis e para obrigatoriamente no teste humano. Use somente quando o SkillMind Cliente fornecer CLIENTE_ENVELOPE v1 e o estado registrar autorização posterior ao relatório de análise.
+description: Implementa uma task analisada contra SPEC e critérios; no modo padrão exige autorização posterior, no modo autônomo usa a aprovação da fase e para no teste básico do cliente.
 ---
 
 # Executar Task
@@ -9,15 +9,18 @@ description: Implementa com profundidade exatamente uma task já analisada e exp
 
 Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: executar-task`. Sem envelope, carregue
 `../skill-mind-cliente/SKILL.md`, redirecione o pedido e não altere arquivos. Rejeite execução se
-`.adapta-cliente/estado-atual.md` não estiver em `aguardando_autorizacao` com autorização explícita
-registrada depois do relatório de análise.
+`.adapta-cliente/estado-atual.md` não registrar uma das condições: no modo padrão,
+`aguardando_autorizacao` com autorização explícita posterior à análise; no modo autônomo,
+`pronta_para_implementar` com fase aprovada e sem autorização prévia por task. Não confunda
+autonomia técnica com autorização de publicação, convite ou acesso real.
 
 ## Preparação
 
 1. Leia a task ativa em `04_fase-atual/fase.md`, a SPEC indicada, o relatório de análise e o
    estado persistente.
 2. Confirme que descrição, dono, pré-condições, critério binário, evidência esperada e TDD estão
-   identificados. Ambiguidade que muda o resultado vira `DÚVIDA:` no `changelog.md` e bloqueia.
+   identificados. Para ambiguidade de produto, procure a resposta anterior no chat; se faltar,
+   peça ao champion apenas essa decisão. Não invente regra nem peça escolha técnica ao cliente.
 3. Inspecione os arquivos afetados e mudanças existentes. Não sobrescreva trabalho alheio nem
    amplie o recorte.
 4. Atualize a etapa para `implementando` antes da primeira alteração de produto.
@@ -31,8 +34,9 @@ registrada depois do relatório de análise.
    padrões do repositório e não comece outra task.
 4. Trate explicitamente entradas inválidas, caminhos de erro, perda de dados, segurança,
    acessibilidade e LGPD quando aplicáveis. Essas áreas não podem ser “simplificadas”.
-5. Rode GREEN, regressão, build, lint, checagem de tipos e testes relevantes que o projeto
-   oferecer. Não esconda falhas com valores padrão, `catch` vazio, `|| true` ou remoção de testes.
+5. A IA roda internamente build, checagens e testes relevantes disponíveis. O cliente não recebe
+   comandos técnicos como tarefa de validação. Não esconda falhas com valores padrão, `catch`
+   vazio, `|| true` ou remoção de testes.
 6. Inspecione o diff contra a task. Mudança sem vínculo com critério ou TDD deve ser removida ou
    registrada como bloqueio, não justificada como melhoria extra.
 7. Registre comandos, resultados e limitações reais. Ausência de ferramenta ou acesso não é PASS.
@@ -44,13 +48,13 @@ Ao terminar as verificações automatizáveis:
 1. atualize o estado para `aguardando_teste_humano`;
 2. mantenha `teste_humano: pendente`;
 3. registre `verificacao_automatica: passou|falhou` com resumo;
-4. apresente ao cliente:
+4. apresente aos validadores designados:
    - o que mudou;
    - os testes automáticos e resultados;
-   - passos numerados para testar o caminho real;
+   - um teste básico de 1 a 3 passos na interface, sem comandos técnicos;
    - resultado esperado e como reconhecer falha;
-5. pergunte “Faça esse teste e me diga se funcionou. Não vou concluir nem iniciar outra task até
-   sua confirmação.”;
+5. peça a cada validador designado que execute o teste básico e confirme o resultado; não conclua
+   nem inicie outra task até receber todas as confirmações;
 6. encerre a resposta imediatamente.
 
 Falha automática não autoriza conclusão. Explique-a, mantenha a task aberta e deixe a próxima

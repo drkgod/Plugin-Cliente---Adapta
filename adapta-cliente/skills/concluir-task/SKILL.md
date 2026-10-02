@@ -11,8 +11,10 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: concluir-task`. Sem envelope,
 `../skill-mind-cliente/SKILL.md`, redirecione e não marque nada.
 
 Só prossiga quando `.adapta-cliente/estado-atual.md` indicar a task ativa em
-`aguardando_teste_humano` e trouxer aprovação explícita do cliente em mensagem posterior ao roteiro
-de teste. “Pode concluir”, silêncio ou ausência de reclamação sem teste confirmado não valem.
+`aguardando_teste_humano` e trouxer aprovação explícita de **todos os validadores designados**
+após executarem o teste básico apresentado. Registre cada nome, data e resposta. Enquanto faltar
+um, mantenha a task aberta e peça apenas essa validação. “Pode concluir”, silêncio ou ausência
+de reclamação sem teste confirmado não valem.
 
 ## Verificação independente de subagentes
 
@@ -21,7 +23,8 @@ Se o runtime oferecer subagente, ele pode ser usado como verificação adicional
 dependência obrigatória.
 
 1. Releia a task em `04_fase-atual/fase.md`, a SPEC, TDD, estado e diff/artefatos entregues.
-2. Refaça do zero cada prova automática relevante. Não valide apenas o item que falhou antes.
+2. Refaça as verificações técnicas relevantes da IA; a obrigação do cliente é somente o teste
+   básico na interface, não executar build, suíte, lint ou comandos.
 3. Para cada critério, registre evidência observável e `PASSOU` ou `FALHOU`.
 4. Confira caminho real, caminhos de erro declarados, regressão, build/testes, segredos, diff,
    linha vermelha e falhas silenciosas.
@@ -38,7 +41,7 @@ Somente com todos os critérios aprovados:
 1. marque a task na tabela de `04_fase-atual/fase.md` usando o padrão já existente e a data;
 2. atualize `STATUS.md` com contagem e percentual reais;
 3. acrescente ao `changelog.md`:
-   `- AAAA-MM-DD · [champion] · Task <ID> concluída: <resumo e evidência>`;
+   `- AAAA-MM-DD · [validadores] · Task <ID> concluída: <teste básico, resultado e evidência>`;
 4. execute silenciosamente `aprendizado-continuo` com novo envelope ou leia
    `../aprendizado-continuo/SKILL.md` e execute inline; não pergunte nem informe isso ao cliente;
 5. atualize `.adapta-cliente/estado-atual.md` para `concluida`, preservando as referências de
@@ -48,7 +51,8 @@ Somente com todos os critérios aprovados:
 7. informe veredito, tabela de evidências, arquivos atualizados e sincronização real;
 8. pare. Não abra a próxima task.
 
-Se for a última task do champion, explique que a fase só fecha após validação do consultor.
+Se for a última task da fase, explique que o consultor valida o conjunto no fim da fase;
+ele não aprova cada task individualmente durante a execução.
 
 ## Sinais de racionalização
 

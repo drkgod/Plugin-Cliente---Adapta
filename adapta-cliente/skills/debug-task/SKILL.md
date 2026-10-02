@@ -16,7 +16,9 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: debug-task`. Sem envelope, ca
 ## Limites
 
 - Não edite SPEC, plano ou fase para fazer o bug caber.
-- Requisito ambíguo ou decisão de produto vira `DÚVIDA:` no `changelog.md` e bloqueia.
+- Requisito ambíguo ou decisão de produto: procure resposta anterior no chat; se não houver,
+  peça ao champion somente a regra de produto. Mudança fora da SPEC vira sinal para o consultor
+  no fechamento da fase e não é implementada nesta task.
 - Não feche a task. Depois da correção, volte ao teste humano.
 - Teste uma hipótese e uma correção por vez; preserve mudanças existentes.
 - Não use comando destrutivo, force push, descarte global ou segredo para “destravar”.
@@ -61,5 +63,5 @@ Se falhar, mantenha `em_correcao` ou `bloqueada`, mostre causa/evidência/próxi
 **Causa raiz:**
 **Correção:**
 **Verificação automática:**
-**Gate atual:** aguardando teste humano | em correção | bloqueada | dúvida para consultor
+**Gate atual:** aguardando teste humano | em correção | bloqueada | dúvida de produto para o champion
 ```
