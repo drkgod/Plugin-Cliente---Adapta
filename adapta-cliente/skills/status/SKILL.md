@@ -29,4 +29,5 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: status`. Sem envelope, carreg
 
 - Reporte só o que os arquivos sustentam; diferencie ausente, desconhecido e bloqueado.
 - Não prometa fase futura, não selecione nova task e não transforme pedido de status em execução.
-- Trava sem dono é o primeiro risco a apontar e deve virar dúvida para o consultor.
+- Trava sem dono é o primeiro risco a apontar. Decisão de produto vai ao champion depois de
+  consultar o histórico; mudança de fase fica registrada para o consultor no fechamento.

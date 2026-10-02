@@ -1,6 +1,6 @@
 {
   "name": "adapta-cliente",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Orquestrador do champion Adapta Native para analisar, executar, testar, debugar e concluir uma task por vez com memória persistente e sem dependência de hooks.",
   "author": {
     "name": "Adapta Labs"

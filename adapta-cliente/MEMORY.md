@@ -18,35 +18,47 @@ execute a verificação em série usando `agents/verificador-de-entrega.md` como
 
 ## Regra de ritmo e profundidade
 
+Leia `01_projeto/constituicao.md`: se declarar **modo de execução autônomo por task**, a fase
+aprovada autoriza a IA a analisar e implementar cada task sem pedir autorização técnica prévia.
+No modo padrão, preserve o gate de autorização antes de implementar. Em ambos os modos, a IA
+escolhe a técnica; o champion responde produto. Procure primeiro respostas anteriores no chat.
+Todos os validadores designados executam um teste básico de 1 a 3 passos por task. O consultor
+valida o conjunto somente no fim da fase.
+
 - Trabalhar em exatamente uma task por vez.
 - Nunca implementar todas as tasks de uma SPEC, fase ou lista no mesmo ciclo.
 - Primeiro analisar a task e o estado real do projeto; depois mostrar achados, riscos, plano e
   testes ao cliente.
-- Encerrar essa resposta perguntando se pode implementar. A autorização precisa vir em uma nova
-  mensagem; autorização presumida ou embutida no pedido inicial não vale.
+- No modo padrão, encerrar a análise perguntando se pode implementar; autorização precisa vir
+  em nova mensagem. No modo autônomo, analisar e implementar a mesma task sem esse gate.
 - Após implementar, executar as verificações automatizáveis, explicar o resultado esperado e
   pedir teste humano.
-- Não concluir nem iniciar outra task até o cliente declarar explicitamente que testou e aprovou.
+- Não concluir nem iniciar outra task até todos os validadores designados declararem que
+  executaram o teste básico e aprovaram.
 - Se o teste falhar, manter a mesma task aberta, debugar, verificar e pedir novo teste humano.
 - Depois da conclusão, registrar o aprendizado e parar. A próxima task exige novo pedido.
 - Executar a triagem de aprendizado silenciosamente. Não pedir autorização, confirmação,
   explicação ou preenchimento ao cliente e não mencionar a rotina na resposta normal.
 
-Não use espera artificial. O ritmo vem da análise profunda, da prova automatizada e dos dois
-portões humanos.
+Não use espera artificial. O ritmo vem da análise, da verificação interna da IA e do teste
+básico do cliente. No modo autônomo há um único portão humano por task, após a implementação.
 
 ## Máquina de estados obrigatória
 
 Manter `.adapta-cliente/estado-atual.md` no repositório do cliente. Só pode existir uma task ativa.
 
-`sem_task` → `aguardando_autorizacao` → `implementando` → `aguardando_teste_humano` →
-`concluida`
+Modo padrão: `sem_task` → `aguardando_autorizacao` → `implementando` →
+`aguardando_teste_humano` → `concluida`.
+
+Modo autônomo: `sem_task` → `em_analise` → `pronta_para_implementar` → `implementando` →
+`aguardando_teste_humano` → `concluida`.
 
 Rotas de exceção:
 
 - falha técnica → `em_correcao` → `aguardando_teste_humano`;
 - falta de acesso/dependência → `bloqueada`;
-- dúvida de requisito → registrar `DÚVIDA:` e parar para o consultor;
+- dúvida de produto → procurar resposta anterior no chat, depois perguntar apenas ao champion;
+  mudança além do aceite → registrar para o consultor no fim da fase, sem implementar;
 - sessão interrompida → retomar do último estado, nunca reiniciar ou avançar por suposição.
 
 Confirmação de análise não aprova teste humano. Confirmação de teste humano não autoriza começar
@@ -73,8 +85,8 @@ handoff operacional do cliente.
 |---|---|---|
 | `skill-mind-cliente` | `skills/skill-mind-cliente/SKILL.md` | Entrada obrigatória; interpreta, cria o envelope, aplica gates e coordena o ciclo. |
 | `status` | `skills/status/SKILL.md` | Lê progresso, pendências, travas e entregas sem alterar o projeto. |
-| `proxima-task` | `skills/proxima-task/SKILL.md` | Seleciona uma task, faz análise profunda e para antes da implementação. |
-| `executar-task` | `skills/executar-task/SKILL.md` | Implementa somente a task autorizada, verifica e para no teste humano. |
+| `proxima-task` | `skills/proxima-task/SKILL.md` | Seleciona uma task; no modo autônomo encaminha a análise à implementação. |
+| `executar-task` | `skills/executar-task/SKILL.md` | Implementa a task elegível, verifica e para no teste básico do cliente. |
 | `debug-task` | `skills/debug-task/SKILL.md` | Diagnostica e corrige a task ativa sem abrir outra frente. |
 | `concluir-task` | `skills/concluir-task/SKILL.md` | Revalida evidências após aprovação humana e fecha a task. |
 | `aprendizado-continuo` | `skills/aprendizado-continuo/SKILL.md` | Captura aprendizado verificado ou registra ausência de sinal reutilizável. |
@@ -96,7 +108,7 @@ ativa, status e somente então seleção de nova task.
 
 Antes de escrever ou executar comandos:
 
-1. Confirmar raiz, task ativa, SPEC, estado e autorização do gate.
+1. Confirmar raiz, task ativa, SPEC, modo e estado; no modo autônomo, conferir a aprovação da fase.
 2. Inspecionar antes de alterar; preservar mudanças existentes e arquivos fora da task.
 3. Nunca usar `rm -rf`, `git reset --hard`, `git clean -f`, `git checkout .`, force push,
    `--no-verify`, `chmod 777`, `sudo rm` ou `DROP TABLE/DATABASE/SCHEMA`.

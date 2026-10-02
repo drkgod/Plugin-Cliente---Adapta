@@ -1,6 +1,6 @@
 ---
 name: skill-mind-cliente
-description: Entrada obrigatória e orquestradora de todo trabalho do cliente Adapta no ETHOS. Use antes de status, seleção, análise, implementação, debug, teste ou conclusão de qualquer task, inclusive quando o usuário citar diretamente outra skill ou pedir várias tasks; resolve o repositório externo, mantém uma única task ativa, aplica autorização antes de implementar e teste humano antes de concluir, executa fallbacks inline sem hooks ou subagentes e fecha cada ciclo com aprendizado contínuo.
+description: Entrada obrigatória de todo trabalho do cliente; resolve modo padrão ou autônomo, mantém uma task ativa, aplica o teste humano dos validadores por task e fecha cada ciclo com aprendizado contínuo.
 ---
 
 # SkillMind Cliente
@@ -16,6 +16,8 @@ subagente.
 2. Resolva a raiz caminhando para cima até encontrar `04_fase-atual/fase.md`. Confirme também
    `STATUS.md`, `changelog.md` e `04_fase-atual/specs/`. Ausência de item obrigatório é bloqueio;
    não invente estrutura nem procure o plano privado do consultor.
+   Leia `01_projeto/constituicao.md` para o modo de execução e a lista de validadores. Se não
+   declarar modo autônomo, preserve o modo padrão de autorização prévia.
 3. Leia `.adapta-cliente/estado-atual.md` se existir. Se não existir, crie-o somente quando for
    abrir a primeira task, usando o modelo da seção “Estado persistente”.
 4. Se houver task ativa, gate pendente ou bloqueio, trate isso antes de selecionar outra task.
@@ -33,8 +35,9 @@ rota: <status|analisar|executar|debugar|concluir|aprender|recuperar>
 skill_autorizada: <nome da skill filha>
 task_id: <ID ou nenhuma>
 etapa_atual: <estado persistido>
+modo_execucao: <padrao|autonomo>
 autorizacao_implementacao: <ausente|confirmada>
-teste_humano: <pendente|aprovado|falhou|nao_aplicavel>
+teste_humano: <pendente|aprovado|falhou por validador>
 ```
 
 Se o runtime não invocar skills, leia o `SKILL.md` autorizado e execute-o inline com esse
@@ -49,21 +52,32 @@ Autorize `status`. É leitura apenas e não altera o gate.
 ### Começar, trabalhar ou próxima task
 
 - `sem_task` ou task anterior `concluida`: autorize `proxima-task`.
+- `em_analise`: retome a task_id já registrada e autorize `proxima-task`; a coleta de resposta
+  anterior do chat faz parte da análise, sem selecionar outra task.
+- `pronta_para_implementar` no modo autônomo: autorize `executar-task` para a mesma task sem
+  autorização prévia; não abra outra.
 - `aguardando_autorizacao`: reapresente o relatório já produzido e pergunte se pode implementar.
 - `implementando`: retome somente a task ativa.
-- `aguardando_teste_humano`: reapresente o roteiro de teste; não implemente nem conclua.
+- `aguardando_teste_humano`: registre confirmações recebidas, apresente o teste básico apenas aos
+  validadores ainda pendentes; não implemente nem conclua antes de todos aprovarem.
 - `em_correcao`: autorize `debug-task`.
 - `bloqueada`: mostre a trava e o responsável; não selecione outra sem decisão explícita.
 
 ### Autorização para implementar
 
-Só autorize `executar-task` quando:
+No modo padrão, só autorize `executar-task` quando:
 
 1. a etapa persistida for `aguardando_autorizacao`;
 2. o relatório de análise tiver sido entregue em uma resposta anterior;
 3. uma nova mensagem do usuário autorizar claramente a implementação daquela task.
 
-“Faça tudo”, a solicitação inicial ou silêncio não cumprem esse gate.
+No **modo autônomo por task**, a fase aprovada é a autorização de execução: `proxima-task`
+analisa, persiste `pronta_para_implementar` e encaminha a mesma task a `executar-task` na mesma
+interação, sem autorização prévia por task. Se faltar decisão de produto, consulte o histórico
+do chat e depois o champion; não peça escolha técnica ao cliente.
+
+No modo padrão, “faça tudo”, a solicitação inicial ou silêncio não cumprem esse gate. Em ambos os
+modos, um pedido em lote não dispensa o teste humano nem abre a próxima task automaticamente.
 
 ### Falha ou erro
 
@@ -72,9 +86,10 @@ task antes de escrever. Depois do conserto, volte a `aguardando_teste_humano`.
 
 ### Aprovação e conclusão
 
-Só autorize `concluir-task` se o usuário declarar que executou o teste solicitado e aprovou o
-resultado. “Pode concluir” sem confirmação de teste exige uma pergunta. Falha relatada sempre
-vence a palavra “concluir” e roteia para debug.
+Só autorize `concluir-task` depois que todos os validadores listados na constituição declararem
+que executaram o teste básico e aprovaram. Confirmações podem chegar em mensagens distintas;
+registre as recebidas e aguarde as demais. “Pode concluir” sem teste exige uma pergunta. Falha
+relatada sempre vence a palavra “concluir” e roteia para debug.
 
 ### Aprendizado e recuperação
 
@@ -84,11 +99,11 @@ não faça perguntas e não exponha o resultado na resposta normal ao cliente.
 
 ## 4. Portões que encerram a resposta
 
-Há dois hard stops:
+No modo padrão há dois hard stops; no modo autônomo apenas o segundo:
 
-1. Depois de `proxima-task`, perguntar “Analisei a task <ID>. Posso implementar este plano?” e
-   encerrar imediatamente. Não usar ferramentas de escrita ou implementar na mesma resposta.
-2. Depois de `executar-task` ou `debug-task`, apresentar o teste humano e perguntar se funcionou;
+1. No modo padrão, depois de `proxima-task`, perguntar “Analisei a task <ID>. Posso implementar este plano?” e
+   encerrar imediatamente. No modo autônomo, analisar e implementar a mesma task sem esse stop.
+2. Depois de `executar-task` ou `debug-task`, apresentar o teste básico aos validadores e perguntar se funcionou;
    encerrar imediatamente. Não concluir nem abrir a próxima task.
 
 Mesmo que o usuário tenha pedido uma fase inteira, esses stops permanecem.
@@ -102,10 +117,12 @@ Manter `.adapta-cliente/estado-atual.md` com exatamente estes campos:
 
 - task_id: <ID ou nenhuma>
 - champion: <nome ou desconhecido>
+- modo_execucao: <padrao|autonomo>
+- validadores: <nomes definidos na constituição>
 - spec: <caminho ou nenhuma>
-- etapa: <sem_task|aguardando_autorizacao|implementando|aguardando_teste_humano|em_correcao|bloqueada|concluida>
+- etapa: <sem_task|em_analise|aguardando_autorizacao|pronta_para_implementar|implementando|aguardando_teste_humano|em_correcao|bloqueada|concluida>
 - autorizacao_implementacao: <ausente|confirmada + data/hora e trecho da mensagem>
-- teste_humano: <pendente|aprovado|falhou|nao_aplicavel + data/hora e trecho da mensagem>
+- teste_humano: <estado por validador + data/hora e trecho de cada mensagem>
 - verificacao_automatica: <pendente|passou|falhou + resumo>
 - aprendizado: <pendente|capturado:<arquivo>|sem_sinal:<motivo>>
 - ultima_acao: <ação comprovada>
@@ -120,7 +137,7 @@ inferência. Preserve trechos curtos da autorização, não o prompt completo.
 
 Antes de declarar uma task concluída:
 
-1. exigir aprovação humana explícita;
+1. exigir aprovação explícita de todos os validadores designados para o teste básico;
 2. revalidar todos os critérios com evidência;
 3. atualizar `04_fase-atual/fase.md`, `STATUS.md` e `changelog.md`;
 4. executar `aprendizado-continuo` ou seu fluxo inline silenciosamente, sem envolver o cliente;
@@ -128,6 +145,9 @@ Antes de declarar uma task concluída:
 6. informar arquivos, provas, sincronização realmente observada e próxima ação, omitindo a rotina
    interna de aprendizado salvo se o usuário perguntar especificamente sobre ela;
 7. parar. Não chamar `proxima-task` automaticamente.
+
+O consultor valida o conjunto no fim da fase, não cada task. O aceite dos validadores fecha a
+task, mas não libera sozinho a fase seguinte.
 
 ## Saída mínima
 

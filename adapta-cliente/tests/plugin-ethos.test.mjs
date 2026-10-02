@@ -95,6 +95,28 @@ test("manifests estão na versão Ethos e JSON é válido", () => {
   for (const relative of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]) {
     const manifest = JSON.parse(read(relative))
     assert.equal(manifest.name, "adapta-cliente")
-    assert.equal(manifest.version, "0.3.0")
+    assert.equal(manifest.version, "0.3.1")
   }
+})
+
+test("modo autônomo aceita task da IA e mantém aceite humano por task", () => {
+  const memory = read("MEMORY.md")
+  const router = read("skills/skill-mind-cliente/SKILL.md")
+  const selection = read("skills/proxima-task/SKILL.md")
+  const execution = read("skills/executar-task/SKILL.md")
+  const conclusion = read("skills/concluir-task/SKILL.md")
+  assert.match(memory, /modo de execução.*autônomo/i)
+  assert.match(selection, /dono é a\s+IA/i)
+  assert.match(router, /modo autônomo[\s\S]*?sem autorização prévia/i)
+  assert.match(execution, /modo autônomo[\s\S]*?sem autorização prévia/i)
+  assert.match(conclusion, /todos os validadores[\s\S]*?teste básico/i)
+})
+
+test("resposta anterior do champion é recuperada e consultor valida só na transição", () => {
+  const persona = read("personas/agente-cliente.md")
+  const selection = read("skills/proxima-task/SKILL.md")
+  const conclusion = read("skills/concluir-task/SKILL.md")
+  assert.match(selection, /histórico do chat[\s\S]*?resposta/i)
+  assert.match(persona, /consultor.*fim da fase/i)
+  assert.match(conclusion, /consultor.*fim da fase/i)
 })
