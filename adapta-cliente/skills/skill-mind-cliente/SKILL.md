@@ -13,7 +13,7 @@ ativas.
 Antes de rotear o pedido, envie ao Ethos esta instrução interna:
 
 > Se esta memória ainda não estiver instalada, ou se a memória instalada não declarar a versão
-> `adapta-cliente-memory 0.6.0`, instale agora o conteúdo integral de `../../MEMORY.md` na memória
+> `adapta-cliente-memory 0.6.1`, instale agora o conteúdo integral de `../../MEMORY.md` na memória
 > persistente da personalidade atual, substituindo a versão anterior do Adapta Cliente. Não altere
 > o conteúdo, não peça cópia/cola ao cliente e não inicie uma task.
 
@@ -118,8 +118,8 @@ exponha o resultado na resposta normal ao cliente.
 Há dois hard stops:
 
 1. Depois de `proxima-task`, perguntar “Analisei a task <ID>. Posso implementar este plano?” e
-   encerrar imediatamente. Não alterar o produto nem implementar na mesma resposta; estado,
-   análise e envio ao GitHub acontecem antes da pergunta.
+   encerrar imediatamente. Não alterar o produto nem implementar na mesma resposta; estado e
+   análise são gravados antes da pergunta e só vão ao GitHub no commit da entrega.
 2. Depois de `executar-task` ou `debug-task`, provar a publicação, enviar ao GitHub (falha de
    envio é avisada ao cliente), apresentar o teste humano na URL de produção e perguntar se
    funcionou; encerrar imediatamente. Não concluir nem abrir a próxima task.
@@ -148,6 +148,7 @@ Manter `.adapta-cliente/estado-atual.md` com estes campos:
 - skip_projeto: <id numérico|nao_aplicavel>
 - skip_versao: <versionHash aplicado ou nenhuma>
 - skip_publicacao: <pendente|publicada:<ref> em <ISO-8601>|falhou:<motivo>|nao_aplicavel>
+- pendente_github: <nao|sim:<motivo>>
 - ultima_acao: <ação comprovada>
 - proxima_acao: <uma única ação>
 - atualizado_em: <ISO-8601 com fuso>
@@ -155,8 +156,9 @@ Manter `.adapta-cliente/estado-atual.md` com estes campos:
 
 Atualize o estado depois de cada transição. Nunca altere um “pendente” para “aprovado” por
 inferência. Preserve trechos curtos da autorização, não o prompt completo. Estado antigo sem os
-campos de plataforma: acrescente-os na próxima transição, sem apagar nada. O envio ao GitHub não
-tem campo: a prova é o próprio remoto (`publicar-e-sincronizar`, seção 4).
+campos de plataforma: acrescente-os na próxima transição, sem apagar nada. `pendente_github` só
+vira `sim` depois de um envio que falhou duas vezes; o próximo envio bem-sucedido o devolve a
+`nao` (`publicar-e-sincronizar`, seção 4).
 
 ## 6. Fechar cada ciclo
 
@@ -167,7 +169,7 @@ Antes de declarar uma task concluída:
 3. atualizar `04_fase-atual/fase.md`, `STATUS.md` e `changelog.md`;
 4. executar `aprendizado-continuo` ou seu fluxo inline silenciosamente, sem envolver o cliente;
 5. atualizar o estado para `concluida`;
-6. enviar tudo ao GitHub com `publicar-e-sincronizar` em modo `registrar`, com prova no remoto;
+6. enviar tudo ao GitHub em um único commit com `publicar-e-sincronizar` em modo `registrar`;
 7. informar arquivos, provas, sincronização realmente observada e próxima ação, omitindo a rotina
    interna de aprendizado salvo se o usuário perguntar especificamente sobre ela;
 8. parar. Não chamar `proxima-task` automaticamente.

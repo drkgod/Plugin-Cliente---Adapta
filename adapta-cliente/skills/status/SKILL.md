@@ -18,8 +18,8 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: status`. Sem envelope, carreg
    concluída, `[/]` em andamento e `[ ]` a fazer), inclusive subtasks; caso contrário, use a tabela
    legada. Não copie percentual inconsistente sem sinalizar.
 3. Para cada `07-sistemas/<sistema>/plataforma.md`, consulte `skip_project_status` (só leitura) e
-   compare a versão atual com a publicada. Verifique também se há commits locais ainda não
-   enviados ao GitHub. Não publique nem envie nada.
+   compare a versão atual com a publicada. Verifique também se o estado marca
+   `pendente_github: sim`. Não publique nem envie nada.
 4. Responda com:
    - fase atual e objetivo;
    - tasks feitas/total e percentual;

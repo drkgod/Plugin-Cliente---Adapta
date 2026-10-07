@@ -1,10 +1,10 @@
 ---
 name: publicar-e-sincronizar
-description: Skill de apoio que cumpre a regra de entrega da memória. Aplica as alterações do Skip com QA, publica, prova que a versão no ar é a atual, registra a plataforma, espelha os arquivos alterados e atualiza o GitHub com push sem força e prova no remoto. Use dentro de proxima-task, executar-task, debug-task e concluir-task, e pelo SkillMind nas rotas configurar e recuperar, sempre com CLIENTE_ENVELOPE v1.
+description: Skill de apoio que cumpre a regra de entrega da memória. Aplica as alterações do Skip com QA, publica, prova que a versão no ar é a atual, registra a plataforma, espelha os arquivos alterados e atualiza o GitHub em um único commit por momento de envio (entrega, conclusão, configuração), com push sem força, prova pelo SHA e no máximo uma nova tentativa. Use dentro de proxima-task (só conferência), executar-task, debug-task e concluir-task, e pelo SkillMind nas rotas configurar e recuperar, sempre com CLIENTE_ENVELOPE v1.
 ---
 
-<!-- Regra de entrega da memória adapta-cliente-memory 0.6.0: toda alteração no Skip termina
-aplicada, publicada e provada, e o GitHub termina atualizado na mesma resposta. -->
+<!-- Regra de entrega da memória adapta-cliente-memory 0.6.1: toda alteração no Skip termina
+aplicada, publicada e provada, e o GitHub recebe um único commit por momento de envio. -->
 
 # Publicar e Sincronizar
 
@@ -21,10 +21,13 @@ Ela não abre task, não aprova teste humano, não conclui task e não decide es
 
 | Modo | Quem chama | Skip | GitHub |
 |---|---|---|---|
-| `configurar` | SkillMind, rota `configurar` | identifica o projeto (só leitura) | cria `plataforma.md` e envia |
-| `registrar` | `proxima-task`, `concluir-task`, debug sem alteração no Skip | confere a versão no ar (só leitura) | envia os registros |
-| `entregar` | `executar-task`, `debug-task` | aplica, publica e prova | envia registros, plataforma e espelho |
-| `verificar` | baseline da `proxima-task` e recuperação | confere (só leitura) | só lê; na recuperação, reenvia commits pendentes |
+| `configurar` | SkillMind, rota `configurar` | identifica o projeto (só leitura) | um commit com `plataforma.md` |
+| `entregar` | `executar-task`, `debug-task` com alteração no Skip | aplica, publica e prova | um commit com registros, plataforma e espelho |
+| `registrar` | `concluir-task` | confere a versão no ar (só leitura) | um commit com os registros da conclusão |
+| `verificar` | baseline da `proxima-task` e recuperação | confere (só leitura) | não envia; na recuperação, reenvia o pendente |
+
+Análise, status e debug sem alteração no Skip não enviam nada ao GitHub: os arquivos ficam no
+repositório local e vão no próximo envio.
 
 Task sem plataforma de construção (`skip_projeto: nao_aplicavel`): pule as seções do Skip e faça
 só o GitHub.
@@ -77,14 +80,16 @@ Só leitura com `skip_project_status`. Versão atual diferente da publicada, ou 
 `.skip.config.json`: registre a divergência e avise o cliente. Em `concluir-task`, divergência
 impede concluir. Nunca publique nesses modos.
 
-## 4. Atualizar o GitHub
+## 4. Atualizar o GitHub — uma vez por momento
 
-Ordem obrigatória: Skip provado → registros escritos → commit → push → prova no remoto.
+Ordem obrigatória: Skip provado → registros escritos → um commit → prova. Cada envio custa tempo
+do cliente: não envie fora dos momentos da tabela de modos e nunca envie a mesma coisa duas vezes.
 
-1. Escreva os registros antes do commit:
+1. Escreva tudo antes de enviar, com `pendente_github: nao` no estado:
    - `.adapta-cliente/estado-atual.md` já com a etapa em que esta resposta termina (por exemplo,
      `aguardando_teste_humano`);
-   - análise, mapa (`.adapta-cliente/mapas/`), `changelog.md` e notas em `06_notas/`, quando houver;
+   - análise, mapa (`.adapta-cliente/mapas/`), `changelog.md` e notas em `06_notas/` que estejam
+     esperando envio;
    - na conclusão, `04_fase-atual/fase.md` e `STATUS.md`;
    - no modo `entregar`, `07-sistemas/<sistema>/plataforma.md` atualizado e o espelho.
 2. Espelho (modo `entregar`): para cada arquivo alterado no Skip nesta resposta, leia a versão
@@ -93,22 +98,30 @@ Ordem obrigatória: Skip provado → registros escritos → commit → push → 
    dizendo que é cópia de consulta e que a fonte executável é o Skip. Espelho completo do projeto
    só quando o cliente ou o consultor pedirem.
 3. Nunca vai para o GitHub: `.env*`, chaves, tokens, senhas, `.skip.config.json`, lockfiles,
-   binários, imagens, vídeos e dados pessoais. Revise a lista de arquivos antes do commit.
-4. Commit comum com a mensagem `task <ID>: <resumo> (skip <versionHash>)`; sem versão do Skip,
-   omita o parêntese.
-5. Push sem força. Recusado por divergência: `git pull --rebase`, que só reaplica os seus commits
-   locais, e novo push. Conflito: `git rebase --abort`, pare e avise o cliente. Nunca force, nunca
-   use `reset --hard` e nunca descarte trabalho.
-6. Prove que o remoto recebeu: `git ls-remote origin <branch>` igual a `git rev-parse HEAD`. Com
-   conector do GitHub em vez de git, leia de volta do remoto os arquivos enviados.
-7. Push falhou: diga ao cliente que a entrega está pronta mas não chegou ao GitHub, com o motivo.
-   A recuperação agendada reenvia os commits pendentes. Não diga "sincronizado".
+   binários, imagens, vídeos e dados pessoais. Revise a lista de arquivos antes de enviar.
+4. Envie tudo em um único commit com a mensagem `task <ID>: <resumo> (skip <versionHash>)` (sem
+   versão do Skip, omita o parêntese):
+   - com git: `git add` dos arquivos da lista, `git commit` e push sem força;
+   - com conector do GitHub: a operação que grava vários arquivos em um commit (como
+     `push_files`); arquivo por arquivo só quando ela não existir.
+5. Prova: o SHA do commit devolvido pelo push ou pelo conector; com git, `git ls-remote origin
+   <branch>` igual a `git rev-parse HEAD`. Não releia os arquivos para provar.
+6. Falhou: uma nova tentativa no máximo. No git, recusa por divergência pede `git pull --rebase`
+   (só reaplica os seus commits locais) e novo push; conflito pede `git rebase --abort`, parada e
+   aviso ao cliente. Nunca force, nunca use `reset --hard` e nunca descarte trabalho.
+7. Falhou de novo: grave `pendente_github: sim:<motivo>` no estado local, diga ao cliente em uma
+   linha que a entrega está pronta mas não chegou ao GitHub e siga o fluxo. A recuperação agendada
+   reenvia. Não diga "sincronizado".
+8. Ferramentas reiniciadas no meio do envio: antes de reenviar, consulte o último commit da branch
+   (uma chamada). Se o commit da task já está lá, não reenvie; se faltou arquivo, envie só o que
+   faltou.
 
 ## 5. Modo `verificar` na recuperação
 
 - Skip: só a conferência sem publicar.
-- GitHub: commits locais ainda não enviados (`git log --branches --not --remotes`) recebem push sem
-  força e prova. Nenhum commit novo de produto; só os registros da própria recuperação.
+- GitHub: com `pendente_github: sim` ou commits locais não enviados
+  (`git log --branches --not --remotes`), uma tentativa de envio pelas regras da seção 4. Nenhum
+  commit novo de produto; só os registros da própria recuperação.
 
 ## 6. Modelo de `07-sistemas/<sistema>/plataforma.md`
 

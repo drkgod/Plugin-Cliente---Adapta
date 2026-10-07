@@ -138,7 +138,7 @@ test("manifests estão na versão Ethos e JSON é válido", () => {
   for (const relative of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]) {
     const manifest = JSON.parse(read(relative))
     assert.equal(manifest.name, "adapta-cliente")
-    assert.equal(manifest.version, "0.6.0")
+    assert.equal(manifest.version, "0.6.1")
   }
 })
 
@@ -191,7 +191,7 @@ test("MEMORY obriga publicar no Skip e atualizar o GitHub", () => {
   assert.match(memory, /confirmPrune/)
   assert.doesNotMatch(memory, /Push nunca é requisito/)
   assert.match(memory, /envios ao GitHub[\s>]+pendentes/)
-  assert.match(memory, /Nunca abra task nova com trabalho ainda não enviado ao GitHub/)
+  assert.match(memory, /Nunca abra task nova com envio pendente/)
   assert.match(read("skills/proxima-task/SKILL.md"), /GitHub desatualizado/)
 })
 
@@ -224,12 +224,30 @@ test("publicação prova a versão, ignora .skip.config.json e nunca força", ()
   assert.match(body, /nunca rode `skip_project_apply_changes` só por causa dele/)
   assert.match(body, /versionHash/)
   assert.match(body, /git ls-remote/)
-  assert.match(body, /Push sem força/)
+  assert.match(body, /push sem força/i)
   assert.match(body, /`\.env\*`/)
   assert.match(body, /`confirmPrune: true`/)
   for (const mode of ["configurar", "registrar", "entregar", "verificar"]) {
     assert.match(body, new RegExp(`\`${mode}\``), mode)
   }
+})
+
+test("GitHub recebe um commit por momento de envio, nada na análise e sem laço", () => {
+  const memory = read("MEMORY.md")
+  const sync = read("skills/publicar-e-sincronizar/SKILL.md")
+  const next = read("skills/proxima-task/SKILL.md")
+  const debug = read("skills/debug-task/SKILL.md")
+  assert.match(memory, /### Quando e como enviar ao GitHub/)
+  assert.match(memory, /No máximo uma nova tentativa/)
+  assert.match(sync, /um único commit/)
+  assert.match(sync, /push_files/)
+  assert.match(sync, /Não releia os arquivos para provar/)
+  assert.match(sync, /consulte o último commit da branch/)
+  assert.match(sync, /uma nova tentativa no máximo/)
+  assert.match(next, /Não envie nada ao GitHub nesta etapa/)
+  assert.doesNotMatch(next, /modo `registrar`/)
+  assert.match(debug, /Correção sem alteração no\s+Skip não envia nada agora/)
+  assert.match(read("skills/skill-mind-cliente/SKILL.md"), /pendente_github/)
 })
 
 test("tasks com tela usam Ficha de Tela, checklist de UI e roteiro visual", () => {

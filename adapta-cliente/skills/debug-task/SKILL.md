@@ -52,9 +52,9 @@ Sem versão do Skip na correção, omita o parêntese.
 
 ## Voltar ao portão humano
 
-Se a verificação automática passar, rode `../publicar-e-sincronizar/SKILL.md` em modo `entregar`
-(correção sem alteração no Skip: modo `registrar`), com o estado em `aguardando_teste_humano` e o
-teste humano pendente. Com a publicação provada, informe a versão publicada e o commit (ou o aviso
+Se a verificação automática passar, rode `../publicar-e-sincronizar/SKILL.md` em modo `entregar`,
+com o estado em `aguardando_teste_humano` e o teste humano pendente. Correção sem alteração no
+Skip não envia nada agora: os registros vão no commit da conclusão. Com a publicação provada, informe a versão publicada e o commit (ou o aviso
 de envio pendente ao GitHub), apresente passos numerados na URL de produção e pergunte se
 funcionou. Encerre imediatamente; não chame `concluir-task`.
 

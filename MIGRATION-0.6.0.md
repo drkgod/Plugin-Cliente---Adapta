@@ -45,6 +45,22 @@
 - cada entrega informa a versão publicada, a URL de produção e o commit no GitHub antes de pedir
   o teste.
 
+## Ajuste 0.6.1 — envio ao GitHub sem laço
+
+Em campo, a análise de uma task enviava estado e análise ao GitHub, relia cada arquivo para provar
+e reenviava tudo a cada reinício das ferramentas do runtime. Agora:
+
+- o GitHub recebe envio só depois de uma publicação provada no Skip, na conclusão e na
+  configuração; análise, status e debug sem alteração no Skip não enviam nada;
+- cada envio é um único commit com todos os arquivos (com conector, a operação de vários arquivos,
+  como `push_files`);
+- a prova é o SHA do commit devolvido, sem reler arquivos;
+- no máximo uma nova tentativa; depois disso, `pendente_github: sim:<motivo>` no estado, aviso de
+  uma linha ao cliente e a recuperação agendada reenvia;
+- antes de reenviar depois de um reinício das ferramentas, o agente consulta o último commit da
+  branch e não reenvia o que já chegou;
+- a memória passa a `adapta-cliente-memory 0.6.1` e é substituída sozinha no próximo uso.
+
 ## Fluxo principal
 
 ```text

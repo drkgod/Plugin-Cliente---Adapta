@@ -49,10 +49,11 @@ Somente com todos os critérios aprovados:
    `../aprendizado-continuo/SKILL.md` e execute inline; não pergunte nem informe isso ao cliente;
 5. atualize `.adapta-cliente/estado-atual.md` para `concluida`, preservando as referências de
    autorização, teste, verificação e aprendizado;
-6. envie fase, STATUS, changelog e estado ao GitHub com `../publicar-e-sincronizar/SKILL.md` em
-   modo `registrar`: arquivos sensíveis fora, commit comum, push sem força e prova no remoto. Push
-   falhou: a task continua concluída, o cliente é avisado de que falta o envio e a recuperação
-   agendada reenvia. Nunca alegue sincronização se não observar sucesso;
+6. envie fase, STATUS, changelog, estado e os registros que estavam esperando em um único commit,
+   com `../publicar-e-sincronizar/SKILL.md` em modo `registrar`: arquivos sensíveis fora, push sem
+   força e prova pelo SHA do commit. Envio falhou duas vezes: a task continua concluída, o cliente
+   é avisado em uma linha e a recuperação agendada reenvia. Nunca alegue sincronização se não
+   observar sucesso;
 7. informe veredito, tabela de evidências, arquivos atualizados e sincronização real;
 8. pare. Não abra a próxima task.
 

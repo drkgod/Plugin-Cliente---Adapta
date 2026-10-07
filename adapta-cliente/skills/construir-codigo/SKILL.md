@@ -38,7 +38,8 @@ abaixo substitui uma dessas ferramentas. Pular uma etapa é programar às cegas.
    (rotas), `src/components/Layout.tsx` (menu), `src/lib/pocketbase/schema.json` (coleções e
    campos), os `src/services/*.ts` da área, a página e os componentes que a task toca e
    `src/main.css` (tokens do tema).
-3. Grave ou atualize o mapa com o modelo abaixo. Ele vai para o GitHub junto com a análise.
+3. Grave ou atualize o mapa com o modelo abaixo. Ele vai para o GitHub no commit da próxima
+   entrega.
 4. Antes de usar componente, hook, função, coleção ou campo, confirme que existe lendo o arquivo
    ou o schema. Nunca importe pelo nome que "deveria" existir.
 

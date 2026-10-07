@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Marketplace do plugin do cliente Adapta Native, com SkillMind e MEMORY pronta para o ETHOS instalar e atualizar sozinho.",
-    "version": "0.6.0"
+    "version": "0.6.1"
   },
   "plugins": [
     {

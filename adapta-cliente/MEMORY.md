@@ -1,6 +1,6 @@
 # Memória persistente — Adapta Cliente no ETHOS
 
-Versão da memória: `adapta-cliente-memory 0.6.0`
+Versão da memória: `adapta-cliente-memory 0.6.1`
 
 Use este conteúdo na memória persistente do assistente de codificação do cliente durante as cinco
 fases. Estas são instruções ativas, não um histórico: não grave aqui prompts, transcrições,
@@ -119,7 +119,7 @@ esse ambiente e não podem ser trocadas por improviso.
 |---|---|---|
 | `ui-ux-sistemas` | `skills/ui-ux-sistemas/SKILL.md` | Task que cria ou altera tela, formulário, tabela, gráfico, menu ou texto visível. |
 | `construir-codigo` | `skills/construir-codigo/SKILL.md` | Antes da primeira alteração de código, banco ou automação, e no plano da análise. |
-| `publicar-e-sincronizar` | `skills/publicar-e-sincronizar/SKILL.md` | No fim de toda resposta que alterou o Skip ou arquivos do repositório. |
+| `publicar-e-sincronizar` | `skills/publicar-e-sincronizar/SKILL.md` | Depois de alterar o Skip, na conclusão da task e na configuração. |
 
 ## Roteamento de pedidos
 
@@ -152,18 +152,32 @@ hook, variável ou segredo):
 3. Prove a publicação: `skip_project_status` sem pendências, exceto `.skip.config.json`, e a
    referência publicada igual ao `versionHash` atual. A plataforma grava sozinha o
    `.skip.config.json`: nunca o edite nem rode apply só por causa dele.
-4. Atualize o GitHub na mesma resposta: estado, análise ou debug, `changelog.md` com a versão e a
-   URL do Skip, `07-sistemas/<sistema>/plataforma.md` e a cópia dos arquivos alterados em
-   `07-sistemas/<sistema>/codigo/`. Commit comum, push sem força e prova de que o remoto recebeu.
+4. Depois da publicação provada, atualize o GitHub na mesma resposta, em um único commit: estado,
+   análise ou debug, `changelog.md` com a versão e a URL do Skip,
+   `07-sistemas/<sistema>/plataforma.md` e a cópia dos arquivos alterados em
+   `07-sistemas/<sistema>/codigo/`.
 5. Sem prova não existe “publicado” nem “sincronizado”: registre a falha no estado, avise o cliente
    e não peça teste humano sobre uma versão que não está no ar.
-6. Nunca abra task nova com trabalho ainda não enviado ao GitHub: envie primeiro. Se o envio
-   continuar falhando, a seleção de task fica travada como “GitHub desatualizado” e o cliente é
-   avisado.
+6. Nunca abra task nova com envio pendente (`pendente_github: sim`): tente enviar uma vez. Se
+   falhar, a seleção de task fica travada como “GitHub desatualizado” e o cliente é avisado.
 
-Respostas que alteram apenas arquivos do repositório (análise, estado, conclusão) também terminam
-com o GitHub atualizado. Preview e produção usam o mesmo banco: migration só aditiva, salvo
-autorização específica. O passo a passo está em `skills/publicar-e-sincronizar/SKILL.md`.
+### Quando e como enviar ao GitHub
+
+Envie só nestes momentos: depois de uma publicação provada no Skip (execução ou debug), na
+conclusão da task e na rota `configurar`. Análise, status, debug sem alteração no Skip e etapas
+intermediárias não enviam nada: os arquivos ficam no repositório local e vão no próximo envio.
+
+- Um commit por momento, com todos os arquivos juntos e push sem força. Com conector do GitHub,
+  use a operação que grava vários arquivos em um commit só (como `push_files`); arquivo por arquivo
+  só se ela não existir.
+- A prova é o SHA do commit que a ferramenta devolve. Não releia os arquivos para provar.
+- No máximo uma nova tentativa. Falhou de novo: grave `pendente_github: sim:<motivo>` no estado,
+  avise o cliente em uma linha e siga o fluxo; a recuperação agendada reenvia.
+- Ferramentas reiniciadas no meio do envio: antes de reenviar, consulte o último commit da branch.
+  Se o commit da task já está lá, não reenvie; se faltou arquivo, envie só o que faltou.
+
+Preview e produção usam o mesmo banco: migration só aditiva, salvo autorização específica. O passo
+a passo está em `skills/publicar-e-sincronizar/SKILL.md`.
 
 ## Guardrails substitutos dos hooks
 
@@ -185,7 +199,7 @@ Antes de escrever ou executar comandos:
    observável.
 8. Git só com operações não destrutivas. `git pull --ff-only` só com árvore limpa; push recusado
    por divergência → `git pull --rebase` e novo push; conflito → `git rebase --abort`, parar e
-   avisar o cliente. O push faz parte de toda entrega, mas falha de push não desfaz uma task
+   avisar o cliente. O envio faz parte de toda entrega, mas falha de envio não desfaz uma task
    tecnicamente pronta: ela fica pendente de envio e o cliente é avisado.
 
 ## Aprendizado obrigatório e cron
