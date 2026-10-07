@@ -15,7 +15,9 @@ Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; ela n
 ## Seleção
 
 1. Leia `.adapta-cliente/estado-atual.md`, se existir. Task ativa, gate ou bloqueio deve ser
-   retomado; não abra outra.
+   retomado; não abra outra. Commits locais ainda não enviados ao GitHub são enviados antes de
+   selecionar (`../publicar-e-sincronizar/SKILL.md`, seção 4); se o envio falhar, pare com a trava
+   “GitHub desatualizado”.
 2. Leia `04_fase-atual/fase.md`. Se houver `<!-- fase-format:2 -->`, considere elegíveis os itens
    `- [ ]` e retome `- [/]`; preserve hierarquia, descrição, metadados e `<!-- id:... -->`. Sem o
    marcador, leia a tabela legada. Se o usuário indicar uma task pendente e elegível, selecione-a;
@@ -32,16 +34,24 @@ Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; ela n
 
 1. Leia a task, a SPEC inteira, critérios, TDD e arquivos do projeto que seriam afetados.
 2. Inspecione a implementação atual, padrões existentes, dependências, testes e mudanças locais.
+   Task que altera código, banco ou automação: siga as seções MAPA e PLANO de
+   `../construir-codigo/SKILL.md`. Task com tela: produza a Ficha de Tela de
+   `../ui-ux-sistemas/SKILL.md`.
 3. Quando seguro, execute somente verificações de baseline que não alterem o produto. Registre
-   falhas preexistentes separadamente.
+   falhas preexistentes separadamente. No Skip, a baseline inclui
+   `../publicar-e-sincronizar/SKILL.md` em modo `verificar`: versão no ar igual à atual e nenhuma
+   pendência fora da task; divergência entra nos riscos.
 4. Percorra a escada de decisão da persona e delimite o menor recorte completo.
 5. Produza:
    - objetivo e resultado observável;
    - estado atual e erros encontrados;
    - arquivos/componentes provavelmente afetados;
-   - plano concreto de implementação;
+   - plano concreto de implementação, com o plano em código (arquivos, tipos, serviços, regras de
+     acesso e teste de mesa) quando houver código;
+   - Ficha de Tela de cada tela tocada, quando houver interface;
    - matriz critério → prova;
-   - riscos, casos de erro, segurança, acessibilidade e LGPD aplicáveis;
+   - riscos, casos de erro, segurança, acessibilidade e LGPD aplicáveis, inclusive risco de dados
+     em migration;
    - dependências e perguntas realmente bloqueantes;
    - roteiro de verificação automática e teste humano.
 
@@ -52,6 +62,9 @@ Crie ou atualize `.adapta-cliente/estado-atual.md` com a task selecionada, sua S
 única próxima ação: `aguardar autorização para implementar`. Persista o relatório completo em
 `.adapta-cliente/analises/<task-id>.md` e registre esse caminho no estado; `executar-task` nunca
 depende da conversa anterior para recuperar o plano aprovado.
+
+Antes da pergunta final, envie estado, análise e mapa ao GitHub com
+`../publicar-e-sincronizar/SKILL.md` em modo `registrar`, com prova no remoto.
 
 Encerre com:
 

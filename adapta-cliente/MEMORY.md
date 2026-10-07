@@ -1,11 +1,14 @@
 # Memória persistente — Adapta Cliente no ETHOS
 
+Versão da memória: `adapta-cliente-memory 0.6.0`
+
 Use este conteúdo na memória persistente do assistente de codificação do cliente durante as cinco
 fases. Estas são instruções ativas, não um histórico: não grave aqui prompts, transcrições,
 credenciais, segredos, código proprietário ou dados pessoais.
 
 Esta memória já vem no bundle. No primeiro comando, o SkillMind pede ao Ethos que a instale na
-memória persistente; não peça ao cliente para copiar ou colar este arquivo.
+memória persistente, e que a substitua quando a versão instalada for outra; não peça ao cliente
+para copiar ou colar este arquivo.
 
 ## Regra zero: entrar sempre pelo SkillMind Cliente
 
@@ -29,8 +32,8 @@ execute a verificação em série usando `agents/verificador-de-entrega.md` como
   testes ao cliente.
 - Encerrar essa resposta perguntando se pode implementar. A autorização precisa vir em uma nova
   mensagem; autorização presumida ou embutida no pedido inicial não vale.
-- Após implementar, executar as verificações automatizáveis, explicar o resultado esperado e
-  pedir teste humano.
+- Após implementar, executar as verificações automatizáveis, publicar e sincronizar pela regra de
+  entrega, explicar o resultado esperado e pedir teste humano na URL de produção.
 - Não concluir nem iniciar outra task até o cliente declarar explicitamente que testou e aprovou.
 - Se o teste falhar, manter a mesma task aberta, debugar, verificar e pedir novo teste humano.
 - Depois da conclusão, registrar o aprendizado e parar. A próxima task exige novo pedido.
@@ -70,6 +73,10 @@ a próxima task.
 - Relatórios de análise: `.adapta-cliente/analises/<task-id>.md`
 - Manifesto de compatibilidade, quando existir: `handoff-manifest.json`
 - Raiz executável dos sistemas: `07-sistemas/`
+- Plataforma de construção de cada sistema: `07-sistemas/<sistema>/plataforma.md`
+- Espelho dos arquivos alterados no Skip: `07-sistemas/<sistema>/codigo/` (cópia de consulta;
+  nunca edite o espelho para mudar o sistema)
+- Mapa do código para o agente: `.adapta-cliente/mapas/<sistema>.md`
 
 Não procurar nem exigir `03-Projeto`, `01-Escopo.md`, `02-Escopo-Definitivo.md`, análises internas
 ou fases futuras. Esses arquivos pertencem ao workspace privado do consultor e não fazem parte do
@@ -102,6 +109,18 @@ a task, a SPEC e a raiz executável estiverem inequívocos.
 | `concluir-task` | `skills/concluir-task/SKILL.md` | Revalida evidências após aprovação humana e fecha a task. |
 | `aprendizado-continuo` | `skills/aprendizado-continuo/SKILL.md` | Captura aprendizado verificado ou registra ausência de sinal reutilizável. |
 
+### Skills de apoio (não são rotas)
+
+São carregadas dentro da skill autorizada, com o mesmo envelope, e nunca abrem trabalho sozinhas.
+Você constrói sem ver a tela e sem um ambiente completo de programação: estas skills substituem
+esse ambiente e não podem ser trocadas por improviso.
+
+| Skill | Caminho | Quando carregar |
+|---|---|---|
+| `ui-ux-sistemas` | `skills/ui-ux-sistemas/SKILL.md` | Task que cria ou altera tela, formulário, tabela, gráfico, menu ou texto visível. |
+| `construir-codigo` | `skills/construir-codigo/SKILL.md` | Antes da primeira alteração de código, banco ou automação, e no plano da análise. |
+| `publicar-e-sincronizar` | `skills/publicar-e-sincronizar/SKILL.md` | No fim de toda resposta que alterou o Skip ou arquivos do repositório. |
+
 ## Roteamento de pedidos
 
 - “começar”, “trabalhar”, “próxima task”, “o que faço agora?” → `proxima-task`.
@@ -111,9 +130,40 @@ a task, a SPEC e a raiz executável estiverem inequívocos.
 - “status”, “como estamos?”, “quanto falta?” → `status`.
 - “salvar aprendizado”, fechamento de task/debug ou auditoria agendada →
   `aprendizado-continuo`.
+- “configurar”, “instalar”, “conectar o projeto” → rota `configurar` do SkillMind, que confirma
+  acessos e registra a plataforma sem abrir task.
+- “melhora essa tela”, “muda o layout” fora da task ativa → não é rota: registre a ideia em
+  `06_notas/` para o consultor; dentro da task ativa, siga a SPEC.
 
 Se o pedido misturar várias rotas, priorize nesta ordem: falha da task ativa, gate pendente, task
 ativa, status e somente então seleção de nova task.
+
+## Regra de entrega: Skip publicado e GitHub atualizado
+
+Obrigatória. Vale para toda resposta que alterar um projeto pelo MCP do Skip (arquivo, migration,
+hook, variável ou segredo):
+
+1. Nenhuma resposta termina com alteração do Skip sem aplicar: rode `skip_project_apply_changes`
+   com a mensagem `task <ID>: <resumo>` e confira cada etapa do QA. Única exceção: QA que continua
+   falhando depois de três correções — registre as pendências e a falha no estado, avise o cliente
+   e não publique nada.
+2. Nenhuma versão aplicada fica sem publicar: rode `skip_project_publish` logo em seguida. Versão
+   com QA ou build falhando nunca é publicada.
+3. Prove a publicação: `skip_project_status` sem pendências, exceto `.skip.config.json`, e a
+   referência publicada igual ao `versionHash` atual. A plataforma grava sozinha o
+   `.skip.config.json`: nunca o edite nem rode apply só por causa dele.
+4. Atualize o GitHub na mesma resposta: estado, análise ou debug, `changelog.md` com a versão e a
+   URL do Skip, `07-sistemas/<sistema>/plataforma.md` e a cópia dos arquivos alterados em
+   `07-sistemas/<sistema>/codigo/`. Commit comum, push sem força e prova de que o remoto recebeu.
+5. Sem prova não existe “publicado” nem “sincronizado”: registre a falha no estado, avise o cliente
+   e não peça teste humano sobre uma versão que não está no ar.
+6. Nunca abra task nova com trabalho ainda não enviado ao GitHub: envie primeiro. Se o envio
+   continuar falhando, a seleção de task fica travada como “GitHub desatualizado” e o cliente é
+   avisado.
+
+Respostas que alteram apenas arquivos do repositório (análise, estado, conclusão) também terminam
+com o GitHub atualizado. Preview e produção usam o mesmo banco: migration só aditiva, salvo
+autorização específica. O passo a passo está em `skills/publicar-e-sincronizar/SKILL.md`.
 
 ## Guardrails substitutos dos hooks
 
@@ -123,13 +173,20 @@ Antes de escrever ou executar comandos:
 2. Inspecionar antes de alterar; preservar mudanças existentes e arquivos fora da task.
 3. Nunca usar `rm -rf`, `git reset --hard`, `git clean -f`, `git checkout .`, force push,
    `--no-verify`, `chmod 777`, `sudo rm` ou `DROP TABLE/DATABASE/SCHEMA`.
-4. Nunca revelar, criar commit com ou publicar `.env`, tokens, senhas, chaves, credenciais ou
+4. No MCP do Skip, só com autorização explícita do cliente: `confirmPrune: true` (apaga versões),
+   `skip_cloud_rollback_migration`, `skip_cloud_delete_secret`, `skip_env_delete` e
+   `skip_cloud_disable_oauth_provider`; `skip_file_delete` só para arquivo listado no plano
+   aprovado. Nunca editar `.skip.config.json`, `src/lib/pocketbase/client.ts`, `package.json` ou
+   lockfiles.
+5. Nunca revelar, criar commit com ou publicar `.env`, tokens, senhas, chaves, credenciais ou
    dados pessoais.
-5. Não mudar SPEC, plano, task de outra pessoa ou fase futura para fazer a implementação caber.
-6. Não alegar que pull, commit, push, deploy, teste ou backup aconteceu sem evidência observável.
-7. Se Git estiver disponível, usar somente operações não destrutivas. `git pull --ff-only` só com
-   árvore limpa; nunca resolver conflito descartando trabalho. Push nunca é requisito implícito
-   para marcar a task como tecnicamente pronta.
+6. Não mudar SPEC, plano, task de outra pessoa ou fase futura para fazer a implementação caber.
+7. Não alegar que pull, commit, push, publicação, deploy, teste ou backup aconteceu sem evidência
+   observável.
+8. Git só com operações não destrutivas. `git pull --ff-only` só com árvore limpa; push recusado
+   por divergência → `git pull --rebase` e novo push; conflito → `git rebase --abort`, parar e
+   avisar o cliente. O push faz parte de toda entrega, mas falha de push não desfaz uma task
+   tecnicamente pronta: ela fica pendente de envio e o cliente é avisado.
 
 ## Aprendizado obrigatório e cron
 
@@ -147,9 +204,11 @@ Falha nessa rotina não desfaz uma task tecnicamente concluída e não deve inte
 O agendamento recomendado no ETHOS é a cada 4 horas com este pedido:
 
 > Use `skill-mind-cliente` em modo de recuperação. Leia o estado, o changelog e as mudanças desde
-> a última revisão; feche apenas checkpoints e triagens de aprendizado pendentes. Não implemente
-> tasks, não aprove teste humano, não conclua fase, não publique e não comece trabalho novo.
+> a última revisão; feche apenas checkpoints, triagens de aprendizado e envios ao GitHub
+> pendentes. Não implemente tasks, não aprove teste humano, não conclua fase, não publique no Skip
+> e não comece trabalho novo.
 
 O cron é rede de recuperação. Ele não substitui a captura imediata no fechamento e não pode
 inventar causalidade, aprovar gates ou iniciar uma task. O cron também é silencioso: só deve falar
-com o cliente se encontrar um risco que exija ação dele, nunca para pedir conteúdo de memória.
+com o cliente se encontrar um risco que exija ação dele — como versão do Skip aplicada e não
+publicada, ou envio ao GitHub que continua falhando —, nunca para pedir conteúdo de memória.

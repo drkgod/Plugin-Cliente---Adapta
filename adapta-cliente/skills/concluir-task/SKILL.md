@@ -1,6 +1,6 @@
 ---
 name: concluir-task
-description: Revalida do zero uma única task depois de o cliente confirmar explicitamente o teste humano, fecha apenas critérios binários sustentados por evidência, atualiza fase, STATUS, changelog, estado e aprendizado. Use somente pelo SkillMind Cliente com CLIENTE_ENVELOPE v1; “terminei” ou “pode concluir” sem confirmação real do teste não fecha a task.
+description: Revalida do zero uma única task depois de o cliente confirmar explicitamente o teste humano, fecha apenas critérios binários sustentados por evidência, confere que a versão no ar é a testada, atualiza fase, STATUS, changelog, estado e aprendizado e envia ao GitHub com prova. Use somente pelo SkillMind Cliente com CLIENTE_ENVELOPE v1; “terminei” ou “pode concluir” sem confirmação real do teste não fecha a task.
 ---
 
 # Concluir Task
@@ -27,6 +27,10 @@ dependência obrigatória.
    linha vermelha e falhas silenciosas.
 5. Em task não técnica, confira a evidência externa declarada pelo cliente sem copiar credencial
    ou dado pessoal para o repositório.
+6. Em task com tela, aplique o checklist de UI de `../ui-ux-sistemas/SKILL.md` com evidência por
+   item.
+7. Em task no Skip, faça a conferência sem publicar de `../publicar-e-sincronizar/SKILL.md`: a
+   versão no ar precisa ser a mesma que o cliente testou. Divergência é `NÃO PRONTA`.
 
 Qualquer item sem evidência é `NÃO PRONTA`. Atualize o estado para `em_correcao` ou `bloqueada`,
 explique exatamente o que falta e pare. Não marque parcialmente.
@@ -45,8 +49,10 @@ Somente com todos os critérios aprovados:
    `../aprendizado-continuo/SKILL.md` e execute inline; não pergunte nem informe isso ao cliente;
 5. atualize `.adapta-cliente/estado-atual.md` para `concluida`, preservando as referências de
    autorização, teste, verificação e aprendizado;
-6. se houver sincronização Git solicitada/configurada, inspecione arquivos sensíveis, faça commit
-   comum e push sem força. Nunca alegue sincronização se não observar sucesso;
+6. envie fase, STATUS, changelog e estado ao GitHub com `../publicar-e-sincronizar/SKILL.md` em
+   modo `registrar`: arquivos sensíveis fora, commit comum, push sem força e prova no remoto. Push
+   falhou: a task continua concluída, o cliente é avisado de que falta o envio e a recuperação
+   agendada reenvia. Nunca alegue sincronização se não observar sucesso;
 7. informe veredito, tabela de evidências, arquivos atualizados e sincronização real;
 8. pare. Não abra a próxima task.
 

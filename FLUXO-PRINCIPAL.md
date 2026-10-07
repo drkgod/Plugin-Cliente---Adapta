@@ -16,9 +16,10 @@ repositório operacional permanece:
 1. **Configurar:** instalar o plugin, ativar a memória e confirmar os acessos em uma única entrada.
 2. **Analisar:** selecionar exatamente uma task e entender plano, riscos e testes sem implementar.
 3. **Autorizar:** o cliente autoriza aquela task em uma nova mensagem.
-4. **Executar:** o agente implementa, roda as verificações e entrega um roteiro de teste humano.
-5. **Aprovar ou corrigir:** o cliente testa; se funcionar, a task é concluída; se falhar, a mesma
-   task volta para debug.
+4. **Executar:** o agente implementa, roda as verificações, publica na plataforma de construção,
+   atualiza o GitHub e entrega um roteiro de teste humano.
+5. **Aprovar ou corrigir:** o cliente testa no endereço publicado; se funcionar, a task é
+   concluída; se falhar, a mesma task volta para debug.
 
 Não existe conclusão automática, execução da fase inteira ou abertura da próxima task no mesmo
 ciclo.
@@ -91,6 +92,7 @@ O formato tabular antigo continua legível para projetos existentes.
 - raiz executável ausente ou ambígua;
 - dependência declarada da task não atendida;
 - falta de autorização explícita para implementar;
+- publicação na plataforma de construção sem prova, para pedir o teste humano;
 - falta do teste humano para concluir.
 
 Owner diferente do executor, ausência de `handoff-manifest.json`, check separado ou formulário de

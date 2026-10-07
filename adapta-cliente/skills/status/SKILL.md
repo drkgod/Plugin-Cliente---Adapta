@@ -17,15 +17,20 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: status`. Sem envelope, carreg
 2. Calcule o progresso pelas tasks reais. Em `fase-format:2`, conte todos os checkboxes (`[x]`
    concluída, `[/]` em andamento e `[ ]` a fazer), inclusive subtasks; caso contrário, use a tabela
    legada. Não copie percentual inconsistente sem sinalizar.
-3. Responda com:
+3. Para cada `07-sistemas/<sistema>/plataforma.md`, consulte `skip_project_status` (só leitura) e
+   compare a versão atual com a publicada. Verifique também se há commits locais ainda não
+   enviados ao GitHub. Não publique nem envie nada.
+4. Responda com:
    - fase atual e objetivo;
    - tasks feitas/total e percentual;
    - task ativa, executor, owner informativo e estado do gate;
+   - versão publicada e URL de produção de cada sistema, sinalizando o que está aplicado e não
+     publicado ou feito e não enviado ao GitHub;
    - uma única próxima ação permitida pela máquina de estados;
    - pendências com donos e travas ativas;
    - próxima reunião e evidência a demonstrar, se registradas;
    - fases já entregues, uma linha por fase.
-4. Se for “para repassar”, gere também uma versão de cinco linhas em linguagem de negócio.
+5. Se for “para repassar”, gere também uma versão de cinco linhas em linguagem de negócio.
 
 ## Regras
 

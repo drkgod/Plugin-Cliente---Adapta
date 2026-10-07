@@ -1,7 +1,7 @@
 {
   "name": "adapta-cliente",
-  "version": "0.5.0",
-  "description": "Orquestrador do champion Adapta Native para analisar, executar, testar, debugar e concluir uma task por vez com memória persistente solicitada ao Ethos no primeiro uso.",
+  "version": "0.6.0",
+  "description": "Orquestrador do champion Adapta Native para analisar, executar, testar, debugar e concluir uma task por vez com memória persistente solicitada ao Ethos, skills de UI/UX e de código, publicação obrigatória no Skip e GitHub sempre atualizado.",
   "author": {
     "name": "Adapta Labs"
   },
@@ -14,13 +14,16 @@
     "status",
     "ethos",
     "orquestracao",
-    "aprendizado-continuo"
+    "aprendizado-continuo",
+    "ui-ux",
+    "skip",
+    "publicacao"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Adapta Cliente",
     "shortDescription": "Uma task por vez, com gates e memória.",
-    "longDescription": "SkillMind do cliente para runtimes como ETHOS: interpreta pedidos, seleciona uma task, separa análise de implementação, exige teste humano, diagnostica causa raiz, valida evidências e registra aprendizado contínuo sem depender de hooks ou subagentes.",
+    "longDescription": "SkillMind do cliente para runtimes como ETHOS: interpreta pedidos, seleciona uma task, separa análise de implementação, projeta telas com Ficha de Tela, constrói código por protocolo que substitui o harness, publica no Skip com prova, mantém o GitHub atualizado, exige teste humano, diagnostica causa raiz, valida evidências e registra aprendizado contínuo sem depender de hooks ou subagentes.",
     "developerName": "Adapta Labs",
     "category": "Productivity",
     "capabilities": [

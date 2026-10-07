@@ -4,14 +4,14 @@
     "name": "Adapta Labs"
   },
   "metadata": {
-    "description": "Marketplace do plugin do cliente Adapta Native, com SkillMind e MEMORY pronta para o ETHOS instalar no primeiro uso.",
-    "version": "0.5.0"
+    "description": "Marketplace do plugin do cliente Adapta Native, com SkillMind e MEMORY pronta para o ETHOS instalar e atualizar sozinho.",
+    "version": "0.6.0"
   },
   "plugins": [
     {
       "name": "adapta-cliente",
       "source": "./adapta-cliente",
-      "description": "Orquestra uma task por vez com análise, autorização, implementação profunda, teste humano, debug e aprendizado interno silencioso."
+      "description": "Orquestra uma task por vez com análise, autorização, UI/UX e código por protocolo, publicação provada no Skip, GitHub atualizado, teste humano, debug e aprendizado interno silencioso."
     }
   ]
 }

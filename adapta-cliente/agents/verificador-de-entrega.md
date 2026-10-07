@@ -46,11 +46,17 @@ A task (de `04_fase-atual/fase.md`), a SPEC correspondente (`04_fase-atual/specs
    2. **Testes** — se o projeto tem testes/checagem, rode; anote passou/falhou e quantos.
    3. **Segredos** — nenhuma senha, token ou credencial escrita no código/arquivo entregue.
    4. **Diff** — o que mudou vs. o que a task pedia: mudança não relacionada é achado.
+   5. **No ar** — em sistema do Skip, a versão publicada é a versão verificada
+      (`skip_project_status` sem pendências além de `.skip.config.json` e referência publicada
+      igual ao `versionHash`), e o GitHub tem o commit da task.
 9. **Cace falhas silenciosas** — a entrega que "funciona" mas esconde erro é a que quebra na
    semana 3: erro capturado e ignorado (catch vazio, `|| true`), valor padrão que mascara
    falha real (planilha vazia tratada como "sem pendências"), passo que falha sem avisar
    ninguém no fluxo. Provoque o erro e confira que ele **aparece** para alguém.
-10. **Não conserte silenciosamente.** Achou problema → reporte; consertar é decisão de quem
+10. **Se a entrega tem tela,** aplique o checklist de UI da seção 4 de
+    `../skills/ui-ux-sistemas/SKILL.md`, item a item, com a evidência de cada um (arquivo e
+    trecho, ou passo do teste humano). Linha vermelha de UI quebrada = NÃO PRONTA.
+11. **Não conserte silenciosamente.** Achou problema → reporte; consertar é decisão de quem
     executa (e pode ser outra task).
 
 ## Formato da resposta

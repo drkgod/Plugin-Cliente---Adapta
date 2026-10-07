@@ -1,6 +1,6 @@
 ---
 name: debug-task
-description: Diagnostica causa raiz e corrige uma única falha da task ativa, preservando SPEC, evidência e gates; depois verifica e volta obrigatoriamente ao teste humano. Use pelo SkillMind Cliente quando o usuário disser “deu erro”, “não funcionou”, “teste falhou”, “está quebrado” ou “destravar”, com CLIENTE_ENVELOPE v1 e sem abrir outra task.
+description: Diagnostica causa raiz e corrige uma única falha da task ativa, preservando SPEC, evidência e gates; depois verifica, publica e sincroniza com prova e volta obrigatoriamente ao teste humano. Use pelo SkillMind Cliente quando o usuário disser “deu erro”, “não funcionou”, “teste falhou”, “está quebrado” ou “destravar”, com CLIENTE_ENVELOPE v1 e sem abrir outra task.
 ---
 
 <!-- Origem: reempacotado de compound-engineering/ce-debug para o método Adapta Native. -->
@@ -24,15 +24,19 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: debug-task`. Sem envelope, ca
 ## Processo
 
 1. Atualize o estado para `em_correcao` e registre o sintoma relatado sem copiar prompt inteiro.
-2. Identifique task, SPEC, TDD, resultado esperado, ambiente e evidência exata da falha.
+2. Identifique task, SPEC, TDD, resultado esperado, ambiente e evidência exata da falha. Falha de
+   tela: peça, se faltar, a rota, o papel do usuário, os passos e um print.
 3. Reproduza o problema pelo menor caso fiel. Se não reproduzir, registre tentativas e peça a
    evidência mínima; não adivinhe.
-4. Confirme repo/branch, dependências, entradas, variáveis esperadas e mudanças locais.
-5. Trace do sintoma até o primeiro estado inválido. Liste no máximo três hipóteses, cada uma com
+4. Confirme repo/branch, dependências, entradas, variáveis esperadas e mudanças locais. No Skip,
+   confira `skip_project_status` e, para erro de hook ou backend, `skip_cloud_list_logs`.
+5. Trace do sintoma até o primeiro estado inválido, seguindo o mapa do sistema (rota → página →
+   componente → serviço → regra de acesso). Liste no máximo três hipóteses, cada uma com
    evidência, previsão e teste de descarte.
 6. Só declare causa raiz quando a cadeia causal estiver demonstrada.
-7. Aplique uma correção mínima dentro da task e reexecute reprodução, TDD, regressão e checagens
-   relevantes. Não esconda a falha.
+7. Aplique uma correção mínima dentro da task pelo protocolo de `../construir-codigo/SKILL.md`
+   (edição cirúrgica, QA e revisão) e reexecute reprodução, TDD, regressão e checagens relevantes.
+   Não esconda a falha.
 8. Inspecione o diff e registre o Debug Summary em
    `06_notas/debug/debug-AAAA-MM-DD-<slug>.md` quando houver causa, bloqueio ou dúvida.
 9. Execute `aprendizado-continuo` inline e silenciosamente para a causa confirmada ou registre
@@ -41,16 +45,21 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: debug-task`. Sem envelope, ca
 Atualize `changelog.md`:
 
 ```markdown
-- AAAA-MM-DD · [executor] · DEBUG task <ID>: <sintoma> → causa raiz <resumo> → <corrigido|bloqueado|dúvida>.
+- AAAA-MM-DD · [executor] · DEBUG task <ID>: <sintoma> → causa raiz <resumo> → <corrigido|bloqueado|dúvida> (skip <versionHash>).
 ```
+
+Sem versão do Skip na correção, omita o parêntese.
 
 ## Voltar ao portão humano
 
-Se a verificação automática passar, atualize o estado para `aguardando_teste_humano`, mantenha o
-teste humano pendente, apresente passos numerados e pergunte se funcionou. Encerre imediatamente;
-não chame `concluir-task`.
+Se a verificação automática passar, rode `../publicar-e-sincronizar/SKILL.md` em modo `entregar`
+(correção sem alteração no Skip: modo `registrar`), com o estado em `aguardando_teste_humano` e o
+teste humano pendente. Com a publicação provada, informe a versão publicada e o commit (ou o aviso
+de envio pendente ao GitHub), apresente passos numerados na URL de produção e pergunte se
+funcionou. Encerre imediatamente; não chame `concluir-task`.
 
-Se falhar, mantenha `em_correcao` ou `bloqueada`, mostre causa/evidência/próxima ação e pare.
+Se a verificação ou a publicação falharem, mantenha `em_correcao` ou `bloqueada`, mostre
+causa/evidência/próxima ação e pare.
 
 ## Saída
 

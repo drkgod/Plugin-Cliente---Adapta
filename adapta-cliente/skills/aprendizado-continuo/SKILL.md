@@ -83,7 +83,9 @@ No cron de quatro horas:
 1. leia `.adapta-cliente/estado-atual.md`, o controle, o changelog e evidências novas;
 2. trate apenas fechamento de triagem/checkpoint que ficou pendente;
 3. não implemente, não altere task, não aprove teste, não conclua fase, não faça deploy e não
-   publique;
+   publique no Skip; o reenvio de commits pendentes ao GitHub fica com
+   `../publicar-e-sincronizar/SKILL.md` em modo `verificar`, autorizado pelo SkillMind depois desta
+   triagem;
 4. se faltar evidência, registre a pendência em vez de criar uma conclusão.
 
 ## Saída

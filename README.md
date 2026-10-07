@@ -3,7 +3,7 @@
 Este repositório publica duas edições do plugin do cliente:
 
 - `adapta-cliente`: edição Ethos/legacy; `skill-mind-cliente` é a entrada obrigatória e instala a
-  MEMORY persistente na primeira utilização;
+  MEMORY persistente na primeira utilização e a cada nova versão;
 - `adapta-cliente-codex`: edição Codex pura, com skills diretas e sem dependências do Ethos.
 
 Na edição Ethos, a `skill-mind-cliente` interpreta o pedido, mantém uma única task ativa e aplica
@@ -48,9 +48,28 @@ O `/adapta-cliente:trabalhar` oferece a mesma entrada em runtimes com slash comm
 1. Selecionar e analisar exatamente uma task.
 2. Mostrar achados e pedir autorização antes de implementar.
 3. Implementar e executar as verificações automatizáveis.
-4. Pedir o teste humano antes de concluir.
-5. Debugar a mesma task quando o teste falhar.
-6. Concluir, registrar aprendizado interno silencioso e parar sem abrir a próxima task.
+4. Publicar na plataforma de construção e atualizar o GitHub, com prova.
+5. Pedir o teste humano na URL de produção antes de concluir.
+6. Debugar a mesma task quando o teste falhar.
+7. Concluir, registrar aprendizado interno silencioso e parar sem abrir a próxima task.
+
+## Construir sem harness e entregar com prova (edição Ethos)
+
+O agente do Ethos não tem busca no código, verificação de tipos local, navegador nem visão de
+diff. Três skills de apoio substituem esse ambiente. Elas não são rotas: são carregadas dentro da
+task autorizada.
+
+- `ui-ux-sistemas`: Ficha de Tela na análise, catálogo de padrões para sistemas internos, regras
+  de UX e de texto em PT-BR, checklist de UI e roteiro de teste visual;
+- `construir-codigo`: mapa do sistema, plano em código com teste de mesa, edição cirúrgica, QA do
+  Skip como compilador, revisão por checklist e receitas no padrão do template Skip;
+- `publicar-e-sincronizar`: aplica, publica e prova a versão no Skip, espelha os arquivos
+  alterados em `07-sistemas/<sistema>/codigo/` e atualiza o GitHub com push sem força e prova no
+  remoto.
+
+A regra de entrega fica na MEMORY: toda resposta que altera o Skip termina aplicada, publicada e
+provada, com o GitHub atualizado na mesma resposta. As mudanças da versão estão em
+[`MIGRATION-0.6.0.md`](MIGRATION-0.6.0.md).
 
 Owner/dono permanece como informação de coordenação, mas nunca bloqueia uma task elegível. O
 relatório de análise é persistido em `.adapta-cliente/analises/`, permitindo retomar em outra

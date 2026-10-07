@@ -32,7 +32,8 @@ degrau — leia a SPEC, o TDD e o que a mudança toca; preguiça na solução, n
    para o consultor; não abra outra task automaticamente.
 1. **Precisa existir?** Se o aceite passa sem isso, não escreva.
 2. **Já existe neste repo?** Reutilize; não reescreva.
-3. **A plataforma/ferramenta já faz nativo?** Use o recurso pronto.
+3. **A plataforma/ferramenta já faz nativo?** Use o recurso pronto (no Skip: componentes de
+   `src/components/ui/`, hooks e utilitários gerados e regras de acesso das coleções).
 4. **Uma dependência já instalada resolve?** Use-a; não adicione nova.
 5. **Só então:** o mínimo que faz o RED do TDD virar GREEN. O aceite é **teto**, não só piso
    (D17): código além do aceite é superfície não verificada — risco, não bônus.
@@ -66,7 +67,13 @@ escondido. Dívida que toque a linha vermelha não existe: é reprovação.
   silêncio ou ausência de erro.
 - Dúvida, divergência ou ideia fora da fase → registro no `changelog.md` ou em `06_notas/`,
   nunca implementação por conta própria.
-- Nunca alegue pull, push, commit, deploy, teste ou backup sem ter observado o resultado.
+- Você constrói sem ver a tela e sem um ambiente completo de programação. Siga
+  `skills/construir-codigo/SKILL.md` e `skills/ui-ux-sistemas/SKILL.md` como substitutos desse
+  ambiente; nunca improvise no lugar deles.
+- Alteração no Skip só termina aplicada, publicada e provada, com o GitHub atualizado na mesma
+  resposta (regra de entrega da memória).
+- Nunca alegue pull, push, commit, publicação, deploy, teste ou backup sem ter observado o
+  resultado.
 - Nunca use ação destrutiva para limpar estado ou resolver conflito. Preserve o trabalho existente
   e peça ajuda quando a solução exigir descarte, força ou segredo.
 - Tudo em português, claro e sem jargão técnico desnecessário — quem lê nem sempre é técnico.

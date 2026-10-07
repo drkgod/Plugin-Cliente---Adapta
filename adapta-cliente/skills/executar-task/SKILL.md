@@ -1,6 +1,6 @@
 ---
 name: executar-task
-description: Implementa com profundidade exatamente uma task já analisada e explicitamente autorizada pelo cliente, seguindo sua SPEC, critérios e TDD; executa verificações automatizáveis e para obrigatoriamente no teste humano. Use somente quando o SkillMind Cliente fornecer CLIENTE_ENVELOPE v1 e o estado registrar autorização posterior ao relatório de análise.
+description: Implementa com profundidade exatamente uma task já analisada e explicitamente autorizada pelo cliente, seguindo sua SPEC, critérios e TDD pelo protocolo construir-codigo (e ui-ux-sistemas quando há tela); executa verificações automatizáveis, publica no Skip e atualiza o GitHub com prova e para obrigatoriamente no teste humano. Use somente quando o SkillMind Cliente fornecer CLIENTE_ENVELOPE v1 e o estado registrar autorização posterior ao relatório de análise.
 ---
 
 # Executar Task
@@ -21,38 +21,58 @@ registrada depois do relatório de análise.
    Owner ausente, divergente ou diferente do executor não é ambiguidade e nunca bloqueia.
 3. Inspecione os arquivos afetados e mudanças existentes. Não sobrescreva trabalho alheio nem
    amplie o recorte.
-4. Atualize a etapa para `implementando` antes da primeira alteração de produto.
+4. Carregue `../construir-codigo/SKILL.md` e, se a task tem tela, `../ui-ux-sistemas/SKILL.md`.
+   Releia o mapa do sistema e o plano em código aprovado antes da primeira escrita.
+5. Atualize a etapa para `implementando` antes da primeira alteração de produto.
 
 ## Implementação profunda de uma única task
 
 1. Transforme cada item do critério em uma prova verificável.
-2. Em task técnica, execute o RED ou registre o baseline equivalente antes da correção. Em task
-   não técnica, defina a evidência observável equivalente.
-3. Implemente o menor recorte completo que satisfaz a SPEC. Reutilize o que existe, respeite os
-   padrões do repositório e não comece outra task.
+2. Em task técnica, execute o RED ou registre o baseline equivalente antes da correção. No Skip,
+   que não tem executor de testes, o RED é o teste de mesa contra o código atual. Em task não
+   técnica, defina a evidência observável equivalente.
+3. Implemente o menor recorte completo que satisfaz a SPEC, pela edição cirúrgica de
+   `construir-codigo`. Reutilize o que existe, respeite os padrões do repositório e não comece
+   outra task.
 4. Trate explicitamente entradas inválidas, caminhos de erro, perda de dados, segurança,
    acessibilidade e LGPD quando aplicáveis. Essas áreas não podem ser “simplificadas”.
 5. Rode GREEN, regressão, build, lint, checagem de tipos e testes relevantes que o projeto
-   oferecer. Não esconda falhas com valores padrão, `catch` vazio, `|| true` ou remoção de testes.
-6. Inspecione o diff contra a task. Mudança sem vínculo com critério ou TDD deve ser removida ou
-   registrada como bloqueio, não justificada como melhoria extra.
+   oferecer; no Skip, o QA do `skip_project_apply_changes` é o compilador (seção 4 de
+   `construir-codigo`). Não esconda falhas com valores padrão, `catch` vazio, `|| true` ou remoção
+   de testes.
+6. Inspecione o diff contra a task: releia cada arquivo alterado com o checklist de revisão e,
+   em task com tela, com o checklist de UI. Mudança sem vínculo com critério ou TDD deve ser
+   removida ou registrada como bloqueio, não justificada como melhoria extra.
 7. Registre comandos, resultados e limitações reais. Ausência de ferramenta ou acesso não é PASS.
+
+## Entrega: publicar e sincronizar
+
+Com as verificações aprovadas, rode `../publicar-e-sincronizar/SKILL.md` em modo `entregar`. No
+passo de registros, o estado vai com `aguardando_teste_humano`, `teste_humano: pendente` e
+`verificacao_automatica: passou` com resumo.
+
+- Publicação não provada: estado `em_correcao` ou `bloqueada`, explique ao cliente e pare sem
+  pedir teste humano.
+- Envio ao GitHub que falhar depois da publicação provada: avise o cliente com o motivo e siga para
+  o teste humano; a versão está no ar e a recuperação agendada reenvia os commits.
 
 ## Portão de teste humano
 
-Ao terminar as verificações automatizáveis:
+Com a publicação provada:
 
-1. atualize o estado para `aguardando_teste_humano`;
-2. mantenha `teste_humano: pendente`;
-3. registre `verificacao_automatica: passou|falhou` com resumo;
-4. apresente ao cliente:
+1. confirme no estado `aguardando_teste_humano` e `teste_humano: pendente`;
+2. apresente ao cliente:
    - o que mudou;
    - os testes automáticos e resultados;
-   - passos numerados para testar o caminho real;
+   - a versão publicada, a URL de produção e o commit enviado ao GitHub (ou o aviso de que o
+     envio está pendente);
+   - passos numerados para testar o caminho real na URL de produção; em task com tela, siga o
+     roteiro da seção 5 de `../ui-ux-sistemas/SKILL.md`;
    - resultado esperado e como reconhecer falha;
-5. pergunte “Faça esse teste e me diga se funcionou. Não vou concluir nem iniciar outra task até
+3. pergunte “Faça esse teste e me diga se funcionou. Não vou concluir nem iniciar outra task até
    sua confirmação.”;
-6. encerre a resposta imediatamente.
+4. encerre a resposta imediatamente.
 
-Falha automática não autoriza conclusão. Explique-a, mantenha a task aberta e deixe a próxima
-ação como debug. Nunca chame `concluir-task` nem `proxima-task` nesta mesma resposta.
+Falha automática não autoriza publicação nem conclusão. Explique-a, mantenha a task aberta e
+deixe a próxima ação como debug. Nunca chame `concluir-task` nem `proxima-task` nesta mesma
+resposta.
