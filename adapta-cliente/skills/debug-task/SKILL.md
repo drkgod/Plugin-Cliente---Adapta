@@ -16,7 +16,11 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: debug-task`. Sem envelope, ca
 ## Limites
 
 - Não edite SPEC, plano ou fase para fazer o bug caber.
-- Requisito ambíguo ou decisão de produto vira `DÚVIDA:` no `changelog.md` e bloqueia.
+- Decisão de negócio que a SPEC não define: o cliente decide e você registra
+  `DECISÃO DO CLIENTE:`. Mudança de escopo ou de critério de aceite vira `DÚVIDA:` no
+  `changelog.md` para o consultor, explicada ao cliente com contexto.
+- Três ciclos de correção sem resolver a mesma falha: indique o consultor com a mensagem pronta da
+  persona, explicando o que já foi tentado.
 - Não feche a task. Depois da correção, volte ao teste humano.
 - Teste uma hipótese e uma correção por vez; preserve mudanças existentes.
 - Não use comando destrutivo, force push, descarte global ou segredo para “destravar”.
@@ -27,7 +31,8 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: debug-task`. Sem envelope, ca
 2. Identifique task, SPEC, TDD, resultado esperado, ambiente e evidência exata da falha. Falha de
    tela: peça, se faltar, a rota, o papel do usuário, os passos e um print.
 3. Reproduza o problema pelo menor caso fiel. Se não reproduzir, registre tentativas e peça a
-   evidência mínima; não adivinhe.
+   evidência mínima ensinando como coletá-la (print, passos, horário, usuário usado); não
+   adivinhe.
 4. Confirme repo/branch, dependências, entradas, variáveis esperadas e mudanças locais. No Skip,
    confira `skip_project_status` e, para erro de hook ou backend, `skip_cloud_list_logs`.
 5. Trace do sintoma até o primeiro estado inválido, seguindo o mapa do sistema (rota → página →
@@ -45,7 +50,7 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: debug-task`. Sem envelope, ca
 Atualize `changelog.md`:
 
 ```markdown
-- AAAA-MM-DD · [executor] · DEBUG task <ID>: <sintoma> → causa raiz <resumo> → <corrigido|bloqueado|dúvida> (skip <versionHash>).
+- AAAA-MM-DD · [executor] · DEBUG task <ID>: <sintoma> → causa raiz <resumo> → <corrigido|impedimento|dúvida> (skip <versionHash>).
 ```
 
 Sem versão do Skip na correção, omita o parêntese.
@@ -54,14 +59,25 @@ Sem versão do Skip na correção, omita o parêntese.
 
 Se a verificação automática passar, rode `../publicar-e-sincronizar/SKILL.md` em modo `entregar`,
 com o estado em `aguardando_teste_humano` e o teste humano pendente. Correção sem alteração no
-Skip não envia nada agora: os registros vão no commit da conclusão. Com a publicação provada, informe a versão publicada e o commit (ou o aviso
-de envio pendente ao GitHub), apresente passos numerados na URL de produção e pergunte se
-funcionou. Encerre imediatamente; não chame `concluir-task`.
+Skip não envia nada agora: os registros vão no commit da conclusão. Com a publicação provada,
+responda ao cliente no formato da seção Saída e pergunte se funcionou. Encerre imediatamente; não
+chame `concluir-task`.
 
-Se a verificação ou a publicação falharem, mantenha `em_correcao` ou `bloqueada`, mostre
-causa/evidência/próxima ação e pare.
+Se a verificação ou a publicação falharem, mantenha `em_correcao` ou `bloqueada`, explique ao
+cliente o impedimento com contexto e a próxima ação, e pare.
 
 ## Saída
+
+Ao cliente, em linguagem simples:
+
+- o que aconteceu, do ponto de vista de quem usa o sistema;
+- por que aconteceu, em uma frase;
+- o que foi corrigido e que já está no ar (ou o impedimento com contexto);
+- como testar de novo, em passos numerados na URL de produção (para o cliente, “o endereço do
+  sistema”);
+- o aviso de envio pendente ao GitHub, se houver.
+
+O registro técnico vai para `06_notas/debug/debug-AAAA-MM-DD-<slug>.md`:
 
 ```markdown
 ## Debug Summary
@@ -70,5 +86,5 @@ causa/evidência/próxima ação e pare.
 **Causa raiz:**
 **Correção:**
 **Verificação automática:**
-**Gate atual:** aguardando teste humano | em correção | bloqueada | dúvida para consultor
+**Situação:** aguardando teste humano | em correção | impedimento | decisão do consultor
 ```

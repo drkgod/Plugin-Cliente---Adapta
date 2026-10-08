@@ -71,6 +71,13 @@ A regra de entrega fica na MEMORY: toda resposta que altera o Skip termina aplic
 provada, com o GitHub atualizado na mesma resposta. As mudanças da versão estão em
 [`MIGRATION-0.6.0.md`](MIGRATION-0.6.0.md).
 
+## Como o assistente fala com o cliente
+
+Nas duas edições, o assistente fala em linguagem simples, explica todo impedimento com o porquê e
+o que fazer, ensina o cliente a resolver antes de indicar o consultor (que entra só em mudança de
+escopo, risco, acesso exclusivo ou depois de três tentativas guiadas) e deixa o cliente decidir os
+detalhes de negócio que a SPEC não define. Detalhes em [`MIGRATION-0.7.0.md`](MIGRATION-0.7.0.md).
+
 Owner/dono permanece como informação de coordenação, mas nunca bloqueia uma task elegível. O
 relatório de análise é persistido em `.adapta-cliente/analises/`, permitindo retomar em outra
 sessão.

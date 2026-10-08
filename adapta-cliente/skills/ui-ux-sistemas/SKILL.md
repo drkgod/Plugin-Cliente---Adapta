@@ -16,8 +16,8 @@ Exija `CLIENTE_ENVELOPE v1`. Esta skill não é rota: roda dentro da skill autor
 (`proxima-task`, `executar-task`, `debug-task` ou `concluir-task`) e herda os limites dela. Sem
 envelope, carregue `../skill-mind-cliente/SKILL.md`, redirecione e não altere arquivos.
 
-Pedido de mudança visual fora da task ativa não vira trabalho: registre a ideia em `06_notas/`
-para o consultor.
+Pedido de mudança visual fora da task ativa não vira trabalho: registre a ideia em `06_notas/` e
+explique ao cliente que ela fica guardada para as próximas fases.
 
 ## Princípio
 
@@ -50,9 +50,13 @@ Para cada tela nova ou alterada, inclua no relatório `.adapta-cliente/analises/
 - Reuso: <componentes existentes que serão usados>
 ```
 
-Informação que a SPEC não define e que muda o resultado (por exemplo, quem pode excluir) é
-`DÚVIDA:` para o consultor, não escolha sua. A ficha é aprovada pelo cliente junto com o plano;
-mudar a ficha depois da autorização exige nova autorização.
+Informação que a SPEC não define (por exemplo, quem pode excluir) é decisão do cliente: pergunte
+com as opções e a consequência de cada uma, registre `DECISÃO DO CLIENTE:` e nunca escolha por
+ele. Se a resposta mudar o escopo ou o critério de aceite, é `DÚVIDA:` para o consultor.
+
+Ao cliente, descreva a ficha em palavras simples: o que ele vai ver, o que vai poder fazer e como
+a tela se comporta no celular. O formato completo fica no arquivo da análise. A ficha é aprovada
+junto com o plano; mudar a ficha depois da autorização exige nova autorização.
 
 ## 2. Decidir pelo catálogo
 

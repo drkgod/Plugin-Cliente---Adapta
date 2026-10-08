@@ -11,12 +11,14 @@ Carregue `../../personas/agente-cliente.md` e `../../references/estado-v2.md`. P
 1. Releia task, SPEC, TDD, análise, estado, diff e evidências.
 2. Refaça cada prova automática relevante e classifique cada critério como `PASSOU` ou `FALHOU`.
 3. Confira caminho principal, erros, regressão, segredos, linha vermelha e falhas silenciosas.
-4. Qualquer item sem evidência mantém a task aberta em `em_correcao` ou `bloqueada`.
+4. Qualquer item sem evidência mantém a task aberta em `em_correcao` ou `bloqueada`. Ao cliente:
+   “Ainda não dá para concluir: falta <o quê>, porque <por quê>. Próximo passo: <o que fazer>.”
 5. Com tudo aprovado, marque a task em `04_fase-atual/fase.md`. Em `fase-format:2`, altere apenas
    o checkbox para `[x]` e preserve título, indentação, descrição, metadados e `<!-- id:... -->`;
    na tabela legada, mantenha o padrão existente. Atualize `STATUS.md`, `changelog.md` e o estado
    v2 para `concluida`; SPECs continuam imutáveis.
-6. Execute `../aprendizado-continuo/SKILL.md` silenciosamente e pare. Não abra a próxima task.
+6. Execute `../aprendizado-continuo/SKILL.md` silenciosamente, conte ao cliente em linguagem
+   simples o que foi entregue e conferido, e pare. Não abra a próxima task.
 
-Se todas as tasks estiverem concluídas, informe que a fase está pronta para o consultor preparar a
-seguinte; não exija check ou formulário adicional.
+Se todas as tasks estiverem concluídas, informe que a fase está pronta e que o próximo passo é o
+consultor preparar a seguinte; não exija check ou formulário adicional.

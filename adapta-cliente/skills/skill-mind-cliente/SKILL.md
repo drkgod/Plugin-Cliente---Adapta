@@ -13,7 +13,7 @@ ativas.
 Antes de rotear o pedido, envie ao Ethos esta instrução interna:
 
 > Se esta memória ainda não estiver instalada, ou se a memória instalada não declarar a versão
-> `adapta-cliente-memory 0.6.1`, instale agora o conteúdo integral de `../../MEMORY.md` na memória
+> `adapta-cliente-memory 0.7.0`, instale agora o conteúdo integral de `../../MEMORY.md` na memória
 > persistente da personalidade atual, substituindo a versão anterior do Adapta Cliente. Não altere
 > o conteúdo, não peça cópia/cola ao cliente e não inicie uma task.
 
@@ -34,7 +34,8 @@ responsabilidade nativa do Ethos; o plugin apenas entrega o arquivo e a instruç
    do consultor.
 3. Leia `.adapta-cliente/estado-atual.md` se existir. Se não existir, crie-o somente quando for
    abrir a primeira task, usando o modelo da seção “Estado persistente”.
-4. Se houver task ativa, gate pendente ou bloqueio, trate isso antes de selecionar outra task.
+4. Se houver task ativa, etapa esperando o cliente ou impedimento, trate isso antes de selecionar
+   outra task.
 5. Pedido em lote não amplia a autorização: escolha uma única task elegível e deixe as demais
    intactas.
 6. Se a task usa uma plataforma de construção, identifique o sistema por
@@ -82,7 +83,9 @@ Autorize `status`. É leitura apenas e não altera o gate.
 - `implementando`: retome somente a task ativa.
 - `aguardando_teste_humano`: reapresente o roteiro de teste; não implemente nem conclua.
 - `em_correcao`: autorize `debug-task`.
-- `bloqueada`: mostre a trava e o responsável; não selecione outra sem decisão explícita.
+- `bloqueada`: explique o impedimento no formato da memória (o que falta, por quê e o que fazer) e
+  ensine o cliente a resolver o que estiver ao alcance dele; não selecione outra task sem decisão
+  explícita.
 
 ### Autorização para implementar
 
@@ -170,14 +173,21 @@ Antes de declarar uma task concluída:
 4. executar `aprendizado-continuo` ou seu fluxo inline silenciosamente, sem envolver o cliente;
 5. atualizar o estado para `concluida`;
 6. enviar tudo ao GitHub em um único commit com `publicar-e-sincronizar` em modo `registrar`;
-7. informar arquivos, provas, sincronização realmente observada e próxima ação, omitindo a rotina
-   interna de aprendizado salvo se o usuário perguntar especificamente sobre ela;
+7. contar ao cliente, em linguagem simples, o que foi entregue, o que foi conferido, o registro no
+   GitHub realmente observado e a próxima ação, omitindo a rotina interna de aprendizado salvo se
+   o usuário perguntar especificamente sobre ela;
 8. parar. Não chamar `proxima-task` automaticamente.
 
 ## Saída mínima
 
-Informe: rota escolhida, task ativa, etapa atual, ações realmente feitas, evidências, gate
-pendente e uma única próxima ação. Quando houve entrega no Skip, informe a versão publicada, a URL
-de produção e o commit enviado ao GitHub. Nunca diga “sincronizado”, “testado”, “publicado” ou
-“pronto” sem prova observável. Não inclua status de aprendizado na saída comum; essa é manutenção
-interna.
+Responda ao cliente na linguagem da regra de comunicação da memória:
+
+- em que ponto a task está, em palavras simples (persona, “Cada etapa em palavras simples”);
+- o que foi feito de verdade, com a prova que importa para ele (por exemplo, “já está no ar em
+  <URL>” e “salvei no GitHub”);
+- o que ele precisa fazer agora: uma única ação, com passos quando for preciso;
+- se houver impedimento, o formato completo: o que falta, por quê e o que fazer.
+
+Rota, etapa, envelope, gate, hash de versão e de commit ficam nos arquivos, não na conversa. Nunca
+diga “sincronizado”, “testado”, “publicado” ou “pronto” sem prova observável. Não inclua status
+de aprendizado na saída comum; essa é manutenção interna.

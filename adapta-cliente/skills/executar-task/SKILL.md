@@ -17,7 +17,9 @@ registrada depois do relatório de análise.
 1. Leia a task ativa em `04_fase-atual/fase.md`, a SPEC indicada, o relatório persistido em
    `.adapta-cliente/analises/<task-id>.md` e o estado atual.
 2. Confirme que descrição, pré-condições, critério binário, evidência esperada e TDD estão
-   identificados. Ambiguidade que muda o resultado vira `DÚVIDA:` no `changelog.md` e bloqueia.
+   identificados. Detalhe de negócio em aberto: pergunte ao cliente e registre
+   `DECISÃO DO CLIENTE:`. Ambiguidade que muda escopo ou critério de aceite vira `DÚVIDA:` no
+   `changelog.md` e impede seguir até o consultor responder; explique isso ao cliente com contexto.
    Owner ausente, divergente ou diferente do executor não é ambiguidade e nunca bloqueia.
 3. Inspecione os arquivos afetados e mudanças existentes. Não sobrescreva trabalho alheio nem
    amplie o recorte.
@@ -51,8 +53,8 @@ Com as verificações aprovadas, rode `../publicar-e-sincronizar/SKILL.md` em mo
 passo de registros, o estado vai com `aguardando_teste_humano`, `teste_humano: pendente` e
 `verificacao_automatica: passou` com resumo.
 
-- Publicação não provada: estado `em_correcao` ou `bloqueada`, explique ao cliente e pare sem
-  pedir teste humano.
+- Publicação não provada: estado `em_correcao` ou `bloqueada`, explique ao cliente o impedimento
+  (o que não foi ao ar e por quê) e pare sem pedir teste humano.
 - Envio ao GitHub que falhar depois da publicação provada: avise o cliente com o motivo e siga para
   o teste humano; a versão está no ar e a recuperação agendada reenvia os commits.
 
@@ -61,14 +63,14 @@ passo de registros, o estado vai com `aguardando_teste_humano`, `teste_humano: p
 Com a publicação provada:
 
 1. confirme no estado `aguardando_teste_humano` e `teste_humano: pendente`;
-2. apresente ao cliente:
-   - o que mudou;
-   - os testes automáticos e resultados;
-   - a versão publicada, a URL de produção e o commit enviado ao GitHub (ou o aviso de que o
-     envio está pendente);
-   - passos numerados para testar o caminho real na URL de produção; em task com tela, siga o
-     roteiro da seção 5 de `../ui-ux-sistemas/SKILL.md`;
-   - resultado esperado e como reconhecer falha;
+2. apresente ao cliente, em linguagem simples:
+   - o que mudou, do ponto de vista de quem usa o sistema;
+   - que já está no ar, com o endereço, e que ficou salvo no GitHub (ou o aviso de que o envio
+     está pendente);
+   - o que o sistema já conferiu sozinho, em uma linha;
+   - passos numerados para testar o caminho real na URL de produção (para o cliente, “o endereço
+     do sistema”); em task com tela, siga o roteiro da seção 5 de `../ui-ux-sistemas/SKILL.md`;
+   - o que deve aparecer em cada passo e como perceber que algo deu errado;
 3. pergunte “Faça esse teste e me diga se funcionou. Não vou concluir nem iniciar outra task até
    sua confirmação.”;
 4. encerre a resposta imediatamente.

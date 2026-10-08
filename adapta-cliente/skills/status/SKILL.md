@@ -1,6 +1,6 @@
 ---
 name: status
-description: Resume de forma somente leitura a fase atual, progresso, task ativa, gate pendente, travas, próxima reunião e entregas do cliente. Use pelo SkillMind Cliente quando o usuário perguntar “como estamos?”, “qual o status?”, “quanto falta?” ou pedir um resumo para repassar, sem avançar task nem alterar gates.
+description: Resume de forma somente leitura a fase atual, progresso, task ativa, em que ponto ela está, impedimentos com o porquê, próxima reunião e entregas do cliente, em linguagem simples. Use pelo SkillMind Cliente quando o usuário perguntar “como estamos?”, “qual o status?”, “quanto falta?” ou pedir um resumo para repassar, sem avançar task nem alterar gates.
 ---
 
 # Status do Projeto
@@ -20,21 +20,23 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: status`. Sem envelope, carreg
 3. Para cada `07-sistemas/<sistema>/plataforma.md`, consulte `skip_project_status` (só leitura) e
    compare a versão atual com a publicada. Verifique também se o estado marca
    `pendente_github: sim`. Não publique nem envie nada.
-4. Responda com:
+4. Responda em linguagem simples (regra de comunicação da memória) com:
    - fase atual e objetivo;
    - tasks feitas/total e percentual;
-   - task ativa, executor, owner informativo e estado do gate;
-   - versão publicada e URL de produção de cada sistema, sinalizando o que está aplicado e não
-     publicado ou feito e não enviado ao GitHub;
+   - task ativa, quem está executando, owner informativo e em que ponto ela está, dito em
+     palavras simples;
+   - o que está no ar de cada sistema (endereço) e o que foi feito mas ainda não foi ao ar ou não
+     foi salvo no GitHub;
    - uma única próxima ação permitida pela máquina de estados;
-   - pendências com donos e travas ativas;
+   - pendências e impedimentos, cada um com o porquê e quem resolve;
    - próxima reunião e evidência a demonstrar, se registradas;
    - fases já entregues, uma linha por fase.
 5. Se for “para repassar”, gere também uma versão de cinco linhas em linguagem de negócio.
 
 ## Regras
 
-- Reporte só o que os arquivos sustentam; diferencie ausente, desconhecido e bloqueado.
+- Reporte só o que os arquivos sustentam; diferencie o que está ausente, o que não se sabe e o que
+  tem impedimento.
 - Não prometa fase futura, não selecione nova task e não transforme pedido de status em execução.
-- Trava sem responsável de resolução deve ser sinalizada, mas owner ausente ou diferente do
-  executor nunca bloqueia uma task que tenha SPEC, pré-condições e prova suficientes.
+- Impedimento sem responsável deve ser sinalizado, mas owner ausente ou diferente do executor
+  nunca impede uma task que tenha SPEC, pré-condições e prova suficientes.

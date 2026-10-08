@@ -97,7 +97,8 @@ A análise que pede autorização traz:
    silenciar: `any`, `@ts-ignore`, desativar regra do lint, `catch` vazio, `|| true`, apagar código
    ou teste.
 4. No máximo três ciclos de correção na mesma resposta. Depois, pare: estado `em_correcao`, motivo
-   registrado e nada publicado.
+   registrado e nada publicado. Ao cliente, sem jargão: “a verificação automática encontrou um
+   problema que ainda não resolvi; nada mudou no que está no ar” e o próximo passo.
 5. QA verde prova que compila. Comportamento se prova com teste de mesa, revisão e teste humano.
 
 ## 5. REVISÃO — o seu diff

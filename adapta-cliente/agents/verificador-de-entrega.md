@@ -30,8 +30,9 @@ A task (de `04_fase-atual/fase.md`), a SPEC correspondente (`04_fase-atual/specs
 4. **Teste os caminhos de erro que a spec declara:** entrada vazia, dado errado, o caso de
    exceção descrito. Se a spec diz "quando X, o sistema faz Y", provoque X e confira Y.
 5. **Confira contra a spec, não contra a intenção.** Se o resultado diverge da spec, a task não
-   está pronta — mesmo que o resultado "pareça melhor". Divergência vira DÚVIDA no changelog
-   para o consultor decidir.
+   está pronta — mesmo que o resultado "pareça melhor". Divergência que muda o combinado vira
+   DÚVIDA no changelog para o consultor decidir. Detalhe de negócio que a SPEC deixou em aberto
+   deve estar registrado como `DECISÃO DO CLIENTE:`; se não estiver, pergunte ao cliente.
 6. **Confira o teto do aceite (D17).** Todo trecho do diff que nenhum critério de pronto ou
    TDD da SPEC cobre é superfície não verificada — reporte como achado; por padrão a task não
    fecha com sobra de escopo (a exceção é decisão do consultor, registrada). Código a mais não
@@ -64,15 +65,20 @@ A task (de `04_fase-atual/fase.md`), a SPEC correspondente (`04_fase-atual/specs
 - **Veredito:** PRONTA (todos os critérios com evidência) ou NÃO PRONTA.
 - **Tabela:** critério → evidência (o que foi exercitado e o resultado) → ✓/✗.
 - Se NÃO PRONTA: exatamente o que falta, em linguagem de quem vai resolver.
-- Se a spec estiver ambígua a ponto de impedir o veredito, diga qual frase e por quê — isso é
-  DÚVIDA para o consultor, não achismo seu.
+- Se a spec estiver ambígua a ponto de impedir o veredito, diga qual frase e por quê — é decisão
+  do cliente quando for detalhe de negócio, ou DÚVIDA para o consultor quando mudar o combinado;
+  nunca achismo seu.
+
+Esse formato é registro interno. Ao cliente, traduza com a persona: “Conferi <itens em palavras
+simples> e está tudo certo” ou “Ainda não dá para concluir: falta <o quê>, porque <por quê>”.
 
 ## Laço de convergência (quando a task volta corrigida)
 
 Depois de um NÃO PRONTA, a reverificação é **do zero e completa** — todos os critérios de
 novo, não só o que falhou (conserto de um item quebra outro com frequência). Se a mesma task
-falhar na **3ª verificação**, pare o ciclo: registre DÚVIDA no changelog e encaminhe ao
-consultor — repetir a quarta rodada sem mudar a abordagem é desperdício e frustração.
+falhar na **3ª verificação**, pare o ciclo: registre DÚVIDA no changelog e indique o consultor
+ao cliente com contexto e a mensagem pronta da persona — repetir a quarta rodada sem mudar a
+abordagem é desperdício e frustração.
 
 Seja rigoroso e gentil: o objetivo é o champion confiar que "pronta" significa pronta — é essa
 confiança que sustenta o acompanhamento do projeto.

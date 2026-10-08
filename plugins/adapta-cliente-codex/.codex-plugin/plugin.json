@@ -1,6 +1,6 @@
 {
   "name": "adapta-cliente-codex",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Execução de uma task por vez do cliente Adapta diretamente no Codex, sem MEMORY, SkillMind, hooks ou dependências do Ethos.",
   "author": {
     "name": "Adapta Labs",

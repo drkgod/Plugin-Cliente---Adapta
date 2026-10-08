@@ -11,13 +11,15 @@ quando o estado v2 estiver em
 Registre a autorização curta e timestamp; owner diferente do executor nunca bloqueia.
 
 1. Releia task, SPEC, análise persistida, estado e arquivos afetados.
-2. Ambiguidade de resultado, limite, raiz executável ou prova vira `DÚVIDA:` e bloqueia; não edite
-   a SPEC.
+2. Detalhe de negócio em aberto: pergunte ao cliente e registre `DECISÃO DO CLIENTE:`.
+   Ambiguidade que muda escopo, critério de aceite ou prova vira `DÚVIDA:` e impede seguir até o
+   consultor responder; explique isso ao cliente com contexto. Não edite a SPEC.
 3. Mude a etapa para `implementando`. Execute o RED ou baseline, implemente o menor recorte completo
    e trate erros, segurança, acessibilidade e LGPD aplicáveis.
 4. Rode GREEN, regressão, build, lint, tipos e testes relevantes declarados. Inspecione o diff e
    remova mudança sem vínculo com a task.
 5. Registre comandos, resultados e limitações reais. Falha ou ferramenta ausente não é PASS.
-6. Atualize o estado para `aguardando_teste_humano`, mantenha o teste pendente, mostre mudanças,
-   provas automáticas e roteiro numerado do teste real.
+6. Atualize o estado para `aguardando_teste_humano`, mantenha o teste pendente e apresente ao
+   cliente, em linguagem simples: o que mudou para quem usa, o que já foi conferido sozinho e o
+   roteiro numerado do teste real, com o que deve aparecer em cada passo.
 7. Pare e peça a confirmação do teste humano. Não conclua nem abra outra task.

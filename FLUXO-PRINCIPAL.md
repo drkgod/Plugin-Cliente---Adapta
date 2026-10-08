@@ -85,7 +85,7 @@ Quando `04_fase-atual/fase.md` usar `<!-- fase-format:2 -->`, o plugin interpret
 
 O formato tabular antigo continua legível para projetos existentes.
 
-## Dependências que realmente bloqueiam
+## O que realmente impede uma task de seguir
 
 - `04_fase-atual/fase.md` ausente ou sem task identificável;
 - SPEC ausente ou conflitante;
@@ -96,7 +96,8 @@ O formato tabular antigo continua legível para projetos existentes.
 - falta do teste humano para concluir.
 
 Owner diferente do executor, ausência de `handoff-manifest.json`, check separado ou formulário de
-liberação não bloqueiam uma task válida.
+liberação não impedem uma task válida. Todo impedimento é explicado ao cliente com o porquê e o que
+fazer, e o assistente ensina a resolver antes de indicar o consultor.
 
 ## Texto recomendado para o site
 
@@ -106,3 +107,7 @@ liberação não bloqueiam uma task válida.
   valida o resultado real.
 - Evite nomes de clientes reais em páginas públicas.
 - Não apresente instalação da memória como um segundo ou terceiro comando.
+- Fale de “impedimento” com contexto (“existe um impedimento: X, porque Y”), nunca de “bloqueio”.
+- Apresente o consultor como apoio para decisões de escopo; o dia a dia o assistente ensina o
+  cliente a resolver.
+- Detalhes de negócio que a especificação não define são decisão do cliente.

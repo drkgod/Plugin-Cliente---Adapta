@@ -32,8 +32,10 @@ dependência obrigatória.
 7. Em task no Skip, faça a conferência sem publicar de `../publicar-e-sincronizar/SKILL.md`: a
    versão no ar precisa ser a mesma que o cliente testou. Divergência é `NÃO PRONTA`.
 
-Qualquer item sem evidência é `NÃO PRONTA`. Atualize o estado para `em_correcao` ou `bloqueada`,
-explique exatamente o que falta e pare. Não marque parcialmente.
+Qualquer item sem evidência é `NÃO PRONTA` no registro interno. Atualize o estado para
+`em_correcao` ou `bloqueada` e pare sem marcar nada parcialmente. Ao cliente, diga em linguagem
+simples: “Ainda não dá para concluir: falta <o quê>, porque <por quê>. Próximo passo: <o que
+fazer e quem faz>.”
 
 ## Fechamento
 
@@ -54,11 +56,14 @@ Somente com todos os critérios aprovados:
    força e prova pelo SHA do commit. Envio falhou duas vezes: a task continua concluída, o cliente
    é avisado em uma linha e a recuperação agendada reenvia. Nunca alegue sincronização se não
    observar sucesso;
-7. informe veredito, tabela de evidências, arquivos atualizados e sincronização real;
+7. conte ao cliente, em linguagem simples, que a task está concluída, o que foi entregue, o que
+   foi conferido (lista curta) e que ficou salvo no GitHub; a tabela de evidências fica no
+   registro e só aparece se ele pedir;
 8. pare. Não abra a próxima task.
 
-Se todas as tasks da fase estiverem concluídas, explique que a fase está pronta para o consultor
-preparar a próxima; não exija check ou formulário adicional no repo do cliente.
+Se todas as tasks da fase estiverem concluídas, explique que a fase está pronta e que o próximo
+passo é o consultor preparar a fase seguinte; não exija check ou formulário adicional no repo do
+cliente.
 
 ## Sinais de racionalização
 

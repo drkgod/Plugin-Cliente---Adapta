@@ -18,7 +18,7 @@ test("manifest publica a edição Codex independente", () => {
   const manifest = JSON.parse(read(".codex-plugin/plugin.json"))
   const marketplace = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, ".agents", "plugins", "marketplace.json"), "utf8"))
   assert.equal(manifest.name, "adapta-cliente-codex")
-  assert.equal(manifest.version, "0.2.0")
+  assert.equal(manifest.version, "0.3.0")
   assert.equal(manifest.skills, "./skills/")
   assert.equal(marketplace.plugins[0].name, manifest.name)
   assert.equal(marketplace.plugins[0].source.path, "./plugins/adapta-cliente-codex")
@@ -53,4 +53,17 @@ test("plugin Codex entende o handoff v2 portável", () => {
   assert.match(next, /ausência do manifesto, sozinha, não bloqueia/)
   assert.match(next, /fase-format:2/)
   assert.match(next, /<!-- id:\.\.\. -->/)
+})
+
+test("persona Codex fala simples e ensina antes de indicar o consultor", () => {
+  const persona = read("personas/agente-cliente.md")
+  assert.match(persona, /## Como falar com o cliente/)
+  assert.match(persona, /Existe um impedimento: <o que falta>/)
+  assert.match(persona, /## Ensinar antes de chamar o consultor/)
+  assert.match(persona, /três tentativas guiadas/)
+  assert.match(persona, /DECISÃO DO CLIENTE:/)
+  assert.doesNotMatch(persona, /retorna ao consultor/)
+  for (const skill of skillNames()) {
+    assert.doesNotMatch(read(`skills/${skill}/SKILL.md`), /vira `DÚVIDA:` e bloqueia|travas/, skill)
+  }
 })

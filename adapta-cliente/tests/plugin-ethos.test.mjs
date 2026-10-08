@@ -138,7 +138,7 @@ test("manifests estão na versão Ethos e JSON é válido", () => {
   for (const relative of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]) {
     const manifest = JSON.parse(read(relative))
     assert.equal(manifest.name, "adapta-cliente")
-    assert.equal(manifest.version, "0.6.1")
+    assert.equal(manifest.version, "0.7.0")
   }
 })
 
@@ -192,7 +192,7 @@ test("MEMORY obriga publicar no Skip e atualizar o GitHub", () => {
   assert.doesNotMatch(memory, /Push nunca é requisito/)
   assert.match(memory, /envios ao GitHub[\s>]+pendentes/)
   assert.match(memory, /Nunca abra task nova com envio pendente/)
-  assert.match(read("skills/proxima-task/SKILL.md"), /GitHub desatualizado/)
+  assert.match(read("skills/proxima-task/SKILL.md"), /último envio ao GitHub não chegou/)
 })
 
 test("SkillMind substitui a memória instalada quando a versão muda", () => {
@@ -287,5 +287,43 @@ test("skills e referências cabem no contexto do agente", () => {
       const count = fs.readFileSync(path.join(refs, file), "utf8").split("\n").length
       assert.ok(count <= 650, `${skill}/references/${file} tem ${count} linhas`)
     }
+  }
+})
+
+test("cliente recebe linguagem simples, impedimento com contexto e ensino antes do consultor", () => {
+  const memory = read("MEMORY.md")
+  const persona = read("personas/agente-cliente.md")
+  assert.match(memory, /## Regra de comunicação com o cliente/)
+  assert.match(memory, /Existe um impedimento: <o que falta>/)
+  assert.match(memory, /### Ensinar antes de chamar o consultor/)
+  assert.match(memory, /três tentativas guiadas/)
+  assert.match(memory, /DECISÃO DO CLIENTE:/)
+  assert.match(memory, /Nunca peça para colar senha, chave ou token na conversa/)
+  assert.match(persona, /## Como falar com o cliente/)
+  assert.match(persona, /### Vocabulário/)
+  assert.match(persona, /### Cada etapa em palavras simples/)
+  assert.match(persona, /Mensagem pronta para você enviar/)
+})
+
+test("instruções não mandam direto ao consultor nem expõem jargão interno ao cliente", () => {
+  const files = [
+    "MEMORY.md",
+    "personas/agente-cliente.md",
+    "agents/verificador-de-entrega.md",
+    ...skillNames().map((skill) => `skills/${skill}/SKILL.md`)
+  ]
+  for (const relative of files) {
+    const body = read(relative)
+    assert.doesNotMatch(
+      body,
+      /mostre a trava|travas? ativas?|Gate atual|gate pendente|siga para o consultor|fale com o consultor|avise o consultor|retorna ao consultor|GitHub desatualizado/i,
+      relative
+    )
+  }
+  const mind = read("skills/skill-mind-cliente/SKILL.md")
+  assert.doesNotMatch(mind, /Informe: rota escolhida/)
+  assert.match(mind, /ficam nos arquivos, não na conversa/)
+  for (const skill of ["proxima-task", "executar-task", "debug-task", "ui-ux-sistemas"]) {
+    assert.match(read(`skills/${skill}/SKILL.md`), /DECISÃO DO CLIENTE:/, skill)
   }
 })

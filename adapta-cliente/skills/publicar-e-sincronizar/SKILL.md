@@ -45,7 +45,8 @@ só o GitHub.
 
 1. `skip_project_status`: `pendingChanges` deve listar só os arquivos do plano da task, mais
    `.skip.config.json`. Arquivo inesperado é alteração feita fora da task: não aplique, registre
-   e pergunte ao cliente.
+   e explique ao cliente que existe uma mudança no Skip que não veio desta task (por exemplo,
+   feita pelo chat do próprio Skip); pergunte se ela deve entrar junto.
 2. `skip_project_apply_changes` com `message: "task <ID>: <resumo curto>"`. Nunca passe
    `confirmPrune: true` sem autorização explícita do cliente: isso apaga versões.
 3. Leia o resultado de cada etapa. Falhou: volte à seção 4 de `../construir-codigo/SKILL.md`.
@@ -69,8 +70,8 @@ só o GitHub.
    sem publicar e entra em loop.
 5. Publicação falhou ou não foi provada: não contorne. Registre
    `skip_publicacao: falhou:<motivo>` com o estado em `em_correcao` ou `bloqueada`, siga para a
-   seção 4 (o GitHub recebe os registros da falha), avise o cliente e não peça teste humano sobre
-   uma versão que não está no ar.
+   seção 4 (o GitHub recebe os registros da falha), explique ao cliente o impedimento (o que não
+   foi ao ar e por quê) e não peça teste humano sobre uma versão que não está no ar.
 6. Com a prova, registre no estado `skip_versao: <versionHash>` e
    `skip_publicacao: publicada:<ref> em <ISO-8601>`.
 
@@ -146,5 +147,6 @@ do cliente: não envie fora dos momentos da tabela de modos e nunca envie a mesm
 
 ## Saída
 
-Informe só o que foi provado: versão publicada, URL de produção e commit no GitHub. Sem prova,
-diga "não publicado" ou "não enviado ao GitHub", com o motivo e uma única próxima ação.
+Informe ao cliente só o que foi provado, em linguagem simples: “já está no ar em <URL>” e “salvei
+no GitHub”. Versão, hash e SHA vão para os registros, não para a conversa. Sem prova, use o
+formato de impedimento: o que não aconteceu, por quê e uma única próxima ação.

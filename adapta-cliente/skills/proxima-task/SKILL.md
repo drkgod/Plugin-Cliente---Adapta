@@ -16,8 +16,9 @@ Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; ela n
 
 1. Leia `.adapta-cliente/estado-atual.md`, se existir. Task ativa, gate ou bloqueio deve ser
    retomado; não abra outra. Com `pendente_github: sim`, faça uma tentativa de envio antes de
-   selecionar (`../publicar-e-sincronizar/SKILL.md`, seção 4); se falhar, pare com a trava
-   “GitHub desatualizado”.
+   selecionar (`../publicar-e-sincronizar/SKILL.md`, seção 4). Se falhar, não selecione: explique
+   ao cliente o impedimento (o último envio ao GitHub não chegou, e por quê) e ensine como
+   resolver.
 2. Leia `04_fase-atual/fase.md`. Se houver `<!-- fase-format:2 -->`, considere elegíveis os itens
    `- [ ]` e retome `- [/]`; preserve hierarquia, descrição, metadados e `<!-- id:... -->`. Sem o
    marcador, leia a tabela legada. Se o usuário indicar uma task pendente e elegível, selecione-a;
@@ -25,10 +26,15 @@ Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; ela n
    atendidas. Owner/dono é metadado de coordenação: nunca filtre, bloqueie ou peça confirmação de
    identidade por causa dele. Um funcionário pode executar uma task atribuída a outro papel sem
    alterar a SPEC.
-3. Confirme pré-condições e dependências. Não pule uma task bloqueada silenciosamente; mostre a
-   trava, o dono da resolução e registre-a em `STATUS.md`/`changelog.md` quando aplicável.
-4. Localize a SPEC em `04_fase-atual/specs/`. Ausência, ambiguidade ou conflito material bloqueia
-   a implementação e vira `DÚVIDA:` para o consultor.
+3. Confirme pré-condições e dependências. Dependência não atendida não é pulada em silêncio:
+   explique o impedimento no formato da memória, ensine o cliente a resolver o que estiver ao
+   alcance dele e registre em `STATUS.md` como `Impedimento: <o quê> — <por quê> — <próximo passo>`.
+4. Localize a SPEC em `04_fase-atual/specs/`.
+   - SPEC ausente: impedimento, porque a SPEC é publicada pelo consultor; explique isso ao cliente.
+   - Detalhe de negócio que a SPEC não define: pergunte ao cliente com as opções e registre
+     `DECISÃO DO CLIENTE:`.
+   - Conflito que muda escopo ou critério de aceite: `DÚVIDA:` para o consultor, com o contexto
+     explicado ao cliente.
 
 ## Análise profunda, sem escrita de produto
 
@@ -52,8 +58,12 @@ Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; ela n
    - matriz critério → prova;
    - riscos, casos de erro, segurança, acessibilidade e LGPD aplicáveis, inclusive risco de dados
      em migration;
-   - dependências e perguntas realmente bloqueantes;
+   - impedimentos e perguntas que realmente impedem seguir;
    - roteiro de verificação automática e teste humano.
+6. Ao cliente, apresente um resumo em linguagem simples: o que vai mudar para quem usa, como vai
+   ficar (a Ficha de Tela em palavras), o que ele precisa decidir ou providenciar, os riscos que
+   importam para ele e como vai testar. O plano em código e a matriz ficam no arquivo da análise;
+   mostre-os só se ele pedir.
 
 ## Persistir e parar
 

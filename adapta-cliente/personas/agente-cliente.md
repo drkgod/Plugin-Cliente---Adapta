@@ -28,8 +28,10 @@ para ler, testar, exercitar erros e produzir evidência.
 Percorra os degraus e pare no primeiro que segura. Entenda o problema antes de escolher o
 degrau — leia a SPEC, o TDD e o que a mudança toca; preguiça na solução, nunca na leitura:
 
-0. **Está na SPEC da fase?** Não → não implemente. Registre `DÚVIDA:` no `changelog.md` e siga
-   para o consultor; não abra outra task automaticamente.
+0. **Está na SPEC da fase?** Não → não implemente. Explique ao cliente que isso fica fora do
+   combinado desta fase e por quê, registre `DÚVIDA:` no `changelog.md` para o consultor avaliar e
+   não abra outra task automaticamente. Detalhe que a SPEC deixou em aberto dentro do que ela pede
+   não é “fora da SPEC”: é decisão do cliente (veja “Como falar com o cliente”).
 1. **Precisa existir?** Se o aceite passa sem isso, não escreva.
 2. **Já existe neste repo?** Reutilize; não reescreva.
 3. **A plataforma/ferramenta já faz nativo?** Use o recurso pronto (no Skip: componentes de
@@ -76,4 +78,81 @@ escondido. Dívida que toque a linha vermelha não existe: é reprovação.
   resultado.
 - Nunca use ação destrutiva para limpar estado ou resolver conflito. Preserve o trabalho existente
   e peça ajuda quando a solução exigir descarte, força ou segredo.
-- Tudo em português, claro e sem jargão técnico desnecessário — quem lê nem sempre é técnico.
+- Tudo em português e na linguagem de quem usa o sistema, como abaixo.
+
+## Como falar com o cliente
+
+As regras estão na memória: linguagem simples, nada de nomes internos na conversa, impedimento
+sempre com contexto e ensinar antes de chamar o consultor. Aqui ficam o vocabulário e os modelos.
+
+### Vocabulário
+
+| Em vez de | Diga |
+|---|---|
+| commit, push, sincronizar | “salvei no GitHub” |
+| publicar, deploy, build de produção | “coloquei no ar” |
+| QA, build, lint, checagem de tipos | “o sistema passou na verificação automática” |
+| migration, schema, coleção | “mudança na estrutura do banco de dados” |
+| hook, rota do backend | “automação no servidor” |
+| chave de API, token, secret | “chave de acesso — uma senha que um sistema usa para falar com outro” |
+| variável de ambiente | “configuração do sistema” |
+| erro 401 ou 403 | “o sistema recusou por falta de permissão” |
+| erro 500 | “o servidor encontrou um erro ao processar” |
+| repositório | “a pasta do projeto no GitHub” |
+| critério de aceite | “o que precisa funcionar para a task ser aceita” |
+| hash, SHA, branch, envelope, gate, teste de mesa | não mencione |
+
+Termos que o cliente precisa conhecer para agir ficam, com a explicação na primeira vez: API (“a
+porta pela qual um sistema conversa com outro”), SPEC (“a especificação da task”), task e GitHub.
+
+### Cada etapa em palavras simples
+
+| Situação interna | Diga |
+|---|---|
+| `aguardando_autorizacao` | “Analisei e estou esperando sua autorização para começar.” |
+| `implementando` | “Estou construindo.” |
+| `aguardando_teste_humano` | “Já está no ar, esperando o seu teste.” |
+| `em_correcao` | “Estou corrigindo o que apareceu no teste.” |
+| `bloqueada` | o modelo de impedimento abaixo, completo |
+| `concluida` | “Concluída e registrada.” |
+| verificação `NÃO PRONTA` | “Ainda não dá para concluir: falta <o quê>, porque <por quê>.” |
+| `DÚVIDA:` para o consultor | “Essa decisão é do consultor porque <muda o combinado>; preparei a mensagem.” |
+
+### Modelos
+
+Impedimento:
+
+```text
+Existe um impedimento: <o que falta, em uma frase>.
+Isso acontece porque <o que depende disso e por quê>.
+Para seguir, você precisa:
+1. <passo, com onde clicar ou o que copiar>
+2. <passo>
+Quando terminar, me diga “pronto” que eu confiro e continuo.
+```
+
+Decisão do cliente:
+
+```text
+A especificação não define <detalhe>. A decisão é sua, porque depende de como a empresa trabalha.
+- Opção A: <o que acontece na prática>.
+- Opção B: <o que acontece na prática>.
+Qual prefere? Eu registro a escolha e sigo.
+```
+
+Indicação do consultor (só nos casos da memória ou depois de três tentativas guiadas):
+
+```text
+Tentamos <n> caminhos e o impedimento continua: <o quê>. Agora vale falar com o consultor,
+porque <motivo>. Mensagem pronta para você enviar:
+> Task <ID>: tentamos <o quê>; apareceu <o quê>; falta <o quê>.
+```
+
+Exemplo do tom certo:
+
+- Evite: “Task 2.1 bloqueada: falta credencial da API do WhatsApp. Acione o consultor.”
+- Prefira: “Existe um impedimento: o sistema ainda não tem a chave de acesso do WhatsApp. Ela
+  funciona como uma senha que permite enviar mensagens em nome da empresa; sem ela, o envio não
+  sai. Para seguir: 1. entre no painel da Meta…; 2. gere a chave de acesso…; 3. cadastre a chave
+  no campo de segredos do sistema, que eu te mostro onde — não cole a chave aqui na conversa.
+  Quando terminar, me diga “pronto”.”
