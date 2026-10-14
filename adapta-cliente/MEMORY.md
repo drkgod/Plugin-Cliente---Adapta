@@ -1,6 +1,6 @@
 # Memória persistente — Adapta Cliente no ETHOS
 
-Versão da memória: `adapta-cliente-memory 0.7.0`
+Versão da memória: `adapta-cliente-memory 0.7.1`
 
 Use este conteúdo na memória persistente do assistente de codificação do cliente durante as cinco
 fases. Estas são instruções ativas, não um histórico: não grave aqui prompts, transcrições,
@@ -10,9 +10,26 @@ Esta memória já vem no bundle. No primeiro comando, o SkillMind pede ao Ethos 
 memória persistente, e que a substitua quando a versão instalada for outra; não peça ao cliente
 para copiar ou colar este arquivo.
 
+## Quando esta memória vale
+
+Tudo o que está aqui vale só para o projeto Adapta registrado: o repositório do cliente que tem
+`04_fase-atual/fase.md` e os projetos do Skip listados em `07-sistemas/<sistema>/plataforma.md`
+desse repositório. A rota `configurar` grava na memória do Ethos uma nota curta, separada deste
+conteúdo:
+
+> Projeto Adapta registrado: <nome> · repositório <dono/repositório> · Skip <id e nome de cada
+> sistema>
+
+É do projeto o pedido que cita esse repositório, esses projetos do Skip, uma task, a fase, a SPEC,
+o status do projeto ou o `skill-mind-cliente`. Todo o resto — outra conversa, outro assunto, outro
+repositório, outro projeto do Skip — segue o comportamento normal do assistente: sem SkillMind,
+sem portões de autorização e teste, sem publicação obrigatória e sem envio ao GitHub. Na dúvida,
+pergunte uma vez: “Isso é do projeto <nome> ou um pedido avulso?”. Pedido avulso nunca abre task
+nem altera arquivos do projeto.
+
 ## Regra zero: entrar sempre pelo SkillMind Cliente
 
-Para qualquer pedido relacionado ao projeto, carregue primeiro
+Para qualquer pedido do projeto registrado, carregue primeiro
 `skills/skill-mind-cliente/SKILL.md`. Isso vale mesmo quando o usuário citar outra skill ou pedir
 diretamente para executar, debugar ou concluir uma task. Uma skill filha sem o envelope
 `CLIENTE_ENVELOPE v1` deve parar e redirecionar para o SkillMind Cliente.
@@ -184,8 +201,9 @@ cliente, task ativa, status e somente então seleção de nova task.
 
 ## Regra de entrega: Skip publicado e GitHub atualizado
 
-Obrigatória. Vale para toda resposta que alterar um projeto pelo MCP do Skip (arquivo, migration,
-hook, variável ou segredo):
+Obrigatória. Vale para toda resposta que alterar, pelo MCP do Skip, um projeto listado em
+`07-sistemas/<sistema>/plataforma.md` do projeto registrado (arquivo, migration, hook, variável ou
+segredo). Outro projeto do Skip ou outro repositório não entra nesta regra:
 
 1. Nenhuma resposta termina com alteração do Skip sem aplicar: rode `skip_project_apply_changes`
    com a mensagem `task <ID>: <resumo>` e confira cada etapa do QA. Única exceção: QA que continua
@@ -208,9 +226,10 @@ hook, variável ou segredo):
 
 ### Quando e como enviar ao GitHub
 
-Envie só nestes momentos: depois de uma publicação provada no Skip (execução ou debug), na
-conclusão da task e na rota `configurar`. Análise, status, debug sem alteração no Skip e etapas
-intermediárias não enviam nada: os arquivos ficam no repositório local e vão no próximo envio.
+Só o repositório do projeto registrado recebe envios. Envie só nestes momentos: depois de uma
+publicação provada no Skip (execução ou debug), na conclusão da task e na rota `configurar`.
+Análise, status, debug sem alteração no Skip e etapas intermediárias não enviam nada: os arquivos
+ficam no repositório local e vão no próximo envio.
 
 - Um commit por momento, com todos os arquivos juntos e push sem força. Com conector do GitHub,
   use a operação que grava vários arquivos em um commit só (como `push_files`); arquivo por arquivo
@@ -262,10 +281,10 @@ Falha nessa rotina não desfaz uma task tecnicamente concluída e não deve inte
 
 O agendamento recomendado no ETHOS é a cada 4 horas com este pedido:
 
-> Use `skill-mind-cliente` em modo de recuperação. Leia o estado, o changelog e as mudanças desde
-> a última revisão; feche apenas checkpoints, triagens de aprendizado e envios ao GitHub
-> pendentes. Não implemente tasks, não aprove teste humano, não conclua fase, não publique no Skip
-> e não comece trabalho novo.
+> Use `skill-mind-cliente` em modo de recuperação, só no projeto Adapta registrado. Leia o estado,
+> o changelog e as mudanças desde a última revisão; feche apenas checkpoints, triagens de
+> aprendizado e envios ao GitHub pendentes. Não implemente tasks, não aprove teste humano, não
+> conclua fase, não publique no Skip e não comece trabalho novo.
 
 O cron é rede de recuperação. Ele não substitui a captura imediata no fechamento e não pode
 inventar causalidade, aprovar gates ou iniciar uma task. O cron também é silencioso: só deve falar

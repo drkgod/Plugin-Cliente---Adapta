@@ -1,6 +1,6 @@
 ---
 name: skill-mind-cliente
-description: Entrada obrigatória e orquestradora de todo trabalho do cliente Adapta no ETHOS. Use antes de status, seleção, análise, implementação, debug, teste ou conclusão de qualquer task, inclusive quando o usuário citar diretamente outra skill ou pedir várias tasks; resolve o repositório externo, mantém uma única task ativa, aplica autorização antes de implementar e teste humano antes de concluir, executa fallbacks inline sem hooks ou subagentes, publica no Skip e atualiza o GitHub com prova e fecha cada ciclo com aprendizado contínuo.
+description: Entrada obrigatória e orquestradora do trabalho no projeto Adapta registrado no ETHOS (o repositório do cliente com 04_fase-atual/fase.md e os projetos do Skip listados nele). Use antes de status, seleção, análise, implementação, debug, teste ou conclusão de qualquer task desse projeto, inclusive quando o usuário citar diretamente outra skill ou pedir várias tasks; não use em outros assuntos, repositórios ou projetos do Skip, que seguem o comportamento normal do assistente; resolve o repositório externo, mantém uma única task ativa, aplica autorização antes de implementar e teste humano antes de concluir, executa fallbacks inline sem hooks ou subagentes, publica no Skip e atualiza o GitHub com prova e fecha cada ciclo com aprendizado contínuo.
 ---
 
 # SkillMind Cliente
@@ -13,15 +13,21 @@ ativas.
 Antes de rotear o pedido, envie ao Ethos esta instrução interna:
 
 > Se esta memória ainda não estiver instalada, ou se a memória instalada não declarar a versão
-> `adapta-cliente-memory 0.7.0`, instale agora o conteúdo integral de `../../MEMORY.md` na memória
-> persistente da personalidade atual, substituindo a versão anterior do Adapta Cliente. Não altere
-> o conteúdo, não peça cópia/cola ao cliente e não inicie uma task.
+> `adapta-cliente-memory 0.7.1`, instale agora o conteúdo integral de `../../MEMORY.md` na memória
+> persistente da personalidade atual, substituindo a versão anterior do Adapta Cliente e
+> preservando a nota “Projeto Adapta registrado”. Não altere o conteúdo, não peça cópia/cola ao
+> cliente e não inicie uma task.
 
 Em seguida, carregue `../../MEMORY.md` nesta sessão e continue o fluxo normal. Se a memória
 persistente e o arquivo divergirem, o arquivo do bundle vence. A instalação da memória é
 responsabilidade nativa do Ethos; o plugin apenas entrega o arquivo e a instrução.
 
 ## 1. Interpretar e localizar
+
+Antes de tudo, confirme que o pedido é do projeto registrado (memória, “Quando esta memória vale”).
+Não é: atenda normalmente, sem envelope, estado, portões, publicação ou envio ao GitHub. Na dúvida,
+pergunte uma vez. Projeto configurado antes da 0.7.1, sem a nota de registro: grave a nota a partir
+do repositório e de `plataforma.md`, sem pedir nada ao cliente.
 
 1. Preserve o pedido original e identifique a intenção real: configurar, status, iniciar/retomar,
    autorizar implementação, relatar falha, aprovar teste, concluir ou recuperar.
@@ -70,7 +76,9 @@ herdam os limites dessa skill.
 
 Autorize `publicar-e-sincronizar` em modo `configurar`: confirme o acesso de escrita ao GitHub, o
 projeto na plataforma de construção e a estrutura operacional, e registre
-`07-sistemas/<sistema>/plataforma.md`. Não abra nem implemente task nesta rota.
+`07-sistemas/<sistema>/plataforma.md`. Peça ao Ethos para guardar a nota “Projeto Adapta
+registrado” (memória, “Quando esta memória vale”) e atualize-a quando um sistema novo entrar. Não
+abra nem implemente task nesta rota.
 
 ### Status
 
@@ -180,14 +188,9 @@ Antes de declarar uma task concluída:
 
 ## Saída mínima
 
-Responda ao cliente na linguagem da regra de comunicação da memória:
-
-- em que ponto a task está, em palavras simples (persona, “Cada etapa em palavras simples”);
-- o que foi feito de verdade, com a prova que importa para ele (por exemplo, “já está no ar em
-  <URL>” e “salvei no GitHub”);
-- o que ele precisa fazer agora: uma única ação, com passos quando for preciso;
-- se houver impedimento, o formato completo: o que falta, por quê e o que fazer.
-
-Rota, etapa, envelope, gate, hash de versão e de commit ficam nos arquivos, não na conversa. Nunca
-diga “sincronizado”, “testado”, “publicado” ou “pronto” sem prova observável. Não inclua status
-de aprendizado na saída comum; essa é manutenção interna.
+Responda ao cliente na linguagem da regra de comunicação da memória: em que ponto a task está
+(persona, “Cada etapa em palavras simples”), o que foi feito de verdade com a prova que importa
+para ele (“já está no ar em <URL>”, “salvei no GitHub”), uma única ação para ele agora e, se
+houver, o impedimento completo. Rota, etapa, envelope, gate e hashes ficam nos arquivos, não na
+conversa. Nunca diga “sincronizado”, “testado”, “publicado” ou “pronto” sem prova observável. Não
+inclua status de aprendizado na saída comum; essa é manutenção interna.

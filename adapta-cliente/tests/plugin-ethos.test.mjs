@@ -138,7 +138,7 @@ test("manifests estão na versão Ethos e JSON é válido", () => {
   for (const relative of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]) {
     const manifest = JSON.parse(read(relative))
     assert.equal(manifest.name, "adapta-cliente")
-    assert.equal(manifest.version, "0.7.0")
+    assert.equal(manifest.version, "0.7.1")
   }
 })
 
@@ -322,8 +322,33 @@ test("instruções não mandam direto ao consultor nem expõem jargão interno a
   }
   const mind = read("skills/skill-mind-cliente/SKILL.md")
   assert.doesNotMatch(mind, /Informe: rota escolhida/)
-  assert.match(mind, /ficam nos arquivos, não na conversa/)
+  assert.match(mind, /ficam nos arquivos, não na\s+conversa/)
   for (const skill of ["proxima-task", "executar-task", "debug-task", "ui-ux-sistemas"]) {
     assert.match(read(`skills/${skill}/SKILL.md`), /DECISÃO DO CLIENTE:/, skill)
+  }
+})
+
+test("regras valem só no projeto registrado, nunca em outra conversa ou projeto", () => {
+  const memory = read("MEMORY.md")
+  const mind = read("skills/skill-mind-cliente/SKILL.md")
+  const sync = read("skills/publicar-e-sincronizar/SKILL.md")
+  assert.match(memory, /## Quando esta memória vale/)
+  assert.match(memory, /Projeto Adapta registrado:/)
+  assert.match(memory, /Todo o resto — outra conversa, outro assunto, outro\s+repositório, outro projeto do Skip — segue o comportamento normal/)
+  assert.match(memory, /Para qualquer pedido do projeto registrado/)
+  assert.match(memory, /um projeto listado em\s+`07-sistemas\/<sistema>\/plataforma\.md` do projeto registrado/)
+  assert.match(memory, /Só o repositório do projeto registrado recebe envios/)
+  assert.doesNotMatch(memory, /Vale para toda resposta que alterar um projeto pelo MCP do Skip/)
+  assert.match(mind, /description: .*projeto Adapta registrado/)
+  assert.match(mind, /não use em outros assuntos, repositórios ou projetos do Skip/)
+  assert.match(mind, /Antes de tudo, confirme que o pedido é do projeto registrado/)
+  assert.match(mind, /preservando a nota “Projeto Adapta registrado”/)
+  assert.match(sync, /nunca\s+publica ou envia nada de outro repositório ou projeto/)
+})
+
+test("hooks opcionais não agem fora do repositório do cliente", () => {
+  for (const script of ["session-start.sh", "sync-github.sh", "guarda-seguranca.sh"]) {
+    const body = read(`hooks/scripts/${script}`)
+    assert.match(body, /04_fase-atual\/fase\.md" \] \|\| exit 0/, script)
   }
 })

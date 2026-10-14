@@ -15,7 +15,9 @@ envelope (`proxima-task`, `executar-task`, `debug-task` ou `concluir-task`) ou �
 SkillMind nas rotas `configurar` e `recuperar`. Sem envelope, carregue
 `../skill-mind-cliente/SKILL.md`, redirecione e não publique nem envie nada.
 
-Ela não abre task, não aprova teste humano, não conclui task e não decide escopo.
+Ela não abre task, não aprova teste humano, não conclui task e não decide escopo. Só age no
+repositório do projeto registrado e nos projetos do Skip listados em `plataforma.md`; nunca
+publica ou envia nada de outro repositório ou projeto.
 
 ## Modos
 

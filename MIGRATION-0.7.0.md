@@ -44,3 +44,22 @@ Agora:
 > 1. entre no painel da Meta…; 2. gere a chave de acesso…; 3. cadastre a chave no campo de segredos
 > do sistema, que eu te mostro onde — não cole a chave aqui na conversa. Quando terminar, me diga
 > “pronto”.
+
+## Ajuste 0.7.1 — regras só no projeto configurado
+
+A memória fica instalada na personalidade do Ethos inteira, e a regra de entrega valia para
+qualquer projeto do Skip. Na prática, o cliente não conseguia usar o mesmo chat para outra coisa
+sem ser puxado para portões, publicação e envio ao GitHub. Agora:
+
+- a memória abre com “Quando esta memória vale”: tudo se aplica só ao projeto Adapta registrado
+  (o repositório com `04_fase-atual/fase.md` e os projetos do Skip listados em `plataforma.md`);
+- a rota `configurar` grava no Ethos a nota “Projeto Adapta registrado” com nome, repositório e
+  projetos do Skip; projetos configurados antes ganham a nota no primeiro pedido, sem perguntar;
+- outra conversa, outro assunto, outro repositório ou outro projeto do Skip seguem o comportamento
+  normal do assistente; na dúvida, o assistente pergunta uma vez se o pedido é do projeto;
+- a regra de entrega e os envios ao GitHub só valem para o projeto registrado;
+- os hooks opcionais do Claude Code (commit e push automáticos, pull no início e guarda de
+  comandos) só agem em repositórios com `04_fase-atual/fase.md` — antes agiam em qualquer projeto;
+- a edição Codex (0.3.1) só age em repositório operacional Adapta;
+- memória `adapta-cliente-memory 0.7.1`, substituída sozinha no próximo uso, preservando a nota de
+  registro do projeto.

@@ -18,7 +18,7 @@ test("manifest publica a edição Codex independente", () => {
   const manifest = JSON.parse(read(".codex-plugin/plugin.json"))
   const marketplace = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, ".agents", "plugins", "marketplace.json"), "utf8"))
   assert.equal(manifest.name, "adapta-cliente-codex")
-  assert.equal(manifest.version, "0.3.0")
+  assert.equal(manifest.version, "0.3.1")
   assert.equal(manifest.skills, "./skills/")
   assert.equal(marketplace.plugins[0].name, manifest.name)
   assert.equal(marketplace.plugins[0].source.path, "./plugins/adapta-cliente-codex")
@@ -66,4 +66,9 @@ test("persona Codex fala simples e ensina antes de indicar o consultor", () => {
   for (const skill of skillNames()) {
     assert.doesNotMatch(read(`skills/${skill}/SKILL.md`), /vira `DÚVIDA:` e bloqueia|travas/, skill)
   }
+})
+
+test("edição Codex só age em repositório operacional Adapta", () => {
+  assert.match(read("skills/proxima-task/SKILL.md"), /Sem `04_fase-atual\/fase\.md` na pasta, ela\s+não se aplica/)
+  assert.match(read("personas/agente-cliente.md"), /Em\s+outro projeto ou assunto, trabalhe normalmente/)
 })

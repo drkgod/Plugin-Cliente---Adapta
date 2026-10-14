@@ -8,6 +8,9 @@
 # adaptado ao método Adapta Native (decisão D6). Checagem determinística, sem dependências:
 # casa padrões sobre o payload JSON do hook. Exit 2 = bloqueia e explica; exit 0 = segue.
 
+# Só age no repositório operacional do cliente Adapta; em qualquer outro projeto não faz nada.
+[ -f "${CLAUDE_PROJECT_DIR:-.}/04_fase-atual/fase.md" ] || exit 0
+
 PAYLOAD=$(cat 2>/dev/null) || exit 0
 [ -n "$PAYLOAD" ] || exit 0
 

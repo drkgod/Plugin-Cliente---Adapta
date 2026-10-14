@@ -5,6 +5,9 @@
 
 cd "${CLAUDE_PROJECT_DIR:-.}" 2>/dev/null || exit 0
 
+# Só age no repositório operacional do cliente Adapta; em qualquer outro projeto não faz nada.
+[ -f "04_fase-atual/fase.md" ] || exit 0
+
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || exit 0
 git remote get-url origin >/dev/null 2>&1 || exit 0
 

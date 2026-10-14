@@ -8,6 +8,9 @@ description: Seleciona e analisa exatamente uma task elegível do repositório o
 Carregue `../../personas/agente-cliente.md` e `../../references/estado-v2.md`. Esta skill é direta
 e nativa no Codex.
 
+Ela só se aplica a um repositório operacional Adapta. Sem `04_fase-atual/fase.md` na pasta, ela
+não se aplica: atenda o pedido normalmente, sem criar estado, análise ou qualquer arquivo.
+
 1. Resolva a raiz pelo conjunto `04_fase-atual/fase.md`, `04_fase-atual/specs/`, `STATUS.md`,
    `changelog.md` e `07-sistemas/`.
 2. Se `handoff-manifest.json` existir, valide no manifesto v2 `consumer.surface: codex` e

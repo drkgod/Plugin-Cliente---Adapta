@@ -5,6 +5,9 @@
 
 cd "${CLAUDE_PROJECT_DIR:-.}" 2>/dev/null || exit 0
 
+# Só age no repositório operacional do cliente Adapta; em qualquer outro projeto não faz nada.
+[ -f "04_fase-atual/fase.md" ] || exit 0
+
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git remote get-url origin >/dev/null 2>&1; then
   # Só puxa se não houver mudanças locais não commitadas (evita conflito silencioso)
   if [ -z "$(git status --porcelain 2>/dev/null)" ]; then

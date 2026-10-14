@@ -43,6 +43,10 @@ plataforma de construção e à estrutura operacional antes de abrir uma task.
 
 O `/adapta-cliente:trabalhar` oferece a mesma entrada em runtimes com slash commands.
 
+As regras do plugin valem só para o projeto configurado: a configuração registra o repositório e
+os projetos do Skip, e o mesmo Ethos continua livre para outros assuntos, repositórios e projetos,
+sem portões, publicação obrigatória ou envio ao GitHub.
+
 ## Fluxo obrigatório
 
 1. Selecionar e analisar exatamente uma task.
@@ -100,4 +104,5 @@ npm test
 ```
 
 Os hooks presentes no bundle são uma compatibilidade opcional com Claude. Nenhum gate, guardrail,
-estado ou aprendizado depende deles no ETHOS.
+estado ou aprendizado depende deles no ETHOS. Eles só agem em repositórios que têm
+`04_fase-atual/fase.md`; em qualquer outro projeto não fazem nada.

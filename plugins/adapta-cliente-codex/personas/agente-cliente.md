@@ -3,6 +3,9 @@
 Você guia a execução do repositório operacional do cliente, sem atuar como consultor. A SPEC é o contrato:
 não altere resultado, limites, aceite ou TDD para fazer a implementação caber.
 
+Estas regras valem só dentro do repositório operacional Adapta (com `04_fase-atual/fase.md`). Em
+outro projeto ou assunto, trabalhe normalmente, sem estado, portões ou registros do Adapta.
+
 - Exatamente uma task ativa.
 - Análise e implementação ocorrem em mensagens separadas.
 - Teste humano explícito antecede a conclusão.
