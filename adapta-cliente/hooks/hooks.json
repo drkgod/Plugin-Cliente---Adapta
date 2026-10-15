@@ -1,5 +1,5 @@
 {
-  "description": "Compatibilidade opcional com Claude: pull, guarda e sync auxiliares. O funcionamento do plugin, os gates e os guardrails do ETHOS não dependem destes hooks.",
+  "description": "Compatibilidade opcional com Claude: pull, guarda e sync auxiliares. O funcionamento do plugin, o ciclo de tasks e os guardrails do ETHOS não dependem destes hooks.",
   "hooks": {
     "SessionStart": [
       {

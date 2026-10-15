@@ -1,7 +1,7 @@
 # Fluxo principal — Plugin Adapta Cliente
 
-Este é o texto canônico para explicar o onboarding e a execução no site. A estrutura de pastas do
-repositório operacional permanece:
+Este é o texto canônico para explicar o onboarding e a execução no site (edição Ethos, 0.8.0). A
+estrutura de pastas do repositório operacional permanece:
 
 - `04_fase-atual/fase.md`
 - `04_fase-atual/specs/`
@@ -14,15 +14,20 @@ repositório operacional permanece:
 ## O caminho do cliente
 
 1. **Configurar:** instalar o plugin, ativar a memória e confirmar os acessos em uma única entrada.
-2. **Analisar:** selecionar exatamente uma task e entender plano, riscos e testes sem implementar.
-3. **Autorizar:** o cliente autoriza aquela task em uma nova mensagem.
-4. **Executar:** o agente implementa, roda as verificações, publica na plataforma de construção,
-   atualiza o GitHub e entrega um roteiro de teste humano.
-5. **Aprovar ou corrigir:** o cliente testa no endereço publicado; se funcionar, a task é
-   concluída; se falhar, a mesma task volta para debug.
+2. **Pedir o trabalho:** o cliente pede para começar ou continuar a fase. Esse pedido autoriza o
+   assistente a construir as tasks em sequência, sempre dentro da SPEC.
+3. **Construir:** uma task por vez, o assistente analisa a fundo, implementa, roda as
+   verificações, publica na plataforma de construção com prova e segue para a próxima, sem pedir
+   licença a cada passo.
+4. **Responder e testar:** o assistente só para quando precisa do cliente: uma pergunta de
+   negócio que a SPEC não define (todas juntas, com recomendação), um teste no endereço publicado
+   quando uma tela ou um fluxo fica pronto, um impedimento ou o fim da fase. Antes de parar, salva
+   tudo no GitHub em um único envio.
+5. **Aprovar ou corrigir:** se o teste funcionar, as tasks testadas são concluídas e o trabalho
+   continua; se falhar, a mesma task volta para debug e o cliente testa de novo só o que falhou.
 
-Não existe conclusão automática, execução da fase inteira ou abertura da próxima task no mesmo
-ciclo.
+Cada task tem análise, verificação e prova próprias; o assistente nunca mistura duas tasks no
+mesmo conjunto de alterações. “Só analise”, “uma task por vez” e “pare” são respeitados.
 
 ## Cinco prompts públicos
 
@@ -41,36 +46,33 @@ Instale ou atualize o plugin, use skill-mind-cliente e confirme a memória persi
 e a estrutura operacional. Não abra nem implemente uma task nesta resposta.
 ```
 
-### 2. Começar
+### 2. Trabalhar
 
 ```text
-Use skill-mind-cliente para começar ou retomar o trabalho. Analise exatamente uma task elegível e
-pare antes de implementar.
+Use skill-mind-cliente para começar ou continuar o trabalho da fase.
 ```
 
-### 3. Autorizar
+### 3. Responder
 
 ```text
-Autorizo implementar somente a task <TASK-ID>, seguindo a análise apresentada, sua SPEC e os
-critérios de aceite. Não abra outra task.
+Pode seguir com as recomendações.
 ```
+
+Ou a resposta de cada pergunta, na ordem em que o assistente perguntou.
 
 ### 4. Aprovar
 
 ```text
-Executei o roteiro de teste humano da task <TASK-ID> e o resultado esperado funcionou. Revalide as
-evidências, conclua somente essa task e pare.
+Fiz o teste que você pediu e funcionou. Pode concluir e seguir.
 ```
 
 ### 5. Relatar falha
 
 ```text
-O teste da task <TASK-ID> falhou.
-Sintoma observado: <O-QUE-APARECEU>
-Passos usados: <PASSOS-MÍNIMOS>
-Resultado esperado: <RESULTADO>
-
-Faça o debug da mesma task e pare novamente no teste humano. Não abra outra task.
+O teste falhou.
+Passo que falhou: <NÚMERO-OU-DESCRIÇÃO>
+O que apareceu: <O-QUE-APARECEU>
+O que eu esperava: <RESULTADO>
 ```
 
 ## Contrato das tasks do portal
@@ -85,15 +87,17 @@ Quando `04_fase-atual/fase.md` usar `<!-- fase-format:2 -->`, o plugin interpret
 
 O formato tabular antigo continua legível para projetos existentes.
 
-## O que realmente impede uma task de seguir
+## O que realmente faz o assistente parar
 
 - `04_fase-atual/fase.md` ausente ou sem task identificável;
 - SPEC ausente ou conflitante;
 - raiz executável ausente ou ambígua;
-- dependência declarada da task não atendida;
-- falta de autorização explícita para implementar;
-- publicação na plataforma de construção sem prova, para pedir o teste humano;
-- falta do teste humano para concluir.
+- dependência declarada da task não atendida, sem outra task independente para seguir;
+- detalhe de negócio que a SPEC não define, ou ação de risco sobre dados existentes;
+- publicação na plataforma de construção sem prova;
+- teste do cliente necessário (tela ou fluxo pronto, três tasks visíveis sem teste, serviço
+  externo, mudança no que a equipe já usa ou aprovação pedida pela SPEC);
+- fase concluída.
 
 Owner diferente do executor, ausência de `handoff-manifest.json`, check separado ou formulário de
 liberação não impedem uma task válida. Todo impedimento é explicado ao cliente com o porquê e o que
@@ -103,8 +107,8 @@ fazer, e o assistente ensina a resolver antes de indicar o consultor.
 
 - Use “segredos” no lugar de “secrets”.
 - Use “plataforma de construção” e apresente Skip apenas como exemplo.
-- Descreva a IA como responsável por analisar, implementar e verificar; o cliente autoriza e
-  valida o resultado real.
+- Descreva a IA como responsável por analisar, construir, verificar e publicar em sequência; o
+  cliente pede o trabalho, responde às decisões de negócio e testa o resultado real.
 - Evite nomes de clientes reais em páginas públicas.
 - Não apresente instalação da memória como um segundo ou terceiro comando.
 - Fale de “impedimento” com contexto (“existe um impedimento: X, porque Y”), nunca de “bloqueio”.

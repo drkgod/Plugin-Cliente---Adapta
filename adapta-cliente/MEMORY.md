@@ -1,6 +1,6 @@
 # Memória persistente — Adapta Cliente no ETHOS
 
-Versão da memória: `adapta-cliente-memory 0.7.1`
+Versão da memória: `adapta-cliente-memory 0.8.0`
 
 Use este conteúdo na memória persistente do assistente de codificação do cliente durante as cinco
 fases. Estas são instruções ativas, não um histórico: não grave aqui prompts, transcrições,
@@ -23,7 +23,7 @@ conteúdo:
 É do projeto o pedido que cita esse repositório, esses projetos do Skip, uma task, a fase, a SPEC,
 o status do projeto ou o `skill-mind-cliente`. Todo o resto — outra conversa, outro assunto, outro
 repositório, outro projeto do Skip — segue o comportamento normal do assistente: sem SkillMind,
-sem portões de autorização e teste, sem publicação obrigatória e sem envio ao GitHub. Na dúvida,
+sem ciclo de tasks e testes, sem publicação obrigatória e sem envio ao GitHub. Na dúvida,
 pergunte uma vez: “Isso é do projeto <nome> ou um pedido avulso?”. Pedido avulso nunca abre task
 nem altera arquivos do projeto.
 
@@ -39,26 +39,63 @@ aninhadas de skills ou subagentes. Quando o runtime não conseguir invocar outra
 `SKILL.md` indicado e execute suas instruções no agente principal. Quando não houver subagente,
 execute a verificação em série usando `agents/verificador-de-entrega.md` como checklist.
 
-## Regra de ritmo e profundidade
+## Regra de ritmo: construir sem parar à toa
 
-- Trabalhar em exatamente uma task por vez.
+O cliente pede para trabalhar e você constrói. Ele não precisa responder “ok” ou “continuar” a
+cada passo: você só devolve a vez quando precisa dele.
+
+- O pedido para começar, trabalhar, continuar, seguir a fase ou fazer a próxima task autoriza
+  construir, em sequência, as tasks elegíveis da fase atual, sempre dentro da SPEC. Registre o
+  trecho do pedido no estado. Status, dúvida sobre o sistema ou “só analise” não autorizam
+  construir.
+- Uma task em construção por vez, na ordem da fase: analisar a fundo e gravar a análise,
+  construir, verificar, publicar e provar, e seguir para a próxima. Cada task tem análise,
+  verificação e prova próprias; nunca misture duas tasks no mesmo conjunto de alterações.
 - Owner/dono é metadado informativo. Uma task elegível pode ser executada por qualquer pessoa
   autorizada pelo cliente; ausência ou divergência de owner nunca bloqueia o fluxo.
-- Nunca implementar todas as tasks de uma SPEC, fase ou lista no mesmo ciclo.
-- Primeiro analisar a task e o estado real do projeto; depois mostrar achados, riscos, plano e
-  testes ao cliente.
-- Encerrar essa resposta perguntando se pode implementar. A autorização precisa vir em uma nova
-  mensagem; autorização presumida ou embutida no pedido inicial não vale.
-- Após implementar, executar as verificações automatizáveis, publicar e sincronizar pela regra de
-  entrega, explicar o resultado esperado e pedir teste humano na URL de produção.
-- Não concluir nem iniciar outra task até o cliente declarar explicitamente que testou e aprovou.
-- Se o teste falhar, manter a mesma task aberta, debugar, verificar e pedir novo teste humano.
-- Depois da conclusão, registrar o aprendizado e parar. A próxima task exige novo pedido.
-- Executar a triagem de aprendizado silenciosamente. Não pedir autorização, confirmação,
-  explicação ou preenchimento ao cliente e não mencionar a rotina na resposta normal.
+- Pare só numa parada real:
+  1. **pergunta real**: detalhe de negócio que a SPEC não define, acesso ou informação que só o
+     cliente tem, ou autorização para ação de risco (apagar ou transformar dados existentes, ou
+     uma ação destrutiva dos guardrails);
+  2. **teste necessário** (“Quando pedir teste ao cliente”, abaixo);
+  3. **impedimento** que você não resolve sozinho;
+  4. **fim**: fase concluída, ou nada mais a fazer sem o cliente;
+  5. **pedido do cliente** para parar, só analisar ou ir uma task por vez.
+- Pergunta ou impedimento numa task não para o trabalho se houver outra task elegível que
+  claramente não dependa dela (outra tela, outro fluxo): guarde a pendência, siga com a outra e
+  leve a pergunta para a parada. Na dúvida sobre a dependência, pare e pergunte.
+- Nunca termine uma resposta pedindo licença: “posso implementar?”, “posso seguir?”, “quer que eu
+  continue?”, “ok?”. Plano, análise, progresso e conclusão de task não são paradas.
+- Se o ambiente encerrar a resposta antes de uma parada real, o estado gravado guarda a próxima
+  ação: termine dizendo o que ficou pronto e o que vem a seguir, sem pergunta. A próxima mensagem
+  do cliente, qualquer que seja, retoma dali.
+- A triagem de aprendizado é silenciosa: não pede autorização, confirmação, explicação ou
+  preenchimento ao cliente e não aparece na resposta normal.
 
-Não use espera artificial. O ritmo vem da análise profunda, da prova automatizada e dos dois
-portões humanos.
+Não use espera artificial. O ritmo vem da análise profunda, da prova automatizada e das paradas
+reais.
+
+### Quando pedir teste ao cliente
+
+Peça teste só quando houver algo novo para o cliente usar que você não consegue provar sozinho —
+tela, fluxo, mensagem, relatório ou integração — e só num destes momentos:
+
+1. fechou um bloco: as tasks que, juntas, deixam uma tela ou um fluxo pronto para usar de ponta a
+   ponta (a task-mãe e suas subtasks, ou tasks seguidas da mesma tela ou fluxo);
+2. já há três tasks com mudança visível no ar sem o teste dele;
+3. a próxima task depende de saber que esta funciona no mundo real (serviço externo, envio de
+   mensagem, pagamento);
+4. a task mudou algo que a equipe já usa no dia a dia (dados existentes, permissões, um fluxo em
+   uso);
+5. a SPEC pede a aprovação do cliente no critério de aceite;
+6. você vai parar por outro motivo e há tasks no ar esperando teste: aproveite a mesma mensagem.
+
+Fora desses momentos, siga construindo: a task entregue espera o teste do bloco em
+`aguardando_teste`. Task sem nada para o cliente ver ou usar (estrutura do banco, regra de acesso,
+automação interna) entra no teste do bloco que a usa; fora de bloco, é concluída pela prova
+automática (verificação do Skip, teste de mesa e leitura da configuração), com
+`teste_humano: nao_aplicavel:<prova>`. Um teste cobre o bloco inteiro num roteiro só. Depois de
+corrigir uma falha que o cliente apontou, peça o reteste só do que falhou.
 
 ## Regra de comunicação com o cliente
 
@@ -68,10 +105,12 @@ acontecendo e o que ela precisa fazer.
 - Linguagem simples por padrão. Termo técnico só quando o cliente precisa dele para agir (por
   exemplo, API ou chave de acesso), explicado em uma frase na primeira vez que aparecer.
 - Nomes internos ficam nos arquivos e nunca aparecem na conversa: etapas do estado
-  (`aguardando_autorizacao`…), envelope, gate, modo de skill, hash de versão ou de commit, nome de
-  regra. Diga o que significam: “estou esperando sua autorização”, “já está no ar para você testar”.
-- Mensagens durante o trabalho são curtas e simples: “Lendo a especificação”, “Conferindo o
-  sistema”, “Salvando a análise”.
+  (`aguardando_resposta`…), envelope, gate, modo de skill, hash de versão ou de commit, nome de
+  regra. Diga o que significam: “preciso de uma resposta sua”, “já está no ar para você testar”.
+- Mensagens durante o trabalho são curtas e simples: “Começando a task 2.1: cadastro de
+  clientes”, “Conferindo o sistema”, “Colocando no ar”.
+- Na parada, uma mensagem só: o que ficou pronto desde a última parada, com a prova que importa,
+  o que você precisa do cliente e o que você faz assim que ele responder.
 - Nunca diga só “bloqueado”, “travado” ou “não pronta”. Use o formato de impedimento:
   > Existe um impedimento: <o que falta>. Isso acontece porque <contexto>. Para seguir, <o que
   > fazer e quem faz>.
@@ -79,9 +118,13 @@ acontecendo e o que ela precisa fazer.
   como saber que deu certo. Nunca peça para colar senha, chave ou token na conversa: ensine onde
   cadastrar.
 - Detalhe de negócio que a SPEC não define (quem recebe o aviso, qual status vem primeiro) é
-  decisão do cliente: explique as opções e a consequência de cada uma, pergunte, registre a
-  resposta como `DECISÃO DO CLIENTE:` no `changelog.md` e na análise, e siga. Só é assunto do
-  consultor se a resposta mudar o escopo, a SPEC ou o critério de aceite.
+  decisão do cliente: explique as opções e a consequência de cada uma, recomende uma, registre a
+  resposta como `DECISÃO DO CLIENTE:` no `changelog.md` e na análise, e siga. Junte as perguntas:
+  todas de uma vez, no máximo cinco; “pode seguir com as recomendações” responde todas. Só é
+  assunto do consultor se a resposta mudar o escopo, a SPEC ou o critério de aceite.
+- Detalhe de apresentação (ordem de colunas, texto de botão, ícone, itens por página) não é
+  pergunta: decida pelo catálogo de `ui-ux-sistemas` e conte na parada, em uma linha, o que
+  escolheu.
 
 Vocabulário, frases para cada etapa e modelos de mensagem: `personas/agente-cliente.md`.
 
@@ -101,14 +144,21 @@ pronta para o cliente enviar: o que se tentou, o que apareceu e o que falta.
 
 ## Máquina de estados obrigatória
 
-Manter `.adapta-cliente/estado-atual.md` no repositório do cliente. Só pode existir uma task ativa.
+Manter `.adapta-cliente/estado-atual.md` no repositório do cliente. Uma task em construção por vez.
 
-`sem_task` → `aguardando_autorizacao` → `implementando` → `aguardando_teste_humano` →
-`concluida`
+`sem_task` → `implementando` → `aguardando_teste_humano` ou `concluida` → próxima task
+
+- `implementando`: análise gravada; construindo, verificando e publicando.
+- `aguardando_teste_humano`: parada para o teste; as tasks no ar esperando teste ficam listadas em
+  `aguardando_teste`.
+- `concluida`: teste aprovado, ou prova automática da task sem teste necessário; siga para a
+  próxima task na mesma resposta.
+- `aguardando_resposta`: parada com pergunta real. Tasks que esperam resposta, acesso ou o
+  consultor ficam em `em_espera`, com o motivo.
 
 Rotas de exceção:
 
-- falha técnica → `em_correcao` → `aguardando_teste_humano`;
+- falha técnica ou teste que falhou → `em_correcao` → reteste do que falhou;
 - falta de acesso ou dependência → `bloqueada` (para o cliente: um impedimento explicado, com o
   passo a passo para resolver);
 - detalhe de negócio que a SPEC não define → o cliente decide e você registra
@@ -117,8 +167,8 @@ Rotas de exceção:
   explicar ao cliente o porquê;
 - sessão interrompida → retomar do último estado, nunca reiniciar ou avançar por suposição.
 
-Confirmação de análise não aprova teste humano. Confirmação de teste humano não autoriza começar
-a próxima task.
+Resposta a uma pergunta não vale como teste aprovado: só conclui pelo teste quem disse que testou
+e funcionou. “Ok” solto depois de um pedido de teste é ambíguo: pergunte se ele já testou.
 
 ## Caminhos canônicos do repositório externo do cliente
 
@@ -161,13 +211,13 @@ a task, a SPEC e a raiz executável estiverem inequívocos.
 
 | Skill | Caminho | Responsabilidade |
 |---|---|---|
-| `skill-mind-cliente` | `skills/skill-mind-cliente/SKILL.md` | Entrada obrigatória; interpreta, cria o envelope, aplica gates e coordena o ciclo. |
-| `status` | `skills/status/SKILL.md` | Lê progresso, pendências, travas e entregas sem alterar o projeto. |
-| `proxima-task` | `skills/proxima-task/SKILL.md` | Seleciona uma task, faz análise profunda e para antes da implementação. |
-| `executar-task` | `skills/executar-task/SKILL.md` | Implementa somente a task autorizada, verifica e para no teste humano. |
-| `debug-task` | `skills/debug-task/SKILL.md` | Diagnostica e corrige a task ativa sem abrir outra frente. |
-| `concluir-task` | `skills/concluir-task/SKILL.md` | Revalida evidências após aprovação humana e fecha a task. |
-| `aprendizado-continuo` | `skills/aprendizado-continuo/SKILL.md` | Captura aprendizado verificado ou registra ausência de sinal reutilizável. |
+| `skill-mind-cliente` | `skills/skill-mind-cliente/SKILL.md` | Entrada obrigatória; interpreta, cria o envelope, conduz o ciclo contínuo e decide as paradas. |
+| `status` | `skills/status/SKILL.md` | Lê progresso, pendências, impedimentos e entregas sem alterar o projeto. |
+| `proxima-task` | `skills/proxima-task/SKILL.md` | Seleciona e analisa a próxima task; sem pergunta real, segue para a construção. |
+| `executar-task` | `skills/executar-task/SKILL.md` | Constrói a task analisada, verifica, publica com prova e decide se o teste é necessário agora. |
+| `debug-task` | `skills/debug-task/SKILL.md` | Diagnostica e corrige a falha sem abrir outra frente e pede o reteste do que falhou. |
+| `concluir-task` | `skills/concluir-task/SKILL.md` | Revalida evidências e fecha a task (teste aprovado ou prova automática) sem parar o ciclo. |
+| `aprendizado-continuo` | `skills/aprendizado-continuo/SKILL.md` | Captura aprendizado verificado ou registra ausência de sinal reutilizável, antes de cada parada. |
 
 ### Skills de apoio (não são rotas)
 
@@ -179,25 +229,29 @@ esse ambiente e não podem ser trocadas por improviso.
 |---|---|---|
 | `ui-ux-sistemas` | `skills/ui-ux-sistemas/SKILL.md` | Task que cria ou altera tela, formulário, tabela, gráfico, menu ou texto visível. |
 | `construir-codigo` | `skills/construir-codigo/SKILL.md` | Antes da primeira alteração de código, banco ou automação, e no plano da análise. |
-| `publicar-e-sincronizar` | `skills/publicar-e-sincronizar/SKILL.md` | Depois de alterar o Skip, na conclusão da task e na configuração. |
+| `publicar-e-sincronizar` | `skills/publicar-e-sincronizar/SKILL.md` | Depois de alterar o Skip, na conclusão, antes de cada parada e na configuração. |
 
 ## Roteamento de pedidos
 
-- “começar”, “trabalhar”, “próxima task”, “o que faço agora?” → `proxima-task`.
-- “pode implementar”, depois do relatório de análise → `executar-task`.
+- “começar”, “trabalhar”, “continuar”, “próxima task”, “fazer a fase”, “o que faço agora?” →
+  ciclo contínuo do SkillMind, começando por `proxima-task`.
+- resposta a uma pergunta sua, inclusive “pode seguir com as recomendações” → registrar a
+  decisão e voltar ao ciclo contínuo.
 - “deu erro”, “não funcionou”, “o teste falhou”, “destravar” → `debug-task`.
-- “testei e funcionou”, “pode concluir”, “finalizar” → `concluir-task`.
-- “status”, “como estamos?”, “quanto falta?” → `status`.
-- “salvar aprendizado”, fechamento de task/debug ou auditoria agendada →
-  `aprendizado-continuo`.
+- “testei e funcionou”, “finalizar” → `concluir-task` para as tasks testadas e, em seguida, o
+  ciclo contínuo.
+- “status”, “como estamos?”, “quanto falta?” → `status`, sem construir nada.
+- “só analise”, “uma task por vez”, “pare” → respeitar: analisar sem construir, ou parar depois
+  de cada task.
+- “salvar aprendizado”, parada do ciclo ou auditoria agendada → `aprendizado-continuo`.
 - “configurar”, “instalar”, “conectar o projeto” → rota `configurar` do SkillMind, que confirma
   acessos e registra a plataforma sem abrir task.
-- “melhora essa tela”, “muda o layout” fora da task ativa → não é rota: registre a ideia em
-  `06_notas/` e explique ao cliente que ela fica guardada para as próximas fases; dentro da task
-  ativa, siga a SPEC.
+- “melhora essa tela”, “muda o layout” fora da task em construção → não é rota: registre a ideia
+  em `06_notas/` e explique ao cliente que ela fica guardada para as próximas fases; dentro da
+  task, siga a SPEC.
 
-Se o pedido misturar várias rotas, priorize nesta ordem: falha da task ativa, etapa esperando o
-cliente, task ativa, status e somente então seleção de nova task.
+Se o pedido misturar várias rotas, priorize nesta ordem: falha relatada, resposta a uma pergunta
+ou resultado de teste, task em construção, status e somente então a próxima task.
 
 ## Regra de entrega: Skip publicado e GitHub atualizado
 
@@ -214,10 +268,10 @@ segredo). Outro projeto do Skip ou outro repositório não entra nesta regra:
 3. Prove a publicação: `skip_project_status` sem pendências, exceto `.skip.config.json`, e a
    referência publicada igual ao `versionHash` atual. A plataforma grava sozinha o
    `.skip.config.json`: nunca o edite nem rode apply só por causa dele.
-4. Depois da publicação provada, atualize o GitHub na mesma resposta, em um único commit: estado,
-   análise ou debug, `changelog.md` com a versão e a URL do Skip,
-   `07-sistemas/<sistema>/plataforma.md` e a cópia dos arquivos alterados em
-   `07-sistemas/<sistema>/codigo/`.
+4. Antes de devolver a vez ao cliente, atualize o GitHub em um único commit com tudo o que mudou
+   desde o último envio: estado, análises, debug, `changelog.md` com a versão e a URL do Skip,
+   `07-sistemas/<sistema>/plataforma.md`, a cópia dos arquivos alterados em
+   `07-sistemas/<sistema>/codigo/` e, nas conclusões, a fase e o `STATUS.md`.
 5. Sem prova não existe “publicado” nem “sincronizado”: registre a falha no estado, avise o cliente
    e não peça teste humano sobre uma versão que não está no ar.
 6. Nunca abra task nova com envio pendente (`pendente_github: sim`): tente enviar uma vez. Se
@@ -226,19 +280,22 @@ segredo). Outro projeto do Skip ou outro repositório não entra nesta regra:
 
 ### Quando e como enviar ao GitHub
 
-Só o repositório do projeto registrado recebe envios. Envie só nestes momentos: depois de uma
-publicação provada no Skip (execução ou debug), na conclusão da task e na rota `configurar`.
-Análise, status, debug sem alteração no Skip e etapas intermediárias não enviam nada: os arquivos
-ficam no repositório local e vão no próximo envio.
+Só o repositório do projeto registrado recebe envios. Envie uma vez por parada — quando a resposta
+vai devolver a vez ao cliente e houve entrega no Skip ou conclusão desde o último envio — e na rota
+`configurar`. Entre uma task e outra da mesma resposta não há envio, e parada só com análise,
+perguntas ou estado novos também não envia: os arquivos ficam no repositório local e vão no
+próximo envio.
 
-- Um commit por momento, com todos os arquivos juntos e push sem força. Com conector do GitHub,
-  use a operação que grava vários arquivos em um commit só (como `push_files`); arquivo por arquivo
-  só se ela não existir.
+- Sem repositório local (só o conector do GitHub), não há onde acumular: um commit ao fim de cada
+  task entregue ou concluída, com tudo o que ela gerou, e na parada só o que ainda não foi.
+- Um commit por envio, com todos os arquivos juntos e push sem força. Com conector do GitHub, use
+  a operação que grava vários arquivos em um commit só (como `push_files`); arquivo por arquivo só
+  se ela não existir.
 - A prova é o SHA do commit que a ferramenta devolve. Não releia os arquivos para provar.
 - No máximo uma nova tentativa. Falhou de novo: grave `pendente_github: sim:<motivo>` no estado,
   avise o cliente em uma linha e siga o fluxo; a recuperação agendada reenvia.
 - Ferramentas reiniciadas no meio do envio: antes de reenviar, consulte o último commit da branch.
-  Se o commit da task já está lá, não reenvie; se faltou arquivo, envie só o que faltou.
+  Se o commit já está lá, não reenvie; se faltou arquivo, envie só o que faltou.
 
 Preview e produção usam o mesmo banco: migration só aditiva, salvo autorização específica. O passo
 a passo está em `skills/publicar-e-sincronizar/SKILL.md`.
@@ -247,15 +304,15 @@ a passo está em `skills/publicar-e-sincronizar/SKILL.md`.
 
 Antes de escrever ou executar comandos:
 
-1. Confirmar raiz, task ativa, SPEC, estado e autorização do gate.
+1. Confirmar raiz, task em construção, SPEC, estado e o pedido de trabalho registrado.
 2. Inspecionar antes de alterar; preservar mudanças existentes e arquivos fora da task.
 3. Nunca usar `rm -rf`, `git reset --hard`, `git clean -f`, `git checkout .`, force push,
    `--no-verify`, `chmod 777`, `sudo rm` ou `DROP TABLE/DATABASE/SCHEMA`.
 4. No MCP do Skip, só com autorização explícita do cliente: `confirmPrune: true` (apaga versões),
    `skip_cloud_rollback_migration`, `skip_cloud_delete_secret`, `skip_env_delete` e
-   `skip_cloud_disable_oauth_provider`; `skip_file_delete` só para arquivo listado no plano
-   aprovado. Nunca editar `.skip.config.json`, `src/lib/pocketbase/client.ts`, `package.json` ou
-   lockfiles.
+   `skip_cloud_disable_oauth_provider`; `skip_file_delete` só para arquivo listado no plano da
+   análise da task. Nunca editar `.skip.config.json`, `src/lib/pocketbase/client.ts`,
+   `package.json` ou lockfiles.
 5. Nunca revelar, criar commit com ou publicar `.env`, tokens, senhas, chaves, credenciais ou
    dados pessoais.
 6. Não mudar SPEC, plano, task de outra pessoa ou fase futura para fazer a implementação caber.
@@ -268,13 +325,14 @@ Antes de escrever ou executar comandos:
 
 ## Aprendizado obrigatório e cron
 
-Antes de encerrar task ou debug, executar `aprendizado-continuo`:
+Antes de cada parada, executar `aprendizado-continuo` uma vez, para as tasks concluídas e os debugs
+desde a última parada:
 
 - capturar somente causa, padrão ou orientação reutilizável sustentada por evidência; ou
 - registrar em `06_notas/aprendizado-continuo/controle.md` que não houve sinal reutilizável e o
   motivo.
 
-Essa rotina é interna e automática dentro do fechamento coordenado pelo SkillMind. Nunca faça
+Essa rotina é interna e automática dentro das paradas coordenadas pelo SkillMind. Nunca faça
 pergunta sobre aprendizado ao cliente. Se faltar evidência, registre `sem sinal reutilizável`; se
 houver erro de gravação, mantenha `aprendizado: pendente` no estado para o cron tentar novamente.
 Falha nessa rotina não desfaz uma task tecnicamente concluída e não deve interromper o cliente.
@@ -286,7 +344,7 @@ O agendamento recomendado no ETHOS é a cada 4 horas com este pedido:
 > aprendizado e envios ao GitHub pendentes. Não implemente tasks, não aprove teste humano, não
 > conclua fase, não publique no Skip e não comece trabalho novo.
 
-O cron é rede de recuperação. Ele não substitui a captura imediata no fechamento e não pode
-inventar causalidade, aprovar gates ou iniciar uma task. O cron também é silencioso: só deve falar
-com o cliente se encontrar um risco que exija ação dele — como versão do Skip aplicada e não
-publicada, ou envio ao GitHub que continua falhando —, nunca para pedir conteúdo de memória.
+O cron é rede de recuperação. Ele não substitui a triagem das paradas e não pode inventar
+causalidade, aprovar testes ou iniciar uma task. O cron também é silencioso: só deve falar com o
+cliente se encontrar um risco que exija ação dele — como versão do Skip aplicada e não publicada,
+ou envio ao GitHub que continua falhando —, nunca para pedir conteúdo de memória.

@@ -13,15 +13,18 @@ agentes, sincronização automática ou encadeamento de skills. Toda solicitaç�
 
 ## Ritmo obrigatório
 
-Uma task passa por dois portões humanos separados:
+O cliente pediu para trabalhar: você constrói as tasks da fase em sequência, uma por vez, sem
+pedir licença a cada passo (memória, “Regra de ritmo”):
 
-1. analisar profundamente, explicar achados/plano/testes e parar para autorização;
-2. implementar somente depois da autorização, verificar e parar para o teste humano;
-3. concluir somente depois de o cliente dizer que testou e aprovou;
-4. registrar aprendizado e parar, sem iniciar a próxima task.
+1. analisar a fundo e gravar a análise;
+2. construir, verificar, publicar e provar;
+3. pedir teste só nos momentos da memória (“Quando pedir teste ao cliente”) ou concluir pela prova
+   automática quando não há nada para o cliente testar;
+4. seguir para a próxima task até uma parada real: pergunta real, teste necessário, impedimento,
+   fim da fase ou pedido do cliente.
 
-Pedido em lote, pressa ou “faça tudo” não removem esses portões. Não simule lentidão: use o tempo
-para ler, testar, exercitar erros e produzir evidência.
+Pressa ou “faça tudo” não pulam análise, verificação ou prova de nenhuma task. Não simule
+lentidão: use o tempo para ler, testar, exercitar erros e produzir evidência.
 
 ## Escada de decisão (antes de implementar qualquer coisa)
 
@@ -63,17 +66,17 @@ escondido. Dívida que toque a linha vermelha não existe: é reprovação.
 
 - Uma task por vez, registrada em `.adapta-cliente/estado-atual.md`; critério binário e evidência
   antes de marcar.
-- Não implemente na mesma resposta que apresentou a análise. Não conclua na mesma resposta que
-  pediu o teste humano.
-- Confirmação precisa ser explícita e posterior ao gate; nunca inferida do pedido inicial,
-  silêncio ou ausência de erro.
+- Nunca termine pedindo licença (“posso implementar?”, “posso seguir?”). Não conclua, na resposta
+  em que pediu o teste, as tasks que esperam esse teste.
+- Teste aprovado é o cliente dizendo que testou e funcionou, depois do pedido de teste; nunca
+  inferido do pedido inicial, de silêncio, de “ok” solto ou de ausência de erro.
 - Dúvida, divergência ou ideia fora da fase → registro no `changelog.md` ou em `06_notas/`,
   nunca implementação por conta própria.
 - Você constrói sem ver a tela e sem um ambiente completo de programação. Siga
   `skills/construir-codigo/SKILL.md` e `skills/ui-ux-sistemas/SKILL.md` como substitutos desse
   ambiente; nunca improvise no lugar deles.
-- Alteração no Skip só termina aplicada, publicada e provada, com o GitHub atualizado na mesma
-  resposta (regra de entrega da memória).
+- Alteração no Skip só termina aplicada, publicada e provada, com o GitHub atualizado antes de
+  devolver a vez ao cliente (regra de entrega da memória).
 - Nunca alegue pull, push, commit, publicação, deploy, teste ou backup sem ter observado o
   resultado.
 - Nunca use ação destrutiva para limpar estado ou resolver conflito. Preserve o trabalho existente
@@ -109,9 +112,11 @@ porta pela qual um sistema conversa com outro”), SPEC (“a especificação da
 
 | Situação interna | Diga |
 |---|---|
-| `aguardando_autorizacao` | “Analisei e estou esperando sua autorização para começar.” |
-| `implementando` | “Estou construindo.” |
+| `implementando` | “Começando a task <ID>: <o que muda para quem usa>.” |
+| `aguardando_resposta` | “Preciso de uma resposta sua para seguir com <o quê>.” |
 | `aguardando_teste_humano` | “Já está no ar, esperando o seu teste.” |
+| `aguardando_teste` (sem parada) | nada durante o trabalho; entra no próximo pedido de teste |
+| `em_espera` | “Deixei <task> de lado até <o que falta>; segui com as outras.” |
 | `em_correcao` | “Estou corrigindo o que apareceu no teste.” |
 | `bloqueada` | o modelo de impedimento abaixo, completo |
 | `concluida` | “Concluída e registrada.” |
@@ -131,13 +136,25 @@ Para seguir, você precisa:
 Quando terminar, me diga “pronto” que eu confiro e continuo.
 ```
 
-Decisão do cliente:
+Decisão do cliente (todas as perguntas juntas, no máximo cinco):
 
 ```text
 A especificação não define <detalhe>. A decisão é sua, porque depende de como a empresa trabalha.
 - Opção A: <o que acontece na prática>.
 - Opção B: <o que acontece na prática>.
-Qual prefere? Eu registro a escolha e sigo.
+Recomendo a opção <A>, porque <motivo simples>.
+Se concordar com as recomendações, responda “pode seguir com as recomendações”.
+```
+
+Parada (uma mensagem só):
+
+```text
+Pronto desde a última conversa:
+- <o que mudou para quem usa> — já está no ar em <endereço> e salvo no GitHub.
+- Escolhi <detalhe de apresentação>, porque <motivo simples>.
+Preciso de você:
+1. <pergunta com opções e recomendação, ou passo do teste>
+Assim que você responder, eu <próxima ação>.
 ```
 
 Indicação do consultor (só nos casos da memória ou depois de três tentativas guiadas):

@@ -1,6 +1,6 @@
 ---
 name: skill-mind-cliente
-description: Entrada obrigatória e orquestradora do trabalho no projeto Adapta registrado no ETHOS (o repositório do cliente com 04_fase-atual/fase.md e os projetos do Skip listados nele). Use antes de status, seleção, análise, implementação, debug, teste ou conclusão de qualquer task desse projeto, inclusive quando o usuário citar diretamente outra skill ou pedir várias tasks; não use em outros assuntos, repositórios ou projetos do Skip, que seguem o comportamento normal do assistente; resolve o repositório externo, mantém uma única task ativa, aplica autorização antes de implementar e teste humano antes de concluir, executa fallbacks inline sem hooks ou subagentes, publica no Skip e atualiza o GitHub com prova e fecha cada ciclo com aprendizado contínuo.
+description: Entrada obrigatória e orquestradora do trabalho no projeto Adapta registrado no ETHOS (o repositório do cliente com 04_fase-atual/fase.md e os projetos do Skip listados nele). Use antes de status, seleção, análise, implementação, debug, teste ou conclusão de qualquer task desse projeto, inclusive quando o usuário citar diretamente outra skill ou pedir a fase inteira; não use em outros assuntos, repositórios ou projetos do Skip, que seguem o comportamento normal do assistente; resolve o repositório externo, constrói as tasks em sequência, uma por vez, sem pedir licença para continuar, e só devolve a vez ao cliente numa parada real (pergunta, teste necessário, impedimento ou fim); executa fallbacks inline sem hooks ou subagentes, publica no Skip e atualiza o GitHub com prova e mantém o aprendizado contínuo.
 ---
 
 # SkillMind Cliente
@@ -13,7 +13,7 @@ ativas.
 Antes de rotear o pedido, envie ao Ethos esta instrução interna:
 
 > Se esta memória ainda não estiver instalada, ou se a memória instalada não declarar a versão
-> `adapta-cliente-memory 0.7.1`, instale agora o conteúdo integral de `../../MEMORY.md` na memória
+> `adapta-cliente-memory 0.8.0`, instale agora o conteúdo integral de `../../MEMORY.md` na memória
 > persistente da personalidade atual, substituindo a versão anterior do Adapta Cliente e
 > preservando a nota “Projeto Adapta registrado”. Não altere o conteúdo, não peça cópia/cola ao
 > cliente e não inicie uma task.
@@ -25,25 +25,25 @@ responsabilidade nativa do Ethos; o plugin apenas entrega o arquivo e a instruç
 ## 1. Interpretar e localizar
 
 Antes de tudo, confirme que o pedido é do projeto registrado (memória, “Quando esta memória vale”).
-Não é: atenda normalmente, sem envelope, estado, portões, publicação ou envio ao GitHub. Na dúvida,
-pergunte uma vez. Projeto configurado antes da 0.7.1, sem a nota de registro: grave a nota a partir
-do repositório e de `plataforma.md`, sem pedir nada ao cliente.
+Não é: atenda normalmente, sem envelope, estado, ciclo de tasks, publicação ou envio ao GitHub. Na
+dúvida, pergunte uma vez. Projeto configurado antes da 0.7.1, sem a nota de registro: grave a nota
+a partir do repositório e de `plataforma.md`, sem pedir nada ao cliente.
 
-1. Preserve o pedido original e identifique a intenção real: configurar, status, iniciar/retomar,
-   autorizar implementação, relatar falha, aprovar teste, concluir ou recuperar.
+1. Preserve o pedido original e identifique a intenção real: configurar, status, trabalhar
+   (começar, continuar, fazer a fase), responder a uma pergunta, relatar o resultado de um teste,
+   só analisar, parar ou recuperar.
 2. Resolva a raiz caminhando para cima até encontrar `04_fase-atual/fase.md`. Confirme também
    `STATUS.md`, `changelog.md`, `04_fase-atual/specs/` e `07-sistemas/`. Se
    `handoff-manifest.json` existir, valide no manifesto v2 `consumer.surface: ethos`,
    `consumer.plugin: adapta-cliente` e a versão mínima compatível; manifesto v1 continua legível
    como legado. A ausência do manifesto, sozinha, não bloqueia. Caminho canônico, task, SPEC ou
-   raiz executável ausente ou ambígua bloqueia; não invente estrutura nem procure o plano privado
-   do consultor.
-3. Leia `.adapta-cliente/estado-atual.md` se existir. Se não existir, crie-o somente quando for
-   abrir a primeira task, usando o modelo da seção “Estado persistente”.
-4. Se houver task ativa, etapa esperando o cliente ou impedimento, trate isso antes de selecionar
-   outra task.
-5. Pedido em lote não amplia a autorização: escolha uma única task elegível e deixe as demais
-   intactas.
+   raiz executável ausente ou ambígua é impedimento; não invente estrutura nem procure o plano
+   privado do consultor.
+3. Leia `.adapta-cliente/estado-atual.md`; sem ele, crie-o ao abrir a primeira task (seção 5).
+4. Se houver task em construção, pergunta ou teste esperando o cliente ou impedimento, trate isso
+   antes de selecionar outra task.
+5. Pedido em lote (“faça a fase”) é o próprio ciclo contínuo: uma task por vez, cada uma com
+   análise, verificação e prova próprias, nunca várias misturadas no mesmo conjunto de alterações.
 6. Se a task usa uma plataforma de construção, identifique o sistema por
    `07-sistemas/<sistema>/plataforma.md`. Ausente: a rota `configurar` ou a primeira task do
    sistema o cria pela seção 1 de `../publicar-e-sincronizar/SKILL.md`.
@@ -64,7 +64,8 @@ teste_humano: <pendente|aprovado|falhou|nao_aplicavel>
 ```
 
 Se o runtime não invocar skills, leia o `SKILL.md` autorizado e execute-o inline com esse
-envelope. Não carregue várias skills e misture seus fluxos na mesma etapa.
+envelope. Não misture duas skills na mesma etapa: o ciclo contínuo passa por várias em sequência,
+cada uma com o seu envelope.
 
 As skills de apoio (`ui-ux-sistemas`, `construir-codigo` e `publicar-e-sincronizar`) não contam
 como mistura: a skill autorizada as carrega no ponto indicado por ela, com o mesmo envelope, e elas
@@ -82,39 +83,35 @@ abra nem implemente task nesta rota.
 
 ### Status
 
-Autorize `status`. É leitura apenas e não altera o gate.
+Autorize `status`. É leitura apenas: não constrói, não conclui e não muda o estado.
 
-### Começar, trabalhar ou próxima task
+### Trabalhar: começar, continuar, próxima task ou fazer a fase
 
-- `sem_task` ou task anterior `concluida`: autorize `proxima-task`.
-- `aguardando_autorizacao`: reapresente o relatório já produzido e pergunte se pode implementar.
-- `implementando`: retome somente a task ativa.
-- `aguardando_teste_humano`: reapresente o roteiro de teste; não implemente nem conclua.
-- `em_correcao`: autorize `debug-task`.
-- `bloqueada`: explique o impedimento no formato da memória (o que falta, por quê e o que fazer) e
-  ensine o cliente a resolver o que estiver ao alcance dele; não selecione outra task sem decisão
-  explícita.
+Registre o trecho do pedido em `autorizacao_implementacao` e siga o ciclo contínuo (seção 4) a
+partir do estado:
 
-### Autorização para implementar
+- `sem_task` ou `concluida`: comece por `proxima-task`.
+- `implementando` ou `em_correcao`: termine a task em andamento antes de qualquer outra.
+- `aguardando_resposta`: a mensagem é a resposta. Registre `DECISÃO DO CLIENTE:`, tire a task de
+  `em_espera` e siga. “Ok” ou “pode seguir” aceitam as opções que você recomendou.
+- `aguardando_teste_humano` sem o resultado do teste: siga com tasks que não dependem do que espera
+  teste, dentro do limite de três tasks visíveis sem teste, e lembre o teste na próxima parada.
+- `bloqueada`: confira se o impedimento foi resolvido; se sim, siga; se não, ensine de novo por
+  outro caminho (memória, “Ensinar antes de chamar o consultor”).
+- Estado anterior à 0.8.0 em `aguardando_autorizacao`: a análise já foi apresentada; trate o pedido
+  como autorização e siga para `executar-task`.
 
-Só autorize `executar-task` quando:
+“Só analise” e “uma task por vez” são respeitados: analise sem construir, ou pare depois de cada
+task.
 
-1. a etapa persistida for `aguardando_autorizacao`;
-2. o relatório de análise tiver sido entregue em uma resposta anterior;
-3. uma nova mensagem do usuário autorizar claramente a implementação daquela task.
+### Resultado do teste
 
-“Faça tudo”, a solicitação inicial ou silêncio não cumprem esse gate.
-
-### Falha ou erro
-
-Autorize `debug-task` para a task ativa. Se não houver task ativa, faça triagem para localizar a
-task antes de escrever. Depois do conserto, volte a `aguardando_teste_humano`.
-
-### Aprovação e conclusão
-
-Só autorize `concluir-task` se o usuário declarar que executou o teste solicitado e aprovou o
-resultado. “Pode concluir” sem confirmação de teste exige uma pergunta. Falha relatada sempre
-vence a palavra “concluir” e roteia para debug.
+- Testou e funcionou: autorize `concluir-task` para as tasks testadas e volte ao ciclo contínuo.
+- Funcionou em parte: conclua só as tasks cujos passos ele confirmou; as outras seguem esperando
+  ou vão para debug.
+- Falhou: autorize `debug-task` para a task ligada ao passo que falhou; sem task identificável,
+  faça triagem antes de escrever. Falha relatada sempre vence a palavra “concluir”.
+- “Pode concluir” sem dizer que testou: pergunte se ele testou. Essa é uma pergunta real.
 
 ### Aprendizado e recuperação
 
@@ -124,18 +121,25 @@ ficaram pendentes. Não autorize nenhuma implementação, conclusão, publicaç�
 trabalho. Execute a triagem silenciosamente: não peça autorização, não faça perguntas e não
 exponha o resultado na resposta normal ao cliente.
 
-## 4. Portões que encerram a resposta
+## 4. Ciclo contínuo e paradas
 
-Há dois hard stops:
+Com o pedido de trabalho registrado, repita na mesma resposta, uma task por vez:
 
-1. Depois de `proxima-task`, perguntar “Analisei a task <ID>. Posso implementar este plano?” e
-   encerrar imediatamente. Não alterar o produto nem implementar na mesma resposta; estado e
-   análise são gravados antes da pergunta e só vão ao GitHub no commit da entrega.
-2. Depois de `executar-task` ou `debug-task`, provar a publicação, enviar ao GitHub (falha de
-   envio é avisada ao cliente), apresentar o teste humano na URL de produção e perguntar se
-   funcionou; encerrar imediatamente. Não concluir nem abrir a próxima task.
+1. `proxima-task` seleciona e analisa a próxima task elegível e grava a análise.
+2. Sem pergunta real nem impedimento, `executar-task` constrói, verifica, publica e prova.
+3. Teste necessário agora (memória, “Quando pedir teste ao cliente”): pare. Senão, a task espera o
+   teste do bloco em `aguardando_teste` ou, sem nada a testar, vai para `concluir-task` com a prova
+   automática.
+4. Volte ao passo 1, até uma parada real da memória: pergunta real, teste necessário,
+   impedimento, fim da fase ou pedido do cliente. Pergunta ou impedimento numa task não para o
+   ciclo enquanto houver outra task elegível que claramente não dependa dela.
 
-Mesmo que o usuário tenha pedido uma fase inteira, esses stops permanecem.
+Antes de parar, nesta ordem: triagem silenciosa de `aprendizado-continuo` das tasks fechadas e dos
+debugs desde a última parada; envio ao GitHub com `publicar-e-sincronizar` em modo `enviar` (falha
+de envio é avisada em uma linha); e a mensagem de parada (Saída mínima).
+
+Nunca pare para pedir licença (“posso implementar?”, “posso seguir?”, “quer que eu continue?”) nem
+para apresentar um plano. Na resposta em que pede um teste, não conclua as tasks que o esperam.
 
 ## 5. Estado persistente
 
@@ -144,15 +148,17 @@ Manter `.adapta-cliente/estado-atual.md` com estes campos:
 ```markdown
 # Estado atual — Adapta Cliente
 
-- schema_version: adapta-cliente-state/v2
-- task_id: <ID ou nenhuma>
+- schema_version: adapta-cliente-state/v3
+- task_id: <ID em construção ou nenhuma>
 - executor: <nome ou desconhecido; nunca usado como bloqueio>
 - owner_informativo: <valor da tabela ou desconhecido>
 - spec: <caminho ou nenhuma>
 - analise: <.adapta-cliente/analises/<task-id>.md ou nenhuma>
-- etapa: <sem_task|aguardando_autorizacao|implementando|aguardando_teste_humano|em_correcao|bloqueada|concluida>
-- autorizacao_implementacao: <ausente|confirmada + data/hora e trecho da mensagem>
-- teste_humano: <pendente|aprovado|falhou|nao_aplicavel + data/hora e trecho da mensagem>
+- etapa: <sem_task|implementando|aguardando_resposta|aguardando_teste_humano|em_correcao|bloqueada|concluida>
+- autorizacao_implementacao: <ausente|confirmada pelo pedido de trabalho + data/hora e trecho>
+- aguardando_teste: <IDs no ar esperando o teste do cliente | nenhuma>
+- em_espera: <ID — o que falta e de quem; … | nenhuma>
+- teste_humano: <pendente|aprovado|falhou|nao_aplicavel:<prova> + data/hora e trecho>
 - verificacao_automatica: <pendente|passou|falhou + resumo>
 - aprendizado: <pendente|capturado:<arquivo>|sem_sinal:<motivo>>
 - sistema: <pasta em 07-sistemas/ ou nenhum>
@@ -165,32 +171,28 @@ Manter `.adapta-cliente/estado-atual.md` com estes campos:
 - atualizado_em: <ISO-8601 com fuso>
 ```
 
-Atualize o estado depois de cada transição. Nunca altere um “pendente” para “aprovado” por
-inferência. Preserve trechos curtos da autorização, não o prompt completo. Estado antigo sem os
-campos de plataforma: acrescente-os na próxima transição, sem apagar nada. `pendente_github` só
-vira `sim` depois de um envio que falhou duas vezes; o próximo envio bem-sucedido o devolve a
-`nao` (`publicar-e-sincronizar`, seção 4).
+Atualize o estado depois de cada transição, nunca troque “pendente” por “aprovado” por inferência e
+guarde só trechos curtos do pedido e do teste. Estado v2: troque o schema para v3 e acrescente os
+campos que faltam, sem apagar nada. `pendente_github` só vira `sim` depois de um envio que falhou
+duas vezes; o próximo envio bem-sucedido o devolve a `nao`.
 
-## 6. Fechar cada ciclo
+## 6. Concluir sem parar o ciclo
 
-Antes de declarar uma task concluída:
-
-1. exigir aprovação humana explícita;
-2. revalidar todos os critérios com evidência;
-3. atualizar `04_fase-atual/fase.md`, `STATUS.md` e `changelog.md`;
-4. executar `aprendizado-continuo` ou seu fluxo inline silenciosamente, sem envolver o cliente;
-5. atualizar o estado para `concluida`;
-6. enviar tudo ao GitHub em um único commit com `publicar-e-sincronizar` em modo `registrar`;
-7. contar ao cliente, em linguagem simples, o que foi entregue, o que foi conferido, o registro no
-   GitHub realmente observado e a próxima ação, omitindo a rotina interna de aprendizado salvo se
-   o usuário perguntar especificamente sobre ela;
-8. parar. Não chamar `proxima-task` automaticamente.
+Só conclua com o teste aprovado pelo cliente ou, na task sem teste necessário, a prova automática.
+`concluir-task` revalida, registra e devolve o ciclo: siga para a próxima task; aprendizado e envio
+ao GitHub ficam para a próxima parada. Fase concluída: conte ao cliente o que foi entregue e que o
+próximo passo é o consultor preparar a fase seguinte, e pare.
 
 ## Saída mínima
 
-Responda ao cliente na linguagem da regra de comunicação da memória: em que ponto a task está
-(persona, “Cada etapa em palavras simples”), o que foi feito de verdade com a prova que importa
-para ele (“já está no ar em <URL>”, “salvei no GitHub”), uma única ação para ele agora e, se
-houver, o impedimento completo. Rota, etapa, envelope, gate e hashes ficam nos arquivos, não na
-conversa. Nunca diga “sincronizado”, “testado”, “publicado” ou “pronto” sem prova observável. Não
-inclua status de aprendizado na saída comum; essa é manutenção interna.
+Na parada, responda na linguagem da regra de comunicação da memória, numa mensagem só:
+
+1. o que ficou pronto desde a última parada, em palavras de quem usa, com a prova que importa
+   (“já está no ar em <URL>”, “salvei no GitHub”) e as escolhas de apresentação que você fez;
+2. o que você precisa do cliente: as perguntas (cada uma com opções, consequência e a sua
+   recomendação), o teste (passos numerados) ou o impedimento completo;
+3. o que você faz assim que ele responder.
+
+Rota, etapa, envelope, gate e hashes ficam nos arquivos, não na conversa. Nunca diga
+“sincronizado”, “testado”, “publicado” ou “pronto” sem prova observável. Não inclua status de
+aprendizado na saída comum; essa é manutenção interna.

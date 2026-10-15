@@ -1,6 +1,6 @@
 ---
 name: executar-task
-description: Implementa com profundidade exatamente uma task já analisada e explicitamente autorizada pelo cliente, seguindo sua SPEC, critérios e TDD pelo protocolo construir-codigo (e ui-ux-sistemas quando há tela); executa verificações automatizáveis, publica no Skip e atualiza o GitHub com prova e para obrigatoriamente no teste humano. Use somente quando o SkillMind Cliente fornecer CLIENTE_ENVELOPE v1 e o estado registrar autorização posterior ao relatório de análise.
+description: Constrói com profundidade a task que a proxima-task acabou de analisar, seguindo sua SPEC, critérios e TDD pelo protocolo construir-codigo (e ui-ux-sistemas quando há tela); executa verificações automatizáveis, publica no Skip com prova e decide, pela regra da memória, se o teste do cliente é necessário agora, se a task espera o teste do bloco ou se fecha pela prova automática. Use somente dentro do ciclo contínuo do SkillMind Cliente, com CLIENTE_ENVELOPE v1, estado implementando e o pedido de trabalho registrado; nunca pede licença para construir.
 ---
 
 # Executar Task
@@ -9,23 +9,24 @@ description: Implementa com profundidade exatamente uma task já analisada e exp
 
 Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: executar-task`. Sem envelope, carregue
 `../skill-mind-cliente/SKILL.md`, redirecione o pedido e não altere arquivos. Rejeite execução se
-`.adapta-cliente/estado-atual.md` não estiver em `aguardando_autorizacao` com autorização explícita
-registrada depois do relatório de análise.
+`.adapta-cliente/estado-atual.md` não estiver em `implementando` com a análise da task gravada e o
+pedido de trabalho do cliente registrado em `autorizacao_implementacao`.
 
 ## Preparação
 
-1. Leia a task ativa em `04_fase-atual/fase.md`, a SPEC indicada, o relatório persistido em
+1. Leia a task em construção em `04_fase-atual/fase.md`, a SPEC indicada, a análise persistida em
    `.adapta-cliente/analises/<task-id>.md` e o estado atual.
 2. Confirme que descrição, pré-condições, critério binário, evidência esperada e TDD estão
-   identificados. Detalhe de negócio em aberto: pergunte ao cliente e registre
-   `DECISÃO DO CLIENTE:`. Ambiguidade que muda escopo ou critério de aceite vira `DÚVIDA:` no
-   `changelog.md` e impede seguir até o consultor responder; explique isso ao cliente com contexto.
+   identificados. Detalhe de negócio que surgir agora é pergunta real: registre-o na análise, pare
+   antes de escrever o trecho que depende dele e devolva ao SkillMind, que leva a pergunta para a
+   parada (ou segue com outra task que não dependa desta). Ambiguidade que muda escopo ou critério
+   de aceite vira `DÚVIDA:` no `changelog.md` para o consultor, com a task em `em_espera`; explique
+   isso ao cliente com contexto na parada. A resposta do cliente vira `DECISÃO DO CLIENTE:`.
    Owner ausente, divergente ou diferente do executor não é ambiguidade e nunca bloqueia.
 3. Inspecione os arquivos afetados e mudanças existentes. Não sobrescreva trabalho alheio nem
    amplie o recorte.
 4. Carregue `../construir-codigo/SKILL.md` e, se a task tem tela, `../ui-ux-sistemas/SKILL.md`.
-   Releia o mapa do sistema e o plano em código aprovado antes da primeira escrita.
-5. Atualize a etapa para `implementando` antes da primeira alteração de produto.
+   Releia o mapa do sistema e o plano em código da análise antes da primeira escrita.
 
 ## Implementação profunda de uma única task
 
@@ -35,7 +36,7 @@ registrada depois do relatório de análise.
    técnica, defina a evidência observável equivalente.
 3. Implemente o menor recorte completo que satisfaz a SPEC, pela edição cirúrgica de
    `construir-codigo`. Reutilize o que existe, respeite os padrões do repositório e não comece
-   outra task.
+   outra task antes de esta terminar.
 4. Trate explicitamente entradas inválidas, caminhos de erro, perda de dados, segurança,
    acessibilidade e LGPD quando aplicáveis. Essas áreas não podem ser “simplificadas”.
 5. Rode GREEN, regressão, build, lint, checagem de tipos e testes relevantes que o projeto
@@ -44,37 +45,47 @@ registrada depois do relatório de análise.
    de testes.
 6. Inspecione o diff contra a task: releia cada arquivo alterado com o checklist de revisão e,
    em task com tela, com o checklist de UI. Mudança sem vínculo com critério ou TDD deve ser
-   removida ou registrada como bloqueio, não justificada como melhoria extra.
+   removida ou registrada como impedimento, não justificada como melhoria extra.
 7. Registre comandos, resultados e limitações reais. Ausência de ferramenta ou acesso não é PASS.
 
-## Entrega: publicar e sincronizar
+## Entrega: publicar com prova
 
-Com as verificações aprovadas, rode `../publicar-e-sincronizar/SKILL.md` em modo `entregar`. No
-passo de registros, o estado vai com `aguardando_teste_humano`, `teste_humano: pendente` e
-`verificacao_automatica: passou` com resumo.
+Com as verificações aprovadas, rode `../publicar-e-sincronizar/SKILL.md` em modo `entregar`:
+aplica, publica, prova e grava a plataforma e o espelho no repositório local. O envio ao GitHub
+fica para a parada. Registre no estado `verificacao_automatica: passou` com resumo.
 
-- Publicação não provada: estado `em_correcao` ou `bloqueada`, explique ao cliente o impedimento
-  (o que não foi ao ar e por quê) e pare sem pedir teste humano.
-- Envio ao GitHub que falhar depois da publicação provada: avise o cliente com o motivo e siga para
-  o teste humano; a versão está no ar e a recuperação agendada reenvia os commits.
+- Publicação não provada: estado `em_correcao` ou `bloqueada`. É impedimento: devolva ao
+  SkillMind, que para e explica ao cliente o que não foi ao ar e por quê. Nunca peça teste sobre
+  uma versão que não está no ar.
+- Falha automática que `construir-codigo` não resolveu em três ciclos: nada é publicado, a task
+  fica em `em_correcao` com o motivo registrado e o SkillMind para com o impedimento explicado.
 
-## Portão de teste humano
+## Decidir o teste
 
-Com a publicação provada:
+Com a publicação provada, aplique a regra da memória (“Quando pedir teste ao cliente”) e grave o
+resultado no estado:
 
-1. confirme no estado `aguardando_teste_humano` e `teste_humano: pendente`;
-2. apresente ao cliente, em linguagem simples:
-   - o que mudou, do ponto de vista de quem usa o sistema;
-   - que já está no ar, com o endereço, e que ficou salvo no GitHub (ou o aviso de que o envio
-     está pendente);
-   - o que o sistema já conferiu sozinho, em uma linha;
-   - passos numerados para testar o caminho real na URL de produção (para o cliente, “o endereço
-     do sistema”); em task com tela, siga o roteiro da seção 5 de `../ui-ux-sistemas/SKILL.md`;
-   - o que deve aparecer em cada passo e como perceber que algo deu errado;
-3. pergunte “Faça esse teste e me diga se funcionou. Não vou concluir nem iniciar outra task até
-   sua confirmação.”;
-4. encerre a resposta imediatamente.
+1. **Nada para o cliente ver ou usar, fora de um bloco** (estrutura do banco, regra de acesso,
+   automação interna): `teste_humano: nao_aplicavel:<prova>`, com a prova automática (verificação
+   do Skip, teste de mesa, leitura da configuração). O SkillMind segue para `concluir-task`.
+2. **Parte de um bloco ainda aberto, sem nenhum gatilho da regra**: acrescente o ID em
+   `aguardando_teste`, `teste_humano: pendente`, e grave na análise os passos de teste desta task.
+   O SkillMind segue com a próxima task.
+3. **Algum gatilho da regra**: acrescente o ID em `aguardando_teste`, etapa
+   `aguardando_teste_humano`, e monte o roteiro abaixo. O SkillMind para.
 
-Falha automática não autoriza publicação nem conclusão. Explique-a, mantenha a task aberta e
-deixe a próxima ação como debug. Nunca chame `concluir-task` nem `proxima-task` nesta mesma
-resposta.
+### Roteiro de teste
+
+Um roteiro só para todas as tasks em `aguardando_teste`, em linguagem simples:
+
+- o que mudou, do ponto de vista de quem usa o sistema;
+- que já está no ar, com o endereço; que ficou salvo no GitHub entra depois do envio da parada (ou
+  o aviso de que o envio está pendente);
+- o que o sistema já conferiu sozinho, em uma linha;
+- passos numerados para testar o caminho real na URL de produção (para o cliente, “o endereço do
+  sistema”); em task com tela, siga o roteiro da seção 5 de `../ui-ux-sistemas/SKILL.md`;
+- o que deve aparecer em cada passo e como perceber que algo deu errado;
+- o fechamento: “Faça esse teste e me diga se funcionou ou o que apareceu de diferente.”
+
+Nunca chame `concluir-task` para uma task que espera teste do cliente. Não pergunte se pode
+seguir para a próxima task: quem decide a parada é o SkillMind.

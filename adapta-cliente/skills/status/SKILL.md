@@ -1,6 +1,6 @@
 ---
 name: status
-description: Resume de forma somente leitura a fase atual, progresso, task ativa, em que ponto ela está, impedimentos com o porquê, próxima reunião e entregas do cliente, em linguagem simples. Use pelo SkillMind Cliente quando o usuário perguntar “como estamos?”, “qual o status?”, “quanto falta?” ou pedir um resumo para repassar, sem avançar task nem alterar gates.
+description: Resume de forma somente leitura a fase atual, progresso, task em construção, o que espera teste ou resposta do cliente, impedimentos com o porquê, próxima reunião e entregas do cliente, em linguagem simples. Use pelo SkillMind Cliente quando o usuário perguntar “como estamos?”, “qual o status?”, “quanto falta?” ou pedir um resumo para repassar, sem construir, concluir nem mudar o estado.
 ---
 
 # Status do Projeto
@@ -23,8 +23,10 @@ Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: status`. Sem envelope, carreg
 4. Responda em linguagem simples (regra de comunicação da memória) com:
    - fase atual e objetivo;
    - tasks feitas/total e percentual;
-   - task ativa, quem está executando, owner informativo e em que ponto ela está, dito em
-     palavras simples;
+   - task em construção, quem está executando, owner informativo e em que ponto ela está, dito
+     em palavras simples;
+   - tasks no ar esperando o teste do cliente (`aguardando_teste`) e tasks esperando resposta,
+     acesso ou o consultor (`em_espera`), cada uma com o que falta;
    - o que está no ar de cada sistema (endereço) e o que foi feito mas ainda não foi ao ar ou não
      foi salvo no GitHub;
    - uma única próxima ação permitida pela máquina de estados;

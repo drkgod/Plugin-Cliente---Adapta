@@ -1,6 +1,6 @@
 ---
 name: proxima-task
-description: Seleciona exatamente uma task elegível da fase atual, inspeciona profundamente sua SPEC e o estado real do projeto, apresenta achados, riscos, plano e testes e para antes de implementar. Use pelo SkillMind Cliente quando o usuário disser “trabalhar”, “próxima task”, “o que faço agora?” ou quiser começar/retomar, nunca como autorização de implementação.
+description: Seleciona a próxima task elegível da fase atual, inspeciona a fundo sua SPEC e o estado real do projeto, grava a análise e, sem pergunta real nem impedimento, passa a task para executar-task na mesma resposta, sem pedir licença ao cliente. Use pelo SkillMind Cliente no ciclo contínuo, quando o usuário disser “trabalhar”, “continuar”, “próxima task”, “fazer a fase”, “o que faço agora?” ou quiser começar/retomar.
 ---
 
 # Analisar a Próxima Task
@@ -10,31 +10,36 @@ description: Seleciona exatamente uma task elegível da fase atual, inspeciona p
 Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: proxima-task`. Sem envelope, carregue
 `../skill-mind-cliente/SKILL.md`, redirecione o pedido e não altere arquivos do produto.
 
-Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; ela nunca implementa.
+Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; quem constrói é
+`executar-task`, logo em seguida, na mesma resposta.
 
 ## Seleção
 
-1. Leia `.adapta-cliente/estado-atual.md`, se existir. Task ativa, gate ou bloqueio deve ser
-   retomado; não abra outra. Com `pendente_github: sim`, faça uma tentativa de envio antes de
-   selecionar (`../publicar-e-sincronizar/SKILL.md`, seção 4). Se falhar, não selecione: explique
-   ao cliente o impedimento (o último envio ao GitHub não chegou, e por quê) e ensine como
-   resolver.
+1. Leia `.adapta-cliente/estado-atual.md`, se existir. Task em construção é terminada antes de
+   qualquer outra. Com `pendente_github: sim`, faça uma tentativa de envio antes de selecionar
+   (`../publicar-e-sincronizar/SKILL.md`, seção 4). Se falhar, não selecione: explique ao cliente
+   o impedimento (o último envio ao GitHub não chegou, e por quê) e ensine como resolver.
 2. Leia `04_fase-atual/fase.md`. Se houver `<!-- fase-format:2 -->`, considere elegíveis os itens
    `- [ ]` e retome `- [/]`; preserve hierarquia, descrição, metadados e `<!-- id:... -->`. Sem o
    marcador, leia a tabela legada. Se o usuário indicar uma task pendente e elegível, selecione-a;
    caso contrário, escolha a primeira elegível em ordem de leitura cujas dependências estejam
-   atendidas. Owner/dono é metadado de coordenação: nunca filtre, bloqueie ou peça confirmação de
-   identidade por causa dele. Um funcionário pode executar uma task atribuída a outro papel sem
-   alterar a SPEC.
+   atendidas, pulando as tasks em `em_espera` e as que dependem delas. Owner/dono é metadado de
+   coordenação: nunca filtre, bloqueie ou peça confirmação de identidade por causa dele. Um
+   funcionário pode executar uma task atribuída a outro papel sem alterar a SPEC.
 3. Confirme pré-condições e dependências. Dependência não atendida não é pulada em silêncio:
-   explique o impedimento no formato da memória, ensine o cliente a resolver o que estiver ao
-   alcance dele e registre em `STATUS.md` como `Impedimento: <o quê> — <por quê> — <próximo passo>`.
+   registre a task em `em_espera` e em `STATUS.md` como
+   `Impedimento: <o quê> — <por quê> — <próximo passo>`, siga com outra task que não dependa dela
+   e, na parada, explique o impedimento no formato da memória, ensinando o que estiver ao alcance
+   do cliente.
 4. Localize a SPEC em `04_fase-atual/specs/`.
    - SPEC ausente: impedimento, porque a SPEC é publicada pelo consultor; explique isso ao cliente.
-   - Detalhe de negócio que a SPEC não define: pergunte ao cliente com as opções e registre
-     `DECISÃO DO CLIENTE:`.
+   - Detalhe de negócio que a SPEC não define: é pergunta real. Junte as perguntas desta task e,
+     quando der, das próximas tasks do mesmo bloco, cada uma com opções, consequência e a sua
+     recomendação; a resposta vira `DECISÃO DO CLIENTE:`.
+   - Detalhe de apresentação não é pergunta: decida pelo catálogo de
+     `../ui-ux-sistemas/SKILL.md`, registre na análise e conte na parada.
    - Conflito que muda escopo ou critério de aceite: `DÚVIDA:` para o consultor, com o contexto
-     explicado ao cliente.
+     explicado ao cliente; a task vai para `em_espera`.
 
 ## Análise profunda, sem escrita de produto
 
@@ -48,7 +53,7 @@ Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; ela n
    `../publicar-e-sincronizar/SKILL.md` em modo `verificar`: versão no ar igual à atual e nenhuma
    pendência fora da task; divergência entra nos riscos.
 4. Percorra a escada de decisão da persona e delimite o menor recorte completo.
-5. Produza:
+5. Produza no arquivo da análise:
    - objetivo e resultado observável;
    - estado atual e erros encontrados;
    - arquivos/componentes provavelmente afetados;
@@ -57,30 +62,31 @@ Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; ela n
    - Ficha de Tela de cada tela tocada, quando houver interface;
    - matriz critério → prova;
    - riscos, casos de erro, segurança, acessibilidade e LGPD aplicáveis, inclusive risco de dados
-     em migration;
-   - impedimentos e perguntas que realmente impedem seguir;
-   - roteiro de verificação automática e teste humano.
-6. Ao cliente, apresente um resumo em linguagem simples: o que vai mudar para quem usa, como vai
-   ficar (a Ficha de Tela em palavras), o que ele precisa decidir ou providenciar, os riscos que
-   importam para ele e como vai testar. O plano em código e a matriz ficam no arquivo da análise;
-   mostre-os só se ele pedir.
+     em migration (migration que apaga ou transforma dados existentes é pergunta real: precisa de
+     autorização explícita);
+   - perguntas reais e impedimentos, se houver;
+   - bloco a que a task pertence e se ela precisa de teste do cliente, e quando (memória, “Quando
+     pedir teste ao cliente”), com o roteiro de verificação automática e de teste.
+6. Ao cliente, durante o trabalho, só uma linha de progresso: “Começando a task <ID>: <o que muda
+   para quem usa>”. O plano em código e a matriz ficam no arquivo; mostre-os só se ele pedir.
 
-## Persistir e parar
+## Persistir e seguir
 
-Crie ou atualize `.adapta-cliente/estado-atual.md` com a task selecionada, sua SPEC, a etapa
-`aguardando_autorizacao`, autorizações ausentes, teste humano pendente, aprendizado pendente e uma
-única próxima ação: `aguardar autorização para implementar`. Persista o relatório completo em
-`.adapta-cliente/analises/<task-id>.md` e registre esse caminho no estado; `executar-task` nunca
-depende da conversa anterior para recuperar o plano aprovado.
+Grave o relatório completo em `.adapta-cliente/analises/<task-id>.md` e registre esse caminho no
+estado, com a task, a SPEC, teste humano pendente e aprendizado pendente. `executar-task` nunca
+depende da conversa para recuperar o plano.
+
+- Sem pergunta real nem impedimento: estado `implementando`, próxima ação `construir a task <ID>`,
+  e o SkillMind autoriza `executar-task` na mesma resposta. Não pergunte se pode implementar e não
+  apresente o plano para aprovação.
+- Com pergunta real ou impedimento: se houver outra task elegível que claramente não dependa desta,
+  registre esta em `em_espera` e siga com a outra; senão, estado `aguardando_resposta` (ou
+  `bloqueada`) e o SkillMind para com as perguntas ou o impedimento explicado.
+- Pedido do cliente para só analisar: estado `aguardando_resposta`, resumo em linguagem simples (o
+  que vai mudar para quem usa, o que ele precisa decidir ou providenciar e como vai ser testado) e
+  parada. A construção começa quando ele pedir.
 
 Não envie nada ao GitHub nesta etapa: estado, análise e mapa ficam no repositório local e vão no
-commit da entrega. Se o runtime só consegue gravar pelo conector do GitHub, grave os arquivos em um
-único commit, sem reler e sem reenviar.
-
-Encerre com:
-
-> Analisei a task <ID> e ainda não implementei nada. Posso implementar este plano?
-
-Pare imediatamente depois da pergunta. Não edite código, configuração ou conteúdo do produto;
-não carregue `executar-task`; não trate o pedido inicial como autorização; não selecione uma
-segunda task.
+envio da próxima parada. Se o runtime só consegue gravar pelo conector do GitHub, eles vão no
+commit do fim da task ou da parada (`../publicar-e-sincronizar/SKILL.md`, seção 4), sem reler e
+sem reenviar. Nunca altere código, configuração ou conteúdo do produto nesta skill.

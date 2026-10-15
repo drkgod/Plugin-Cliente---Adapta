@@ -1,6 +1,6 @@
 ---
 name: concluir-task
-description: Revalida do zero uma única task depois de o cliente confirmar explicitamente o teste humano, fecha apenas critérios binários sustentados por evidência, confere que a versão no ar é a testada, atualiza fase, STATUS, changelog, estado e aprendizado e envia ao GitHub com prova. Use somente pelo SkillMind Cliente com CLIENTE_ENVELOPE v1; “terminei” ou “pode concluir” sem confirmação real do teste não fecha a task.
+description: Revalida do zero, uma por vez, as tasks que o cliente disse ter testado e aprovado ou que fecham pela prova automática (sem nada para o cliente testar), fecha apenas critérios binários sustentados por evidência, confere que a versão no ar é a testada, atualiza fase, STATUS, changelog e estado e devolve o ciclo ao SkillMind sem parar. Use somente pelo SkillMind Cliente com CLIENTE_ENVELOPE v1; “terminei”, “ok” ou “pode concluir” sem confirmação real do teste não fecham uma task que espera teste.
 ---
 
 # Concluir Task
@@ -10,9 +10,16 @@ description: Revalida do zero uma única task depois de o cliente confirmar expl
 Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: concluir-task`. Sem envelope, carregue
 `../skill-mind-cliente/SKILL.md`, redirecione e não marque nada.
 
-Só prossiga quando `.adapta-cliente/estado-atual.md` indicar a task ativa em
-`aguardando_teste_humano` e trouxer aprovação explícita do cliente em mensagem posterior ao roteiro
-de teste. “Pode concluir”, silêncio ou ausência de reclamação sem teste confirmado não valem.
+Só prossiga em um destes casos, registrados em `.adapta-cliente/estado-atual.md`:
+
+1. **teste aprovado**: a task está em `aguardando_teste` e o cliente disse, em mensagem posterior ao
+   roteiro, que testou e funcionou; guarde o trecho em `teste_humano`. “Pode concluir”, “ok” solto,
+   silêncio ou ausência de reclamação sem teste confirmado não valem;
+2. **prova automática**: a task tem `teste_humano: nao_aplicavel:<prova>`, decidido por
+   `executar-task` pela regra da memória (“Quando pedir teste ao cliente”).
+
+Com várias tasks aprovadas no mesmo teste, conclua uma por vez, cada uma com a própria
+verificação.
 
 ## Verificação independente de subagentes
 
@@ -29,13 +36,15 @@ dependência obrigatória.
    ou dado pessoal para o repositório.
 6. Em task com tela, aplique o checklist de UI de `../ui-ux-sistemas/SKILL.md` com evidência por
    item.
-7. Em task no Skip, faça a conferência sem publicar de `../publicar-e-sincronizar/SKILL.md`: a
-   versão no ar precisa ser a mesma que o cliente testou. Divergência é `NÃO PRONTA`.
+7. Em task no Skip, faça a conferência sem publicar de `../publicar-e-sincronizar/SKILL.md` (modo
+   `registrar`): a versão no ar precisa ser a mesma que o cliente testou (ou, na prova automática,
+   a mesma que foi verificada). Divergência é `NÃO PRONTA`.
 
-Qualquer item sem evidência é `NÃO PRONTA` no registro interno. Atualize o estado para
-`em_correcao` ou `bloqueada` e pare sem marcar nada parcialmente. Ao cliente, diga em linguagem
-simples: “Ainda não dá para concluir: falta <o quê>, porque <por quê>. Próximo passo: <o que
-fazer e quem faz>.”
+Qualquer item sem evidência é `NÃO PRONTA` no registro interno. Não marque nada parcialmente:
+falha que você mesmo corrige vai para `em_correcao` e o SkillMind segue com `debug-task`; falta de
+acesso ou dependência vai para `bloqueada` e vira impedimento na parada. Ao cliente, na parada, em
+linguagem simples: “Ainda não dá para concluir: falta <o quê>, porque <por quê>. Próximo passo:
+<o que fazer e quem faz>.”
 
 ## Fechamento
 
@@ -47,23 +56,21 @@ Somente com todos os critérios aprovados:
 2. atualize `STATUS.md` com contagem e percentual reais;
 3. acrescente ao `changelog.md`:
    `- AAAA-MM-DD · [executor] · Task <ID> concluída: <resumo e evidência>`;
-4. execute silenciosamente `aprendizado-continuo` com novo envelope ou leia
-   `../aprendizado-continuo/SKILL.md` e execute inline; não pergunte nem informe isso ao cliente;
-5. atualize `.adapta-cliente/estado-atual.md` para `concluida`, preservando as referências de
-   autorização, teste, verificação e aprendizado;
-6. envie fase, STATUS, changelog, estado e os registros que estavam esperando em um único commit,
-   com `../publicar-e-sincronizar/SKILL.md` em modo `registrar`: arquivos sensíveis fora, push sem
-   força e prova pelo SHA do commit. Envio falhou duas vezes: a task continua concluída, o cliente
-   é avisado em uma linha e a recuperação agendada reenvia. Nunca alegue sincronização se não
-   observar sucesso;
-7. conte ao cliente, em linguagem simples, que a task está concluída, o que foi entregue, o que
-   foi conferido (lista curta) e que ficou salvo no GitHub; a tabela de evidências fica no
-   registro e só aparece se ele pedir;
-8. pare. Não abra a próxima task.
+4. atualize `.adapta-cliente/estado-atual.md`: etapa `concluida`, a task fora de
+   `aguardando_teste`, as referências de pedido, teste e verificação preservadas e
+   `aprendizado: pendente`. A triagem é feita pelo SkillMind, que executa silenciosamente
+   `aprendizado-continuo` antes da parada, para todas as tasks fechadas desde a última; não
+   pergunte nem informe isso ao cliente;
+5. não envie nada ao GitHub agora: fase, STATUS, changelog e estado ficam no repositório local e
+   vão no envio da próxima parada (`../publicar-e-sincronizar/SKILL.md`, seção 4);
+6. ao cliente, só uma linha de progresso (“Task <ID> concluída.”); o resumo do que foi entregue e
+   conferido vai na mensagem da parada, e a tabela de evidências fica no registro e só aparece se
+   ele pedir;
+7. devolva ao SkillMind, que segue o ciclo com a próxima task.
 
-Se todas as tasks da fase estiverem concluídas, explique que a fase está pronta e que o próximo
-passo é o consultor preparar a fase seguinte; não exija check ou formulário adicional no repo do
-cliente.
+Se todas as tasks da fase estiverem concluídas, é a parada de fim: explique que a fase está pronta
+e que o próximo passo é o consultor preparar a fase seguinte; não exija check ou formulário
+adicional no repo do cliente.
 
 ## Sinais de racionalização
 

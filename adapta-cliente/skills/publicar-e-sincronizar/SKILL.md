@@ -1,10 +1,10 @@
 ---
 name: publicar-e-sincronizar
-description: Skill de apoio que cumpre a regra de entrega da memória. Aplica as alterações do Skip com QA, publica, prova que a versão no ar é a atual, registra a plataforma, espelha os arquivos alterados e atualiza o GitHub em um único commit por momento de envio (entrega, conclusão, configuração), com push sem força, prova pelo SHA e no máximo uma nova tentativa. Use dentro de proxima-task (só conferência), executar-task, debug-task e concluir-task, e pelo SkillMind nas rotas configurar e recuperar, sempre com CLIENTE_ENVELOPE v1.
+description: Skill de apoio que cumpre a regra de entrega da memória. Aplica as alterações do Skip com QA, publica, prova que a versão no ar é a atual, registra a plataforma e o espelho dos arquivos alterados e atualiza o GitHub em um único commit por envio (parada do ciclo e configuração), com push sem força, prova pelo SHA e no máximo uma nova tentativa. Use dentro de proxima-task (só conferência), executar-task, debug-task e concluir-task, e pelo SkillMind antes de cada parada e nas rotas configurar e recuperar, sempre com CLIENTE_ENVELOPE v1.
 ---
 
-<!-- Regra de entrega da memória adapta-cliente-memory 0.6.1: toda alteração no Skip termina
-aplicada, publicada e provada, e o GitHub recebe um único commit por momento de envio. -->
+<!-- Regra de entrega da memória adapta-cliente-memory 0.8.0: toda alteração no Skip termina
+aplicada, publicada e provada, e o GitHub recebe um único commit por parada do ciclo. -->
 
 # Publicar e Sincronizar
 
@@ -12,7 +12,7 @@ aplicada, publicada e provada, e o GitHub recebe um único commit por momento de
 
 Exija `CLIENTE_ENVELOPE v1`. Esta skill não é rota de trabalho: roda dentro da skill autorizada no
 envelope (`proxima-task`, `executar-task`, `debug-task` ou `concluir-task`) ou é autorizada pelo
-SkillMind nas rotas `configurar` e `recuperar`. Sem envelope, carregue
+SkillMind antes de cada parada (modo `enviar`) e nas rotas `configurar` e `recuperar`. Sem envelope, carregue
 `../skill-mind-cliente/SKILL.md`, redirecione e não publique nem envie nada.
 
 Ela não abre task, não aprova teste humano, não conclui task e não decide escopo. Só age no
@@ -24,12 +24,14 @@ publica ou envia nada de outro repositório ou projeto.
 | Modo | Quem chama | Skip | GitHub |
 |---|---|---|---|
 | `configurar` | SkillMind, rota `configurar` | identifica o projeto (só leitura) | um commit com `plataforma.md` |
-| `entregar` | `executar-task`, `debug-task` com alteração no Skip | aplica, publica e prova | um commit com registros, plataforma e espelho |
-| `registrar` | `concluir-task` | confere a versão no ar (só leitura) | um commit com os registros da conclusão |
+| `entregar` | `executar-task`, `debug-task` com alteração no Skip | aplica, publica e prova | não envia; plataforma e espelho ficam no repositório local |
+| `registrar` | `concluir-task` | confere a versão no ar (só leitura) | não envia |
+| `enviar` | SkillMind, antes de cada parada | não mexe | um commit com tudo o que mudou desde o último envio |
 | `verificar` | baseline da `proxima-task` e recuperação | confere (só leitura) | não envia; na recuperação, reenvia o pendente |
 
-Análise, status e debug sem alteração no Skip não enviam nada ao GitHub: os arquivos ficam no
-repositório local e vão no próximo envio.
+Análise, entrega, debug e conclusão gravam no repositório local, e tudo vai junto no envio da
+parada. O modo `enviar` só faz commit se houve entrega no Skip ou conclusão desde o último envio;
+parada só com análise, perguntas ou estado novos não envia.
 
 Task sem plataforma de construção (`skip_projeto: nao_aplicavel`): pule as seções do Skip e faça
 só o GitHub.
@@ -52,9 +54,9 @@ só o GitHub.
 2. `skip_project_apply_changes` com `message: "task <ID>: <resumo curto>"`. Nunca passe
    `confirmPrune: true` sem autorização explícita do cliente: isso apaga versões.
 3. Leia o resultado de cada etapa. Falhou: volte à seção 4 de `../construir-codigo/SKILL.md`.
-   Depois de três falhas, pare sem publicar: estado `em_correcao`,
-   `skip_publicacao: falhou:<etapa e erro>` e as pendências listadas; siga para a seção 4 só com
-   os registros, sem espelho.
+   Depois de três falhas, não publique: estado `em_correcao`,
+   `skip_publicacao: falhou:<etapa e erro>` e as pendências listadas. É impedimento: o SkillMind
+   para, e o envio da parada leva os registros da falha, sem espelho.
 4. Guarde o `versionHash` da versão criada.
 
 ## 3. Publicar e provar (modo `entregar`)
@@ -71,11 +73,16 @@ só o GitHub.
    arquivo e nunca rode `skip_project_apply_changes` só por causa dele: isso cria uma versão nova
    sem publicar e entra em loop.
 5. Publicação falhou ou não foi provada: não contorne. Registre
-   `skip_publicacao: falhou:<motivo>` com o estado em `em_correcao` ou `bloqueada`, siga para a
-   seção 4 (o GitHub recebe os registros da falha), explique ao cliente o impedimento (o que não
-   foi ao ar e por quê) e não peça teste humano sobre uma versão que não está no ar.
+   `skip_publicacao: falhou:<motivo>` com o estado em `em_correcao` ou `bloqueada`. É impedimento:
+   o SkillMind para, o envio da parada leva os registros da falha, o cliente recebe a explicação
+   (o que não foi ao ar e por quê) e ninguém pede teste sobre uma versão que não está no ar.
 6. Com a prova, registre no estado `skip_versao: <versionHash>` e
-   `skip_publicacao: publicada:<ref> em <ISO-8601>`.
+   `skip_publicacao: publicada:<ref> em <ISO-8601>`, e atualize `plataforma.md` (seção 6).
+7. Espelho, no repositório local: para cada arquivo alterado no Skip nesta task, leia a versão
+   final com `skip_file_read` e grave em `07-sistemas/<sistema>/codigo/<mesmo caminho>`. Arquivo
+   apagado no Skip sai do espelho. Na primeira vez, crie `07-sistemas/<sistema>/codigo/LEIA-ME.md`
+   dizendo que é cópia de consulta e que a fonte executável é o Skip. Espelho completo do projeto
+   só quando o cliente ou o consultor pedirem.
 
 ### Conferir sem publicar (modos `registrar` e `verificar`)
 
@@ -83,7 +90,7 @@ Só leitura com `skip_project_status`. Versão atual diferente da publicada, ou 
 `.skip.config.json`: registre a divergência e avise o cliente. Em `concluir-task`, divergência
 impede concluir. Nunca publique nesses modos.
 
-## 4. Atualizar o GitHub — uma vez por momento
+## 4. Atualizar o GitHub — uma vez por parada (modos `enviar` e `configurar`)
 
 Ordem obrigatória: Skip provado → registros escritos → um commit → prova. Cada envio custa tempo
 do cliente: não envie fora dos momentos da tabela de modos e nunca envie a mesma coisa duas vezes.
@@ -91,19 +98,18 @@ do cliente: não envie fora dos momentos da tabela de modos e nunca envie a mesm
 1. Escreva tudo antes de enviar, com `pendente_github: nao` no estado:
    - `.adapta-cliente/estado-atual.md` já com a etapa em que esta resposta termina (por exemplo,
      `aguardando_teste_humano`);
-   - análise, mapa (`.adapta-cliente/mapas/`), `changelog.md` e notas em `06_notas/` que estejam
-     esperando envio;
-   - na conclusão, `04_fase-atual/fase.md` e `STATUS.md`;
-   - no modo `entregar`, `07-sistemas/<sistema>/plataforma.md` atualizado e o espelho.
-2. Espelho (modo `entregar`): para cada arquivo alterado no Skip nesta resposta, leia a versão
-   final com `skip_file_read` e grave em `07-sistemas/<sistema>/codigo/<mesmo caminho>`. Arquivo
-   apagado no Skip sai do espelho. Na primeira vez, crie `07-sistemas/<sistema>/codigo/LEIA-ME.md`
-   dizendo que é cópia de consulta e que a fonte executável é o Skip. Espelho completo do projeto
-   só quando o cliente ou o consultor pedirem.
+   - análises, mapas (`.adapta-cliente/mapas/`), `changelog.md` e notas em `06_notas/` desde o
+     último envio;
+   - das conclusões, `04_fase-atual/fase.md` e `STATUS.md`;
+   - das entregas, `07-sistemas/<sistema>/plataforma.md` e o espelho (seção 3).
+2. Sem repositório local (o runtime só grava pelo conector do GitHub), não há onde acumular: ao
+   fim de cada task entregue ou concluída, envie em um único commit o que ela gerou (análise,
+   estado, registros, plataforma e espelho) e, na parada, só o que ainda não foi, inclusive
+   análise e estado.
 3. Nunca vai para o GitHub: `.env*`, chaves, tokens, senhas, `.skip.config.json`, lockfiles,
    binários, imagens, vídeos e dados pessoais. Revise a lista de arquivos antes de enviar.
-4. Envie tudo em um único commit com a mensagem `task <ID>: <resumo> (skip <versionHash>)` (sem
-   versão do Skip, omita o parêntese):
+4. Envie tudo em um único commit com a mensagem `tasks <IDs>: <resumo> (skip <versionHash>)`,
+   com a última versão publicada (sem versão do Skip, omita o parêntese):
    - com git: `git add` dos arquivos da lista, `git commit` e push sem força;
    - com conector do GitHub: a operação que grava vários arquivos em um commit (como
      `push_files`); arquivo por arquivo só quando ela não existir.
@@ -116,8 +122,7 @@ do cliente: não envie fora dos momentos da tabela de modos e nunca envie a mesm
    linha que a entrega está pronta mas não chegou ao GitHub e siga o fluxo. A recuperação agendada
    reenvia. Não diga "sincronizado".
 8. Ferramentas reiniciadas no meio do envio: antes de reenviar, consulte o último commit da branch
-   (uma chamada). Se o commit da task já está lá, não reenvie; se faltou arquivo, envie só o que
-   faltou.
+   (uma chamada). Se o commit já está lá, não reenvie; se faltou arquivo, envie só o que faltou.
 
 ## 5. Modo `verificar` na recuperação
 

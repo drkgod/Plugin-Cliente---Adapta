@@ -49,7 +49,8 @@ A task (de `04_fase-atual/fase.md`), a SPEC correspondente (`04_fase-atual/specs
    4. **Diff** — o que mudou vs. o que a task pedia: mudança não relacionada é achado.
    5. **No ar** — em sistema do Skip, a versão publicada é a versão verificada
       (`skip_project_status` sem pendências além de `.skip.config.json` e referência publicada
-      igual ao `versionHash`), e o GitHub tem o commit da task.
+      igual ao `versionHash`). O GitHub recebe tudo no envio da parada: envio pendente não
+      reprova a task.
 9. **Cace falhas silenciosas** — a entrega que "funciona" mas esconde erro é a que quebra na
    semana 3: erro capturado e ignorado (catch vazio, `|| true`), valor padrão que mascara
    falha real (planilha vazia tratada como "sem pendências"), passo que falha sem avisar

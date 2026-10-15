@@ -1,7 +1,7 @@
 {
   "name": "adapta-cliente",
-  "version": "0.7.1",
-  "description": "Orquestrador do champion Adapta Native para analisar, executar, testar, debugar e concluir uma task por vez com memória persistente solicitada ao Ethos, skills de UI/UX e de código, publicação obrigatória no Skip e GitHub sempre atualizado.",
+  "version": "0.8.0",
+  "description": "Orquestrador do champion Adapta Native para construir a fase em sequência, uma task por vez, analisando, executando, debugando e concluindo sem pedir licença a cada passo, com memória persistente solicitada ao Ethos, skills de UI/UX e de código, publicação obrigatória no Skip e GitHub sempre atualizado.",
   "author": {
     "name": "Adapta Labs"
   },
@@ -22,8 +22,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Adapta Cliente",
-    "shortDescription": "Uma task por vez, com gates e memória.",
-    "longDescription": "SkillMind do cliente para runtimes como ETHOS: interpreta pedidos, seleciona uma task, separa análise de implementação, projeta telas com Ficha de Tela, constrói código por protocolo que substitui o harness, publica no Skip com prova, mantém o GitHub atualizado, exige teste humano, diagnostica causa raiz, valida evidências e registra aprendizado contínuo sem depender de hooks ou subagentes.",
+    "shortDescription": "Constrói a fase em sequência e só para quando precisa de você.",
+    "longDescription": "SkillMind do cliente para runtimes como ETHOS: interpreta pedidos, constrói as tasks em sequência e analisa cada uma antes de construir, projeta telas com Ficha de Tela, constrói código por protocolo que substitui o harness, publica no Skip com prova, mantém o GitHub atualizado, pede o teste do cliente nos momentos certos, diagnostica causa raiz, valida evidências e registra aprendizado contínuo sem depender de hooks ou subagentes.",
     "developerName": "Adapta Labs",
     "category": "Productivity",
     "capabilities": [
@@ -32,9 +32,9 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Use skill-mind-cliente para começar ou retomar exatamente uma task.",
-      "Use skill-mind-cliente para destravar a task ativa sem abrir outra.",
-      "Use skill-mind-cliente para concluir somente depois do teste humano aprovado."
+      "Use skill-mind-cliente para começar ou continuar o trabalho da fase.",
+      "Use skill-mind-cliente para corrigir o que falhou no meu teste.",
+      "Use skill-mind-cliente: testei e funcionou, pode concluir e seguir."
     ],
     "brandColor": "#2563EB",
     "screenshots": []

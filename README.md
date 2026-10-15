@@ -6,9 +6,10 @@ Este repositório publica duas edições do plugin do cliente:
   MEMORY persistente na primeira utilização e a cada nova versão;
 - `adapta-cliente-codex`: edição Codex pura, com skills diretas e sem dependências do Ethos.
 
-Na edição Ethos, a `skill-mind-cliente` interpreta o pedido, mantém uma única task ativa e aplica
-os portões de autorização e teste humano
-mesmo em runtimes antigos como o ETHOS/PicoClaw, sem depender de hooks ou subagentes.
+Na edição Ethos, a `skill-mind-cliente` interpreta o pedido e constrói as tasks da fase em
+sequência, uma por vez, sem pedir licença a cada passo: só para quando precisa do cliente
+(pergunta, teste, impedimento ou fim da fase). Funciona mesmo em runtimes antigos como o
+ETHOS/PicoClaw, sem depender de hooks ou subagentes.
 
 ## Instalação no Codex
 
@@ -45,23 +46,29 @@ O `/adapta-cliente:trabalhar` oferece a mesma entrada em runtimes com slash comm
 
 As regras do plugin valem só para o projeto configurado: a configuração registra o repositório e
 os projetos do Skip, e o mesmo Ethos continua livre para outros assuntos, repositórios e projetos,
-sem portões, publicação obrigatória ou envio ao GitHub.
+sem ciclo de tasks, publicação obrigatória ou envio ao GitHub.
 
-## Fluxo obrigatório
+## Fluxo da edição Ethos
 
-1. Selecionar e analisar exatamente uma task.
-2. Mostrar achados e pedir autorização antes de implementar.
-3. Implementar e executar as verificações automatizáveis.
-4. Publicar na plataforma de construção e atualizar o GitHub, com prova.
-5. Pedir o teste humano na URL de produção antes de concluir.
-6. Debugar a mesma task quando o teste falhar.
-7. Concluir, registrar aprendizado interno silencioso e parar sem abrir a próxima task.
+1. Analisar a próxima task elegível e gravar a análise.
+2. Construir e executar as verificações automatizáveis.
+3. Publicar na plataforma de construção, com prova.
+4. Pedir o teste do cliente na URL de produção quando um bloco fecha ou chega outro momento da
+   regra; task sem nada para o cliente testar fecha pela prova automática.
+5. Seguir para a próxima task até uma parada real: pergunta, teste, impedimento, fim da fase ou
+   pedido do cliente.
+6. Antes de cada parada, registrar o aprendizado interno silencioso e atualizar o GitHub em um
+   único commit.
+7. Quando o teste falhar, debugar a mesma task e pedir o reteste só do que falhou.
+
+A edição Codex mantém a análise e a autorização separadas por task. As mudanças da 0.8.0 estão em
+[`MIGRATION-0.8.0.md`](MIGRATION-0.8.0.md).
 
 ## Construir sem harness e entregar com prova (edição Ethos)
 
 O agente do Ethos não tem busca no código, verificação de tipos local, navegador nem visão de
 diff. Três skills de apoio substituem esse ambiente. Elas não são rotas: são carregadas dentro da
-task autorizada.
+task em construção.
 
 - `ui-ux-sistemas`: Ficha de Tela na análise, catálogo de padrões para sistemas internos, regras
   de UX e de texto em PT-BR, checklist de UI e roteiro de teste visual;
@@ -72,7 +79,7 @@ task autorizada.
   remoto.
 
 A regra de entrega fica na MEMORY: toda resposta que altera o Skip termina aplicada, publicada e
-provada, com o GitHub atualizado na mesma resposta. As mudanças da versão estão em
+provada, com o GitHub atualizado antes de devolver a vez ao cliente. As mudanças da versão estão em
 [`MIGRATION-0.6.0.md`](MIGRATION-0.6.0.md).
 
 ## Como o assistente fala com o cliente
@@ -103,6 +110,6 @@ O guia com o fluxo principal e os cinco prompts públicos está em
 npm test
 ```
 
-Os hooks presentes no bundle são uma compatibilidade opcional com Claude. Nenhum gate, guardrail,
+Os hooks presentes no bundle são uma compatibilidade opcional com Claude. Nenhuma regra, guardrail,
 estado ou aprendizado depende deles no ETHOS. Eles só agem em repositórios que têm
 `04_fase-atual/fase.md`; em qualquer outro projeto não fazem nada.

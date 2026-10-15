@@ -16,7 +16,7 @@ Exija `CLIENTE_ENVELOPE v1`. Esta skill não é rota: roda dentro da skill autor
 (`proxima-task`, `executar-task`, `debug-task` ou `concluir-task`) e herda os limites dela. Sem
 envelope, carregue `../skill-mind-cliente/SKILL.md`, redirecione e não altere arquivos.
 
-Pedido de mudança visual fora da task ativa não vira trabalho: registre a ideia em `06_notas/` e
+Pedido de mudança visual fora da task em construção não vira trabalho: registre a ideia em `06_notas/` e
 explique ao cliente que ela fica guardada para as próximas fases.
 
 ## Princípio
@@ -51,12 +51,12 @@ Para cada tela nova ou alterada, inclua no relatório `.adapta-cliente/analises/
 ```
 
 Informação que a SPEC não define (por exemplo, quem pode excluir) é decisão do cliente: pergunte
-com as opções e a consequência de cada uma, registre `DECISÃO DO CLIENTE:` e nunca escolha por
-ele. Se a resposta mudar o escopo ou o critério de aceite, é `DÚVIDA:` para o consultor.
+com as opções, a consequência de cada uma e a sua recomendação, registre `DECISÃO DO CLIENTE:` e
+nunca escolha por ele. Se a resposta mudar o escopo ou o critério de aceite, é `DÚVIDA:` para o consultor.
 
-Ao cliente, descreva a ficha em palavras simples: o que ele vai ver, o que vai poder fazer e como
-a tela se comporta no celular. O formato completo fica no arquivo da análise. A ficha é aprovada
-junto com o plano; mudar a ficha depois da autorização exige nova autorização.
+A ficha completa fica no arquivo da análise e não espera aprovação do cliente. Na parada, conte em
+palavras simples o que ele vai ver, o que vai poder fazer e como a tela se comporta no celular.
+Mudou a ficha durante a construção: registre o motivo na análise.
 
 ## 2. Decidir pelo catálogo
 
@@ -103,9 +103,9 @@ Item que não se aplica fica marcado `n/a` com o motivo; item sem prova não pas
 
 ## 5. Roteiro de teste humano para telas
 
-No portão de teste humano, o roteiro usa a URL de produção registrada em
-`07-sistemas/<sistema>/plataforma.md`, tem no máximo oito passos simples e diz o que deve aparecer
-em cada um:
+Quando o teste do cliente for pedido (memória, “Quando pedir teste ao cliente”), o roteiro usa a
+URL de produção registrada em `07-sistemas/<sistema>/plataforma.md`, tem no máximo oito passos
+simples por tela e diz o que deve aparecer em cada um:
 
 1. abrir `<url-de-produção><rota>` e entrar com um usuário do papel certo;
 2. fazer a tarefa principal com um dado real;

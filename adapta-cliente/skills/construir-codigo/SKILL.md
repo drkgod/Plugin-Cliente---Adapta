@@ -56,7 +56,7 @@ abaixo substitui uma dessas ferramentas. Pular uma etapa é programar às cegas.
 
 ## 2. PLANO EM CÓDIGO — vai para a análise da task
 
-A análise que pede autorização traz:
+A análise da task traz:
 
 - arquivos a criar ou alterar, cada um com o motivo, na ordem: migration → hook → serviço →
   componentes → página → rota e menu;

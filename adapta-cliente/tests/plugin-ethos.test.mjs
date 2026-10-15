@@ -39,13 +39,58 @@ test("skills filhas exigem envelope e redirecionam ao SkillMind", () => {
   }
 })
 
-test("SkillMind contém os dois hard stops e a máquina de estados", () => {
+test("SkillMind conduz o ciclo contínuo e só para em parada real", () => {
   const body = read("skills/skill-mind-cliente/SKILL.md")
-  assert.match(body, /aguardando_autorizacao/)
-  assert.match(body, /aguardando_teste_humano/)
-  assert.match(body, /resposta anterior/)
-  assert.match(body, /nova mensagem do usuário/)
-  assert.match(body, /Não abrir a próxima task|Não chame.*proxima-task|Não chamar.*proxima-task|Não abra.*próxima task|Não abrir.*próxima task/i)
+  const memory = read("MEMORY.md")
+  assert.match(body, /## 4\. Ciclo contínuo e paradas/)
+  assert.match(body, /Nunca pare para pedir licença/)
+  assert.match(body, /Na resposta em que pede um teste, não conclua as tasks que o esperam/)
+  for (const field of ["aguardando_teste_humano", "aguardando_resposta", "aguardando_teste:", "em_espera:", "adapta-cliente-state/v3"]) {
+    assert.ok(body.includes(field), field)
+  }
+  assert.match(body, /Estado anterior à 0\.8\.0 em `aguardando_autorizacao`/)
+  assert.match(memory, /## Regra de ritmo: construir sem parar à toa/)
+  assert.match(memory, /Pare só numa parada real/)
+  assert.match(memory, /Resposta a uma pergunta não vale como teste aprovado/)
+  assert.match(memory, /“Ok” solto depois de um pedido de teste é ambíguo/)
+})
+
+test("nenhuma instrução pede licença nem volta aos portões antigos", () => {
+  const commandsRoot = path.join(ROOT, ".claude", "commands", "adapta-cliente")
+  const files = [
+    "MEMORY.md",
+    "personas/agente-cliente.md",
+    "agents/verificador-de-entrega.md",
+    ...skillNames().map((skill) => `skills/${skill}/SKILL.md`),
+    ...fs.readdirSync(commandsRoot).map((name) => `.claude/commands/adapta-cliente/${name}`)
+  ]
+  for (const relative of files) {
+    const body = read(relative)
+    assert.doesNotMatch(
+      body,
+      /hard stops?|dois portões|portão de teste|Posso implementar este plano|nova mensagem do usuário|encerre a resposta imediatamente|Pare imediatamente|autorização posterior ao relatório/i,
+      relative
+    )
+    if (relative !== "skills/skill-mind-cliente/SKILL.md") {
+      assert.doesNotMatch(body, /aguardando_autorizacao/, relative)
+    }
+  }
+})
+
+test("teste do cliente só nos momentos certos e conclusão pela prova automática", () => {
+  const memory = read("MEMORY.md")
+  const execute = read("skills/executar-task/SKILL.md")
+  const conclude = read("skills/concluir-task/SKILL.md")
+  const debug = read("skills/debug-task/SKILL.md")
+  assert.match(memory, /### Quando pedir teste ao cliente/)
+  assert.match(memory, /já há três tasks com mudança visível no ar sem o teste dele/)
+  assert.match(execute, /## Decidir o teste/)
+  assert.match(execute, /Quando pedir teste ao cliente/)
+  assert.match(execute, /nao_aplicavel:<prova>/)
+  assert.match(execute, /Nunca chame `concluir-task` para uma task que espera teste do cliente/)
+  assert.match(conclude, /\*\*prova automática\*\*/)
+  assert.match(conclude, /devolva ao SkillMind, que segue o ciclo/)
+  assert.match(debug, /reteste só do que falhou/)
 })
 
 test("comandos públicos entram somente pelo SkillMind", () => {
@@ -87,7 +132,10 @@ test("aprendizado é automático, silencioso e não bloqueia a task", () => {
   assert.match(learning, /Não pedir ao cliente/)
   assert.match(learning, /Não bloquear nem reabrir uma task/)
   assert.match(memory, /Nunca faça\s+pergunta sobre aprendizado ao cliente/)
-  assert.match(conclusion, /execute silenciosamente `aprendizado-continuo`/)
+  assert.match(memory, /Antes de cada parada, executar `aprendizado-continuo` uma vez/)
+  assert.match(read("skills/skill-mind-cliente/SKILL.md"), /triagem silenciosa de `aprendizado-continuo`/)
+  assert.match(conclusion, /executa silenciosamente\s+`aprendizado-continuo`/)
+  assert.match(conclusion, /`aprendizado: pendente`/)
   assert.doesNotMatch(conclusion, /informe .*aprendizado/i)
   assert.doesNotMatch(debug, /\*\*Aprendizado:\*\*/)
 })
@@ -138,7 +186,7 @@ test("manifests estão na versão Ethos e JSON é válido", () => {
   for (const relative of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]) {
     const manifest = JSON.parse(read(relative))
     assert.equal(manifest.name, "adapta-cliente")
-    assert.equal(manifest.version, "0.7.1")
+    assert.equal(manifest.version, "0.8.0")
   }
 })
 
@@ -214,7 +262,7 @@ test("execução e debug publicam e sincronizam antes do teste humano", () => {
     assert.match(body, /URL de produção/, skill)
   }
   const conclude = read("skills/concluir-task/SKILL.md")
-  assert.match(conclude, /modo `registrar`/)
+  assert.match(conclude, /modo\s+`registrar`/)
   assert.match(conclude, /versão no ar precisa ser a mesma que o cliente testou/)
   assert.doesNotMatch(conclude, /se houver sincronização Git solicitada/)
 })
@@ -232,22 +280,30 @@ test("publicação prova a versão, ignora .skip.config.json e nunca força", ()
   }
 })
 
-test("GitHub recebe um commit por momento de envio, nada na análise e sem laço", () => {
+test("GitHub recebe um commit por parada, nada entre tasks e sem laço", () => {
   const memory = read("MEMORY.md")
   const sync = read("skills/publicar-e-sincronizar/SKILL.md")
   const next = read("skills/proxima-task/SKILL.md")
   const debug = read("skills/debug-task/SKILL.md")
+  const conclude = read("skills/concluir-task/SKILL.md")
+  const mind = read("skills/skill-mind-cliente/SKILL.md")
   assert.match(memory, /### Quando e como enviar ao GitHub/)
+  assert.match(memory, /Envie uma vez por parada/)
+  assert.match(memory, /Entre uma task e outra da mesma resposta não há envio/)
   assert.match(memory, /No máximo uma nova tentativa/)
+  assert.match(sync, /\| `enviar` \| SkillMind, antes de cada parada \|/)
   assert.match(sync, /um único commit/)
   assert.match(sync, /push_files/)
   assert.match(sync, /Não releia os arquivos para provar/)
   assert.match(sync, /consulte o último commit da branch/)
   assert.match(sync, /uma nova tentativa no máximo/)
+  assert.match(sync, /Sem repositório local/)
+  assert.match(mind, /modo `enviar`/)
+  assert.match(mind, /pendente_github/)
   assert.match(next, /Não envie nada ao GitHub nesta etapa/)
   assert.doesNotMatch(next, /modo `registrar`/)
-  assert.match(debug, /Correção sem alteração no\s+Skip não envia nada agora/)
-  assert.match(read("skills/skill-mind-cliente/SKILL.md"), /pendente_github/)
+  assert.match(debug, /Nada vai ao GitHub nesta etapa/)
+  assert.match(conclude, /não envie nada ao GitHub agora/)
 })
 
 test("tasks com tela usam Ficha de Tela, checklist de UI e roteiro visual", () => {

@@ -1,6 +1,6 @@
 ---
 name: aprendizado-continuo
-description: Executa silenciosa e automaticamente a triagem interna de aprendizado do projeto após task, debug ou recuperação agendada; captura padrões reutilizáveis sustentados por evidência ou registra ausência de sinal sem perguntar nem informar o cliente e sem armazenar prompts, segredos, dados pessoais ou código sensível. Use pelo SkillMind Cliente antes de fechar cada ciclo e no cron de quatro horas.
+description: Executa silenciosa e automaticamente a triagem interna de aprendizado do projeto após task, debug ou recuperação agendada; captura padrões reutilizáveis sustentados por evidência ou registra ausência de sinal sem perguntar nem informar o cliente e sem armazenar prompts, segredos, dados pessoais ou código sensível. Use pelo SkillMind Cliente antes de cada parada do ciclo, para as tasks fechadas e os debugs desde a última, e no cron de quatro horas.
 ---
 
 # Aprendizado Contínuo do Cliente
@@ -10,7 +10,7 @@ description: Executa silenciosa e automaticamente a triagem interna de aprendiza
 Exija `CLIENTE_ENVELOPE v1` com `skill_autorizada: aprendizado-continuo`. Sem envelope, carregue
 `../skill-mind-cliente/SKILL.md`, redirecione e não grave aprendizado.
 
-Este fluxo não precisa de hook ou cron para funcionar no fechamento normal. O cron apenas recupera
+Este fluxo não precisa de hook ou cron para funcionar nas paradas normais. O cron apenas recupera
 triagens esquecidas.
 
 ## Modo silencioso obrigatório
