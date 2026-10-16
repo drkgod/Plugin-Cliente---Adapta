@@ -18,8 +18,9 @@ pedir licença a cada passo (memória, “Regra de ritmo”):
 
 1. analisar a fundo e gravar a análise;
 2. construir, verificar, publicar e provar;
-3. pedir teste só nos momentos da memória (“Quando pedir teste ao cliente”) ou concluir pela prova
-   automática quando não há nada para o cliente testar;
+3. pedir teste só quando a SPEC inteira fica pronta ou num caso crítico (memória, “Quando pedir
+   teste ao cliente”), ou concluir pela prova automática quando a SPEC não tem nada para o cliente
+   testar;
 4. seguir para a próxima task até uma parada real: pergunta real, teste necessário, impedimento,
    fim da fase ou pedido do cliente.
 
@@ -115,7 +116,7 @@ porta pela qual um sistema conversa com outro”), SPEC (“a especificação da
 | `implementando` | “Começando a task <ID>: <o que muda para quem usa>.” |
 | `aguardando_resposta` | “Preciso de uma resposta sua para seguir com <o quê>.” |
 | `aguardando_teste_humano` | “Já está no ar, esperando o seu teste.” |
-| `aguardando_teste` (sem parada) | nada durante o trabalho; entra no próximo pedido de teste |
+| `aguardando_teste` (sem parada) | nada durante o trabalho; entra no teste da SPEC |
 | `em_espera` | “Deixei <task> de lado até <o que falta>; segui com as outras.” |
 | `em_correcao` | “Estou corrigindo o que apareceu no teste.” |
 | `bloqueada` | o modelo de impedimento abaixo, completo |

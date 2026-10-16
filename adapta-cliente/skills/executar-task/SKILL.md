@@ -1,6 +1,6 @@
 ---
 name: executar-task
-description: Constrói com profundidade a task que a proxima-task acabou de analisar, seguindo sua SPEC, critérios e TDD pelo protocolo construir-codigo (e ui-ux-sistemas quando há tela); executa verificações automatizáveis, publica no Skip com prova e decide, pela regra da memória, se o teste do cliente é necessário agora, se a task espera o teste do bloco ou se fecha pela prova automática. Use somente dentro do ciclo contínuo do SkillMind Cliente, com CLIENTE_ENVELOPE v1, estado implementando e o pedido de trabalho registrado; nunca pede licença para construir.
+description: Constrói com profundidade a task que a proxima-task acabou de analisar, seguindo sua SPEC, critérios e TDD pelo protocolo construir-codigo (e ui-ux-sistemas quando há tela); executa verificações automatizáveis, publica no Skip com prova e decide, pela regra da memória, se o teste do cliente é necessário agora (SPEC inteira entregue ou caso crítico), se a task espera o teste da SPEC ou se fecha pela prova automática. Use somente dentro do ciclo contínuo do SkillMind Cliente, com CLIENTE_ENVELOPE v1, estado implementando e o pedido de trabalho registrado; nunca pede licença para construir.
 ---
 
 # Executar Task
@@ -65,18 +65,22 @@ fica para a parada. Registre no estado `verificacao_automatica: passou` com resu
 Com a publicação provada, aplique a regra da memória (“Quando pedir teste ao cliente”) e grave o
 resultado no estado:
 
-1. **Nada para o cliente ver ou usar, fora de um bloco** (estrutura do banco, regra de acesso,
+1. **Caso crítico** da regra: acrescente o ID em `aguardando_teste`, etapa
+   `aguardando_teste_humano`, e monte o roteiro só do ponto crítico. O SkillMind para.
+2. **Última task da SPEC** (`## Tasks vinculadas` toda no ar): acrescente o ID em
+   `aguardando_teste`, etapa `aguardando_teste_humano`, e monte o roteiro da SPEC inteira. O
+   SkillMind para.
+3. **SPEC sem nada para o cliente ver ou usar** (só estrutura do banco, regra de acesso ou
    automação interna): `teste_humano: nao_aplicavel:<prova>`, com a prova automática (verificação
    do Skip, teste de mesa, leitura da configuração). O SkillMind segue para `concluir-task`.
-2. **Parte de um bloco ainda aberto, sem nenhum gatilho da regra**: acrescente o ID em
-   `aguardando_teste`, `teste_humano: pendente`, e grave na análise os passos de teste desta task.
-   O SkillMind segue com a próxima task.
-3. **Algum gatilho da regra**: acrescente o ID em `aguardando_teste`, etapa
-   `aguardando_teste_humano`, e monte o roteiro abaixo. O SkillMind para.
+4. **Qualquer outro caso**, inclusive tela nova pronta: acrescente o ID em `aguardando_teste`,
+   `teste_humano: pendente`, e grave na análise os passos de teste desta task. O SkillMind segue
+   com a próxima task.
 
 ### Roteiro de teste
 
-Um roteiro só para todas as tasks em `aguardando_teste`, em linguagem simples:
+Um roteiro só: no fim da SPEC, para todas as tasks dela em `aguardando_teste`, pelo critério de
+aceite da SPEC; no caso crítico, só para a task crítica. Em linguagem simples:
 
 - o que mudou, do ponto de vista de quem usa o sistema;
 - que já está no ar, com o endereço; que ficou salvo no GitHub entra depois do envio da parada (ou

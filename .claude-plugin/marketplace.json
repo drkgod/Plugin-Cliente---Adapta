@@ -5,13 +5,13 @@
   },
   "metadata": {
     "description": "Marketplace do plugin do cliente Adapta Native, com SkillMind e MEMORY pronta para o ETHOS instalar e atualizar sozinho.",
-    "version": "0.8.0"
+    "version": "0.8.1"
   },
   "plugins": [
     {
       "name": "adapta-cliente",
       "source": "./adapta-cliente",
-      "description": "Constrói as tasks da fase em sequência, uma por vez, com análise, UI/UX e código por protocolo, publicação provada no Skip, GitHub atualizado, teste do cliente nos momentos certos, debug e aprendizado interno silencioso."
+      "description": "Constrói as tasks da fase em sequência, uma por vez, com análise, UI/UX e código por protocolo, publicação provada no Skip, GitHub atualizado, teste do cliente no fim de cada SPEC ou em caso crítico, debug e aprendizado interno silencioso."
     }
   ]
 }

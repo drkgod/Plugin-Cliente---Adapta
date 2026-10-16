@@ -54,6 +54,23 @@ continua com análise e autorização separadas por task.
 - Memória `adapta-cliente-memory 0.8.0`, substituída sozinha no próximo uso, preservando a nota de
   registro do projeto.
 
+## Ajuste 0.8.1 — teste por SPEC
+
+Na 0.8.0, o teste era pedido ao fechar cada tela ou fluxo pronto e a cada três tasks visíveis no
+ar. Quando cada task entregava uma tela inteira, o agente parava quase task por task. Agora:
+
+- o teste do cliente é por SPEC: o agente constrói todas as tasks de `## Tasks vinculadas` e pede
+  um roteiro só, pelo critério de aceite da SPEC;
+- antes de a SPEC terminar, só em caso crítico: mudança no que a equipe já usa (dados
+  existentes, permissões, fluxo em uso), integração com o mundo real de que as próximas tasks
+  dependem, ou aprovação que a SPEC exige antes de seguir; o roteiro testa só o ponto crítico;
+- tela nova pronta, várias tasks no ar ou uma parada por outro motivo não pedem teste;
+- até o teste, cada task entregue espera em `aguardando_teste`; SPEC sem nada para o cliente ver
+  fecha pela prova automática;
+- SPEC parada só por uma task em `em_espera`: o teste do que já está pronto vai na mesma parada da
+  pergunta;
+- memória `adapta-cliente-memory 0.8.1`, substituída sozinha no próximo uso.
+
 ## Exemplo
 
 Antes, três mensagens do cliente por task:

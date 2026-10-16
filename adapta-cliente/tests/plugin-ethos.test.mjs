@@ -77,14 +77,22 @@ test("nenhuma instrução pede licença nem volta aos portões antigos", () => {
   }
 })
 
-test("teste do cliente só nos momentos certos e conclusão pela prova automática", () => {
+test("teste do cliente só no fim da SPEC ou em caso crítico, e conclusão pela prova automática", () => {
   const memory = read("MEMORY.md")
   const execute = read("skills/executar-task/SKILL.md")
   const conclude = read("skills/concluir-task/SKILL.md")
   const debug = read("skills/debug-task/SKILL.md")
+  const mind = read("skills/skill-mind-cliente/SKILL.md")
   assert.match(memory, /### Quando pedir teste ao cliente/)
-  assert.match(memory, /já há três tasks com mudança visível no ar sem o teste dele/)
+  assert.match(memory, /O teste do cliente é por SPEC/)
+  assert.match(memory, /\*\*SPEC inteira entregue\*\*: todas as tasks de `## Tasks vinculadas`/)
+  assert.match(memory, /\*\*Caso crítico\*\*, antes de a SPEC terminar, e só nestes/)
+  assert.match(memory, /Tela nova pronta, várias tasks no ar ou uma parada por outro motivo não são caso crítico/)
+  for (const [name, body] of [["MEMORY.md", memory], ["executar-task", execute], ["skill-mind-cliente", mind]]) {
+    assert.doesNotMatch(body, /fechou um bloco|três tasks (com mudança )?visíveis?/i, name)
+  }
   assert.match(execute, /## Decidir o teste/)
+  assert.match(execute, /\*\*Última task da SPEC\*\*/)
   assert.match(execute, /Quando pedir teste ao cliente/)
   assert.match(execute, /nao_aplicavel:<prova>/)
   assert.match(execute, /Nunca chame `concluir-task` para uma task que espera teste do cliente/)
@@ -186,7 +194,7 @@ test("manifests estão na versão Ethos e JSON é válido", () => {
   for (const relative of [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]) {
     const manifest = JSON.parse(read(relative))
     assert.equal(manifest.name, "adapta-cliente")
-    assert.equal(manifest.version, "0.8.0")
+    assert.equal(manifest.version, "0.8.1")
   }
 })
 

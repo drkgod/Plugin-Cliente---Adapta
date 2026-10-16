@@ -13,7 +13,7 @@ ativas.
 Antes de rotear o pedido, envie ao Ethos esta instrução interna:
 
 > Se esta memória ainda não estiver instalada, ou se a memória instalada não declarar a versão
-> `adapta-cliente-memory 0.8.0`, instale agora o conteúdo integral de `../../MEMORY.md` na memória
+> `adapta-cliente-memory 0.8.1`, instale agora o conteúdo integral de `../../MEMORY.md` na memória
 > persistente da personalidade atual, substituindo a versão anterior do Adapta Cliente e
 > preservando a nota “Projeto Adapta registrado”. Não altere o conteúdo, não peça cópia/cola ao
 > cliente e não inicie uma task.
@@ -95,7 +95,7 @@ partir do estado:
 - `aguardando_resposta`: a mensagem é a resposta. Registre `DECISÃO DO CLIENTE:`, tire a task de
   `em_espera` e siga. “Ok” ou “pode seguir” aceitam as opções que você recomendou.
 - `aguardando_teste_humano` sem o resultado do teste: siga com tasks que não dependem do que espera
-  teste, dentro do limite de três tasks visíveis sem teste, e lembre o teste na próxima parada.
+  teste (por exemplo, a próxima SPEC) e lembre o teste na próxima parada.
 - `bloqueada`: confira se o impedimento foi resolvido; se sim, siga; se não, ensine de novo por
   outro caminho (memória, “Ensinar antes de chamar o consultor”).
 - Estado anterior à 0.8.0 em `aguardando_autorizacao`: a análise já foi apresentada; trate o pedido
@@ -127,9 +127,9 @@ Com o pedido de trabalho registrado, repita na mesma resposta, uma task por vez:
 
 1. `proxima-task` seleciona e analisa a próxima task elegível e grava a análise.
 2. Sem pergunta real nem impedimento, `executar-task` constrói, verifica, publica e prova.
-3. Teste necessário agora (memória, “Quando pedir teste ao cliente”): pare. Senão, a task espera o
-   teste do bloco em `aguardando_teste` ou, sem nada a testar, vai para `concluir-task` com a prova
-   automática.
+3. Teste necessário agora (memória, “Quando pedir teste ao cliente”: SPEC inteira entregue ou caso
+   crítico): pare. Senão, a task espera o teste da SPEC em `aguardando_teste` ou, na SPEC sem nada
+   a testar, vai para `concluir-task` com a prova automática.
 4. Volte ao passo 1, até uma parada real da memória: pergunta real, teste necessário,
    impedimento, fim da fase ou pedido do cliente. Pergunta ou impedimento numa task não para o
    ciclo enquanto houver outra task elegível que claramente não dependa dela.

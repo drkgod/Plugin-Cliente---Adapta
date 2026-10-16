@@ -34,7 +34,7 @@ Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; quem 
 4. Localize a SPEC em `04_fase-atual/specs/`.
    - SPEC ausente: impedimento, porque a SPEC é publicada pelo consultor; explique isso ao cliente.
    - Detalhe de negócio que a SPEC não define: é pergunta real. Junte as perguntas desta task e,
-     quando der, das próximas tasks do mesmo bloco, cada uma com opções, consequência e a sua
+     quando der, das próximas tasks da mesma SPEC, cada uma com opções, consequência e a sua
      recomendação; a resposta vira `DECISÃO DO CLIENTE:`.
    - Detalhe de apresentação não é pergunta: decida pelo catálogo de
      `../ui-ux-sistemas/SKILL.md`, registre na análise e conte na parada.
@@ -65,8 +65,9 @@ Carregue `../../personas/agente-cliente.md`. Esta skill analisa e prepara; quem 
      em migration (migration que apaga ou transforma dados existentes é pergunta real: precisa de
      autorização explícita);
    - perguntas reais e impedimentos, se houver;
-   - bloco a que a task pertence e se ela precisa de teste do cliente, e quando (memória, “Quando
-     pedir teste ao cliente”), com o roteiro de verificação automática e de teste.
+   - SPEC a que a task pertence, se ela é a última de `## Tasks vinculadas` e se há caso crítico
+     (memória, “Quando pedir teste ao cliente”), com o roteiro de verificação automática e de
+     teste.
 6. Ao cliente, durante o trabalho, só uma linha de progresso: “Começando a task <ID>: <o que muda
    para quem usa>”. O plano em código e a matriz ficam no arquivo; mostre-os só se ele pedir.
 

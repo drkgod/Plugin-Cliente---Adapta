@@ -8,5 +8,6 @@ disable-model-invocation: true
 Carregue `MEMORY.md`, `personas/agente-cliente.md` e
 `skills/skill-mind-cliente/SKILL.md`. Preserve `$ARGUMENTS` como pedido original, crie
 `CLIENTE_ENVELOPE v1` e siga a rota do estado: no ciclo contínuo, uma task por vez, sem pedir
-licença, parando só nas paradas reais da memória, com o teste do cliente nos momentos certos e o
-aprendizado silencioso antes de cada parada. Não dependa de hook, contrato, script ou subagente.
+licença, parando só nas paradas reais da memória, com o teste do cliente no fim de cada SPEC ou em
+caso crítico e o aprendizado silencioso antes de cada parada. Não dependa de hook, contrato,
+script ou subagente.

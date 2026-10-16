@@ -1,6 +1,6 @@
 # Memória persistente — Adapta Cliente no ETHOS
 
-Versão da memória: `adapta-cliente-memory 0.8.0`
+Versão da memória: `adapta-cliente-memory 0.8.1`
 
 Use este conteúdo na memória persistente do assistente de codificação do cliente durante as cinco
 fases. Estas são instruções ativas, não um histórico: não grave aqui prompts, transcrições,
@@ -77,25 +77,26 @@ reais.
 
 ### Quando pedir teste ao cliente
 
-Peça teste só quando houver algo novo para o cliente usar que você não consegue provar sozinho —
-tela, fluxo, mensagem, relatório ou integração — e só num destes momentos:
+O teste do cliente é por SPEC. Siga construindo as tasks e peça teste só em dois momentos:
 
-1. fechou um bloco: as tasks que, juntas, deixam uma tela ou um fluxo pronto para usar de ponta a
-   ponta (a task-mãe e suas subtasks, ou tasks seguidas da mesma tela ou fluxo);
-2. já há três tasks com mudança visível no ar sem o teste dele;
-3. a próxima task depende de saber que esta funciona no mundo real (serviço externo, envio de
-   mensagem, pagamento);
-4. a task mudou algo que a equipe já usa no dia a dia (dados existentes, permissões, um fluxo em
-   uso);
-5. a SPEC pede a aprovação do cliente no critério de aceite;
-6. você vai parar por outro motivo e há tasks no ar esperando teste: aproveite a mesma mensagem.
+1. **SPEC inteira entregue**: todas as tasks de `## Tasks vinculadas` da SPEC estão no ar. Um
+   roteiro só testa a SPEC de ponta a ponta, pelo critério de aceite dela.
+2. **Caso crítico**, antes de a SPEC terminar, e só nestes:
+   - a task mudou algo que a equipe já usa no dia a dia: dados existentes, permissões ou um fluxo
+     em uso;
+   - a task liga o sistema ao mundo real (envio de mensagem, pagamento, serviço externo), você não
+     consegue provar sozinho que funciona e as próximas tasks dependem disso;
+   - a SPEC exige a aprovação do cliente antes de seguir.
+   O roteiro testa só o ponto crítico; o resto da SPEC continua esperando o teste dela.
 
-Fora desses momentos, siga construindo: a task entregue espera o teste do bloco em
-`aguardando_teste`. Task sem nada para o cliente ver ou usar (estrutura do banco, regra de acesso,
-automação interna) entra no teste do bloco que a usa; fora de bloco, é concluída pela prova
+Tela nova pronta, várias tasks no ar ou uma parada por outro motivo não são caso crítico: siga
+construindo. Até o teste, cada task entregue espera em `aguardando_teste`, inclusive a que não tem
+nada para o cliente ver (o teste da SPEC prova o que ela sustenta). SPEC sem nada para o cliente
+ver ou usar (só estrutura do banco, regra de acesso ou automação interna) fecha pela prova
 automática (verificação do Skip, teste de mesa e leitura da configuração), com
-`teste_humano: nao_aplicavel:<prova>`. Um teste cobre o bloco inteiro num roteiro só. Depois de
-corrigir uma falha que o cliente apontou, peça o reteste só do que falhou.
+`teste_humano: nao_aplicavel:<prova>`. SPEC que só não terminou porque uma task dela está em
+`em_espera`: na parada que leva essa pergunta, peça também o teste do que já está pronto. Depois
+de corrigir uma falha que o cliente apontou, peça o reteste só do que falhou.
 
 ## Regra de comunicação com o cliente
 

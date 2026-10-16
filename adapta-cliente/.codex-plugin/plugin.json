@@ -1,6 +1,6 @@
 {
   "name": "adapta-cliente",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Orquestrador do champion Adapta Native para construir a fase em sequência, uma task por vez, analisando, executando, debugando e concluindo sem pedir licença a cada passo, com memória persistente solicitada ao Ethos, skills de UI/UX e de código, publicação obrigatória no Skip e GitHub sempre atualizado.",
   "author": {
     "name": "Adapta Labs"
@@ -23,7 +23,7 @@
   "interface": {
     "displayName": "Adapta Cliente",
     "shortDescription": "Constrói a fase em sequência e só para quando precisa de você.",
-    "longDescription": "SkillMind do cliente para runtimes como ETHOS: interpreta pedidos, constrói as tasks em sequência e analisa cada uma antes de construir, projeta telas com Ficha de Tela, constrói código por protocolo que substitui o harness, publica no Skip com prova, mantém o GitHub atualizado, pede o teste do cliente nos momentos certos, diagnostica causa raiz, valida evidências e registra aprendizado contínuo sem depender de hooks ou subagentes.",
+    "longDescription": "SkillMind do cliente para runtimes como ETHOS: interpreta pedidos, constrói as tasks em sequência e analisa cada uma antes de construir, projeta telas com Ficha de Tela, constrói código por protocolo que substitui o harness, publica no Skip com prova, mantém o GitHub atualizado, pede o teste do cliente no fim de cada SPEC ou em caso crítico, diagnostica causa raiz, valida evidências e registra aprendizado contínuo sem depender de hooks ou subagentes.",
     "developerName": "Adapta Labs",
     "category": "Productivity",
     "capabilities": [

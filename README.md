@@ -53,8 +53,10 @@ sem ciclo de tasks, publicação obrigatória ou envio ao GitHub.
 1. Analisar a próxima task elegível e gravar a análise.
 2. Construir e executar as verificações automatizáveis.
 3. Publicar na plataforma de construção, com prova.
-4. Pedir o teste do cliente na URL de produção quando um bloco fecha ou chega outro momento da
-   regra; task sem nada para o cliente testar fecha pela prova automática.
+4. Pedir o teste do cliente na URL de produção só quando a SPEC inteira fica pronta ou num caso
+   crítico (mudança no que a equipe já usa, integração externa de que as próximas tasks dependem
+   ou aprovação exigida pela SPEC); SPEC sem nada para o cliente testar fecha pela prova
+   automática.
 5. Seguir para a próxima task até uma parada real: pergunta, teste, impedimento, fim da fase ou
    pedido do cliente.
 6. Antes de cada parada, registrar o aprendizado interno silencioso e atualizar o GitHub em um

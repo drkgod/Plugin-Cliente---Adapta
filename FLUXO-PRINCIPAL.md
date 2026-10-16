@@ -1,6 +1,6 @@
 # Fluxo principal — Plugin Adapta Cliente
 
-Este é o texto canônico para explicar o onboarding e a execução no site (edição Ethos, 0.8.0). A
+Este é o texto canônico para explicar o onboarding e a execução no site (edição Ethos, 0.8.1). A
 estrutura de pastas do repositório operacional permanece:
 
 - `04_fase-atual/fase.md`
@@ -21,7 +21,8 @@ estrutura de pastas do repositório operacional permanece:
    licença a cada passo.
 4. **Responder e testar:** o assistente só para quando precisa do cliente: uma pergunta de
    negócio que a SPEC não define (todas juntas, com recomendação), um teste no endereço publicado
-   quando uma tela ou um fluxo fica pronto, um impedimento ou o fim da fase. Antes de parar, salva
+   quando uma SPEC inteira fica pronta (ou antes, só em caso crítico), um impedimento ou o fim da
+   fase. Antes de parar, salva
    tudo no GitHub em um único envio.
 5. **Aprovar ou corrigir:** se o teste funcionar, as tasks testadas são concluídas e o trabalho
    continua; se falhar, a mesma task volta para debug e o cliente testa de novo só o que falhou.
@@ -95,8 +96,9 @@ O formato tabular antigo continua legível para projetos existentes.
 - dependência declarada da task não atendida, sem outra task independente para seguir;
 - detalhe de negócio que a SPEC não define, ou ação de risco sobre dados existentes;
 - publicação na plataforma de construção sem prova;
-- teste do cliente necessário (tela ou fluxo pronto, três tasks visíveis sem teste, serviço
-  externo, mudança no que a equipe já usa ou aprovação pedida pela SPEC);
+- teste do cliente necessário: SPEC inteira pronta ou, antes disso, só um caso crítico (mudança
+  no que a equipe já usa, integração externa de que as próximas tasks dependem ou aprovação exigida
+  pela SPEC);
 - fase concluída.
 
 Owner diferente do executor, ausência de `handoff-manifest.json`, check separado ou formulário de
